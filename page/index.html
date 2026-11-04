@@ -478,23 +478,6 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
-    <div class="sw-avzone" data-zone="Rogers Pass" id="trips-rogers">
-      <h2 class="sw-section">Trips for today</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Parks Canada's rated trips in Glacier and Mount Revelstoke national parks, graded by their official avalanche terrain rating (ATES): easy is Simple terrain, medium is Challenging, epic is Complex. A trip is listed for today only when its terrain is within strict limits for today's danger rating: at Low, any class; at Moderate, Simple or Challenging; at Considerable, Simple only; at High or Extreme, nothing. Complex trips are also held back whenever the bulletin lists a persistent or deep persistent slab problem. With no rating for today (early season, or a forecast that hasn't been updated), nothing is listed.</p></details>
-      <p class="sw-trips-verdict" data-draw="trips-verdict" data-source="trips danger_history regional_forecasts problems">—</p>
-      <div class="sw-trips-grid" data-draw="trips-picks" data-source="trips danger_history regional_forecasts problems"></div>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note sw-trips-caveat">Within these limits is not the same as safe. The rating describes a trip's terrain, not today's snowpack; conditions vary across a trip and through the day. Before you go: read the full forecast, check the day's Rogers Pass winter restricted areas (closed areas change daily for highway avalanche control) and get a Glacier National Park winter permit, carry rescue gear and know how to use it. The trips have no mapped tracks here, so they can't be drawn on the map or ranked against each other; the route check on the slope map above works on any GPX you upload.</p></details>
-      <details class="sw-trips-all">
-        <summary>All 69 rated trips</summary>
-        <div class="sw-tablebox">
-          <table class="sw-table" data-source="trips" data-row-key="trip_id">
-            <thead><tr><th data-field="trip">Trip</th><th data-field="park">Park</th><th data-field="ates_label">Terrain rating</th><th data-field="grade">Grade</th><th>Today</th></tr></thead>
-            <tbody data-draw="trips-rows"></tbody>
-          </table>
-        </div>
-      </details>
-    </div>
-
     <h2 class="sw-section">On the ground, latest day</h2>
     <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
     <div class="sw-tiles">
@@ -2580,86 +2563,6 @@ dash.draw('history', (el) => {
     for (const h of hits) add('“' + h.trim() + '”', 'ca');
   });
 
-})();
-</script>
-
-
-<script>
-(() => {
-  const LV = ['no rating', 'Low', 'Moderate', 'Considerable', 'High', 'Extreme'];
-  const MAXCLASS = { 1: 3, 2: 2, 3: 1, 4: 0, 5: 0 }; // strict: highest terrain class allowed at each danger level
-  const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Vancouver' }).format(new Date());
-  const inRing = (lon, lat, ring) => { let ins = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, yi] = ring[i], [xj, yj] = ring[j]; if ((yi > lat) !== (yj > lat) && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) ins = !ins; } return ins; };
-  const MTREV = [-118.15, 51.04];
-  const state = () => {
-    const tr = dash.data('trips'), dh = dash.data('danger_history'), rf = dash.data('regional_forecasts'), pr = dash.data('problems');
-    if (tr.status !== 'ok' || dh.status !== 'ok') return null;
-    const day = today();
-    // Glacier NP: today's Parks Canada ratings; Mount Revelstoke: whichever forecast area contains the park
-    const gnp = dh.data.filter((r) => r.zone === 'Rogers Pass' && r.date === day);
-    let mr = [], mrName = null;
-    if (rf.status === 'ok') {
-      const f = rf.data.find((x) => x.zone === 'Rogers Pass' && JSON.parse(x.rings || '[]').some((rg) => inRing(MTREV[0], MTREV[1], rg)));
-      if (f) { mr = JSON.parse(f.ratings || '[]').filter((x) => x.date === day); mrName = f.name; }
-    }
-    const lvl = (rows) => (rows.length ? Math.max(...rows.map((r) => Number(r.level) || 0)) : 0);
-    const persist = pr.status === 'ok' && pr.data.some((x) => x.zone === 'Rogers Pass' && /persistent/i.test(x.problem || ''));
-    const park = {
-      'Glacier National Park': { level: lvl(gnp), src: 'Parks Canada forecast for Glacier National Park', persist },
-      'Mount Revelstoke National Park': { level: lvl(mr), src: mrName ? `Avalanche Canada forecast (${mrName})` : 'no forecast found', persist },
-    };
-    const ok = (t) => {
-      const p = park[t.park];
-      if (!p || !p.level) return { go: false, why: 'no danger rating for today' };
-      if (t.ates > MAXCLASS[p.level]) return { go: false, why: `${LV[p.level]} danger: ${t.ates_label.toLowerCase()} terrain not within limits` };
-      if (t.ates === 3 && p.persist) return { go: false, why: 'persistent slab problem in the bulletin' };
-      return { go: true, why: `${LV[p.level]} danger` };
-    };
-    return { trips: tr.data, park, ok, day };
-  };
-  dash.draw('trips-verdict', (el) => {
-    const s = state();
-    if (!s) { el.textContent = '—'; return; }
-    const g = s.park['Glacier National Park'], m = s.park['Mount Revelstoke National Park'];
-    if (!g.level && !m.level) { el.textContent = 'Nothing recommended today: there is no avalanche danger rating in force for today, so no trip can be checked against it.'; return; }
-    const n = s.trips.filter((t) => s.ok(t).go).length;
-    const part = (name, p) => (p.level ? `${name}: ${LV[p.level]} (highest band)` : `${name}: no rating today`);
-    el.textContent = `${part('Glacier', g)}; ${part('Mount Revelstoke', m)}. ` + (n ? `${n} trip${n === 1 ? '' : 's'} within today's limits.` : 'Nothing recommended today.');
-  });
-  dash.draw('trips-picks', (el) => {
-    el.replaceChildren();
-    const s = state();
-    if (!s) return;
-    for (const [grade, cls] of [['Easy', 'Simple'], ['Medium', 'Challenging'], ['Epic', 'Complex']]) {
-      const col = document.createElement('div'); col.className = 'sw-trips-col';
-      const h = document.createElement('h3'); h.textContent = `${grade} · ${cls} terrain`; col.append(h);
-      const go = s.trips.filter((t) => t.grade === grade && s.ok(t).go);
-      if (!go.length) {
-        const p = document.createElement('p'); p.className = 'sw-muted';
-        const any = s.trips.find((t) => t.grade === grade);
-        p.textContent = 'Nothing recommended today' + (any ? ` (${s.ok(any).why}).` : '.');
-        col.append(p);
-      } else {
-        const ul = document.createElement('ul');
-        for (const t of go.slice(0, 3)) { const li = document.createElement('li'); li.textContent = `${t.trip} (${t.park.replace(' National Park', '')})`; ul.append(li); }
-        col.append(ul);
-        if (go.length > 3) { const p = document.createElement('p'); p.className = 'sw-muted'; p.textContent = `${go.length - 3} more ${cls.toLowerCase()} trip${go.length - 3 === 1 ? '' : 's'} within limits; see the full list below. Without tracks they can't be ranked, so these three are in Parks Canada's order.`; col.append(p); }
-      }
-      el.append(col);
-    }
-  });
-  dash.draw('trips-rows', (tb) => {
-    tb.replaceChildren();
-    const s = state();
-    const d = dash.data('trips');
-    if (d.status !== 'ok') return;
-    for (const t of d.data) {
-      const tr = document.createElement('tr'); tr.dataset.key = t.trip_id;
-      for (const v of [t.trip, t.park.replace(' National Park', ''), t.ates_label, t.grade]) { const td = document.createElement('td'); td.textContent = v; tr.append(td); }
-      const td = document.createElement('td'); td.textContent = s ? (s.ok(t).go ? 'Within limits' : 'Not today: ' + s.ok(t).why) : '—'; tr.append(td);
-      tb.append(tr);
-    }
-  });
 })();
 </script>
 
