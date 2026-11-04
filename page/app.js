@@ -1130,7 +1130,7 @@
   const visS = (st, s) => { const v = showOf(st); return !!s.kind && (!v.highOnly || s.level === 2) && !!v[BOX[s.kind]]; };
   const EXPO_COL = '#8A7CC2'; // exposure to slopes above, not raised by today's conditions
   const colOf = (lv, kind) => (kind === 'exposure' ? EXPO_COL : LV[lv || 0]);
-  const levelWord = (g, long) => (g.kind === 'exposure' ? (long ? 'Exposure from above' : 'Exposure') : g.level === 2 ? (long ? 'High consequence' : 'High') : (long ? 'Take care' : 'Care'));
+  const levelWord = (g, long) => (g.kind === 'exposure' ? (long ? 'Exposure from above' : 'Exposure') : g.level === 2 ? 'High-consequence' : (long ? 'Take care' : 'Care'));
 
   // the route's surroundings on the 30 m blocks, stitched into one grid for the check
   const BUF = 1300; // m: the overhead search looks 1 km out
