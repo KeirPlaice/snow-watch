@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Snow & avalanche dashboard: fetch all feeds and write the dashboard's CSV files.
 
-Zones: Rogers Pass (Glacier National Park, BC), Rossland (Rossland Range, BC), Vallter / Ulldeter (Ter-Freser, Catalonia) and Innsbruck (Tirol, Euregio).
+Zones: Rogers Pass (Glacier National Park, BC), Rossland (Rossland Range, BC), Vallter / Ulldeter (Ter-Freser, Catalonia), Innsbruck (Tirol, Euregio),
+Rocky Mountain NP (Colorado) and Chamonix (Mont Blanc massif: Météo-France, SLF, Aosta Valley).
 Usage: python3 snow_fetch.py OUTDIR [--prev-danger PREVIOUS_danger_history.json] [--prev-stations PREVIOUS_stations_daily.json]
 (Innsbruck station history is rebuilt from hourly archives; with --prev-stations only the last few days are re-read.)
 Writes: stations_daily.json, danger_history.json, bulletins.json, problems.json, outlook.json
@@ -174,7 +175,7 @@ def wind_obs(zone, now, station=None):
 
 def wind_summary(zone, now, stations_rows, given=None):
     obs, name, elev = given if given else wind_obs(zone, now)
-    step_h = 0.5 if zone == VALLTER else 1.0
+    step_h = 0.5 if zone in (VALLTER, "Chamonix · Le Portalet") else 1.0
     rose = {o: {"hours": 0.0, "transport": 0.0, "sum": 0.0} for o in OCT}
     vx = vy = tr_h = strong_h = tr_sum = 0.0
     gust = None
@@ -516,6 +517,14 @@ def eu_bound(e, side):
 def eu_bands(b):
     """[(band, band_label, level, rating)] from one CAAMLv6 bulletin; am/pm ratings keep the higher."""
     best = {}
+    # morning and afternoon ratings (Aosta, the Euregio in spring): use the more dangerous half of the day as a whole,
+    # since the two halves can split the heights differently
+    periods = {}
+    for d in b.get("dangerRatings") or []:
+        periods.setdefault(d.get("validTimePeriod") or "all_day", []).append(d)
+    if len(periods) > 1:
+        worst = max(periods.items(), key=lambda kv: (max(EU_LEVEL.get(x.get("mainValue"), 0) for x in kv[1]), kv[0] == "later"))
+        b = dict(b, dangerRatings=worst[1])
     for d in b.get("dangerRatings") or []:
         lvl = EU_LEVEL.get(d.get("mainValue"), 0)
         e = d.get("elevation") or {}
@@ -736,6 +745,7 @@ GRID = {  # zone: (west, south, east, north, columns, rows, time zone)
     VALLTER: (2.20, 42.38, 2.34, 42.46, 4, 3, "Europe/Madrid"),
     IBK: (10.98, 46.95, 11.72, 47.34, 8, 5, "Europe/Vienna"),
     "Rocky Mountain NP": (-105.95, 40.16, -105.48, 40.55, 6, 6, "America/Denver"),
+    "Chamonix": (6.74, 45.76, 7.16, 46.04, 6, 5, "Europe/Paris"),
 }
 
 
@@ -902,6 +912,206 @@ def caic(today):
     probs = [dict(x, zone=RMNP, issued=issued) for x in (problems(p) if p else [])]
     return bull, danger, probs, rf
 
+# ---------- Chamonix: the whole Mont Blanc massif (France, Italy, Switzerland) ----------
+CHX = "Chamonix"
+TZ[CHX] = ZoneInfo("Europe/Paris")
+CHX_BOUNDS = (6.72, 45.74, 7.18, 46.06)
+# EAWS micro-regions covering part of the map: id -> name, share of the map, outline (lon, lat)
+CHX_REGIONS = json.loads(r"""{"FR-06":{"name":"Haute-Tarentaise","share":0.012,"rings":[[[6.723,45.695],[6.739,45.75],[6.801,45.781],[6.806,45.767],[6.806,45.748],[6.817,45.74],[6.809,45.725],[6.828,45.705],[6.841,45.7],[6.847,45.69],[6.729,45.69],[6.723,45.695]]]},"FR-01":{"name":"Chablais","share":0.105,"rings":[[[6.894,46.11],[6.884,46.095],[6.891,46.085],[6.889,46.078],[6.891,46.074],[6.881,46.069],[6.873,46.056],[6.873,46.052],[6.878,46.045],[6.809,45.941],[6.729,45.935],[6.691,45.907],[6.67,45.914],[6.67,46.065],[6.676,46.084],[6.688,46.099],[6.701,46.106],[6.72,46.11],[6.894,46.11]]]},"FR-03":{"name":"Mont-Blanc","share":0.348,"rings":[[[6.878,46.046],[6.89,46.043],[6.895,46.048],[6.909,46.051],[6.923,46.064],[6.933,46.066],[6.937,46.064],[6.936,46.055],[6.943,46.051],[6.95,46.052],[6.963,46.031],[6.98,46.02],[6.986,46.005],[7.009,45.998],[7.013,45.988],[7.022,45.98],[7.022,45.977],[7.011,45.973],[7.01,45.969],[7.019,45.96],[7.037,45.955],[7.036,45.938],[7.045,45.922],[7.019,45.915],[7.004,45.899],[7.007,45.888],[6.999,45.873],[6.99,45.868],[6.975,45.868],[6.953,45.861],[6.942,45.849],[6.923,45.847],[6.915,45.842],[6.874,45.845],[6.864,45.833],[6.85,45.839],[6.818,45.836],[6.808,45.819],[6.812,45.806],[6.812,45.796],[6.805,45.793],[6.801,45.781],[6.739,45.75],[6.67,45.788],[6.67,45.914],[6.691,45.907],[6.729,45.935],[6.809,45.941],[6.878,46.046]]]},"CH-4111":{"name":"Emosson","share":0.018,"rings":[[[7.065,46.089],[7.019,46.045],[6.995,46.03],[6.976,46.022],[6.968,46.031],[6.961,46.032],[6.948,46.051],[6.943,46.05],[6.935,46.055],[6.934,46.064],[6.92,46.061],[6.91,46.052],[6.89,46.043],[6.87,46.048],[6.877,46.063],[6.891,46.075],[6.885,46.094],[6.896,46.11],[7.067,46.11],[7.065,46.089]]]},"CH-4112":{"name":"Génépi","share":0.046,"rings":[[[7.1,46.031],[7.103,46.022],[7.099,46.019],[7.043,45.986],[7.022,45.981],[7.014,45.987],[7.013,45.999],[6.997,45.999],[6.984,46.004],[6.984,46.016],[6.976,46.022],[6.995,46.03],[7.019,46.045],[7.065,46.089],[7.07,46.085],[7.082,46.086],[7.118,46.093],[7.123,46.096],[7.141,46.092],[7.158,46.082],[7.1,46.031]]]},"CH-4113":{"name":"Val d'Entremont-Val Ferret","share":0.149,"rings":[[[7.23,46.011],[7.23,45.89],[7.217,45.887],[7.203,45.876],[7.2,45.87],[7.201,45.863],[7.193,45.859],[7.176,45.863],[7.164,45.871],[7.163,45.876],[7.155,45.877],[7.14,45.873],[7.12,45.86],[7.105,45.859],[7.098,45.863],[7.092,45.875],[7.08,45.886],[7.076,45.893],[7.065,45.9],[7.064,45.911],[7.048,45.921],[7.036,45.938],[7.038,45.954],[7.018,45.959],[7.01,45.968],[7.01,45.971],[7.022,45.981],[7.043,45.986],[7.099,46.019],[7.103,46.022],[7.1,46.031],[7.158,46.082],[7.183,46.06],[7.192,46.038],[7.23,46.011]]]},"IT-23-AO-01":{"name":"Saint-Pierre and Saint-Nicholas","share":0.012,"rings":[[[7.225,45.721],[7.217,45.721],[7.215,45.718],[7.18,45.717],[7.158,45.712],[7.116,45.721],[7.107,45.726],[7.106,45.735],[7.108,45.745],[7.121,45.756],[7.23,45.797],[7.23,45.735],[7.225,45.721]]]},"IT-23-AO-17":{"name":"La Salle Morgex","share":0.063,"rings":[[[7.049,45.748],[7.024,45.759],[6.986,45.765],[6.968,45.781],[7.058,45.817],[7.091,45.821],[7.11,45.803],[7.141,45.799],[7.157,45.793],[7.173,45.78],[7.188,45.781],[7.121,45.756],[7.108,45.745],[7.107,45.726],[7.09,45.739],[7.075,45.74],[7.062,45.753],[7.046,45.755],[7.049,45.748]]]},"IT-23-AO-15":{"name":"La Thuile Valley","share":0.038,"rings":[[[6.841,45.7],[6.828,45.705],[6.809,45.725],[6.817,45.74],[6.855,45.76],[6.901,45.764],[6.961,45.783],[6.968,45.782],[6.986,45.765],[7.024,45.759],[7.045,45.752],[7.057,45.738],[7.066,45.732],[7.089,45.721],[7.108,45.716],[7.106,45.71],[7.097,45.7],[7.083,45.691],[7.075,45.69],[6.847,45.69],[6.841,45.7]]]},"IT-23-AO-14":{"name":"Ferret Valley","share":0.085,"rings":[[[6.946,45.834],[6.935,45.847],[6.942,45.849],[6.953,45.861],[6.975,45.868],[6.99,45.868],[6.999,45.873],[7.007,45.888],[7.004,45.899],[7.019,45.915],[7.041,45.923],[7.062,45.912],[7.065,45.9],[7.076,45.895],[7.081,45.885],[7.094,45.877],[7.093,45.872],[7.102,45.859],[7.092,45.834],[7.091,45.821],[7.058,45.817],[6.968,45.782],[6.967,45.802],[6.961,45.809],[6.968,45.825],[6.964,45.829],[6.946,45.834]]]},"IT-23-AO-18":{"name":"Gran San Bernardo Ollomont","share":0.041,"rings":[[[7.188,45.781],[7.173,45.78],[7.157,45.793],[7.141,45.799],[7.11,45.803],[7.091,45.821],[7.092,45.834],[7.102,45.859],[7.118,45.86],[7.136,45.873],[7.154,45.879],[7.163,45.877],[7.163,45.871],[7.173,45.864],[7.191,45.859],[7.2,45.863],[7.2,45.874],[7.215,45.884],[7.218,45.889],[7.23,45.891],[7.23,45.797],[7.188,45.781]]]},"IT-23-AO-22":{"name":"Veny Valley","share":0.081,"rings":[[[6.935,45.847],[6.946,45.834],[6.964,45.829],[6.968,45.825],[6.961,45.809],[6.967,45.802],[6.968,45.782],[6.957,45.783],[6.901,45.764],[6.855,45.76],[6.817,45.74],[6.806,45.748],[6.806,45.767],[6.801,45.781],[6.805,45.793],[6.812,45.796],[6.812,45.806],[6.808,45.819],[6.818,45.836],[6.85,45.839],[6.864,45.833],[6.874,45.845],[6.915,45.842],[6.923,45.847],[6.935,45.847]]]}}""")
+CHX_FEEDS = ("FR", "CH", "IT-23")  # one EAWS file per service and day
+CHX_SERVICE = {  # region prefix -> (forecaster, bulletin page, language of its text in the feed)
+    "FR": ("Météo-France", "https://meteofrance.com/meteo-montagne", "fr"),
+    "CH": ("SLF", "https://www.slf.ch/en/", "en"),
+    "IT": ("Aosta Valley avalanche office", "https://www.avalanches.org/", "en"),
+}
+CHX_HOME = "FR-03"  # Mont-Blanc (Météo-France): the bulletin for Chamonix itself
+CHX_WIND = (45.8800, 6.9000, 3300, "Col du Midi / Vallée Blanche (model)")  # modelled until station data is reachable
+# Météo-France puts no avalanche-problem codes in the EAWS feed; these are read off its text (in French)
+FR_PROBLEM_WORDS = [("New snow", r"neige fra[iî]che|neige r[ée]cente"),
+                    ("Wind slab", r"plaques?[^.]{0,60}vent|vent[^.]{0,60}plaques?|neige vent[ée]e|accumulations"),
+                    ("Persistent weak layers", r"persistant|sous-couche fragile|couche fragile"),
+                    ("Wet snow", r"neige humide|neige mouill[ée]e|avalanches? humides?"),
+                    ("Gliding snow", r"avalanches? de fond|glissement"),
+                    ("Cornices", r"corniche")]
+
+
+def fr_text(t):
+    """Météo-France text in the feed loses its line breaks: put a space back after a full stop or colon."""
+    return re.sub(r"([.:])(?=[A-ZÀ-ÖØ-Ý])", r"\1 ", clean(t))
+
+
+def chx_service(rid):
+    return CHX_SERVICE["FR" if rid.startswith("FR") else "CH" if rid.startswith("CH") else "IT"]
+
+
+def fr_problems(b):
+    """Problems named in a Météo-France bulletin's text, with the aspects and heights of its danger ratings."""
+    txt = " ".join(clean(((b.get(k) or {}).get("comment")) or "") for k in ("avalancheActivity", "snowpackStructure")).lower()
+    asp, lo, hi = [], None, None
+    for d in b.get("dangerRatings") or []:
+        asp += [a for a in d.get("aspects") or [] if a not in asp]
+    elev = "all elevations"
+    for d in b.get("dangerRatings") or []:
+        e = d.get("elevation") or {}
+        if EU_LEVEL.get(d.get("mainValue"), 0) == max(EU_LEVEL.get(x.get("mainValue"), 0) for x in b["dangerRatings"]) and e.get("lowerBound"):
+            elev = f"above {eu_bound(e, 'lowerBound')}"
+    order = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+    return [{"problem": name + " (from the text)", "aspects": ", ".join(a for a in order if a in asp), "elevations": elev,
+             "size": "", "likelihood": "", "when": ""} for name, rx in FR_PROBLEM_WORDS if re.search(rx, txt)]
+
+
+def chx_problems(rid, b):
+    return fr_problems(b) if rid.startswith("FR") else eu_problems(b)
+
+
+def chx_bulletins(today):
+    """bulletin row, danger rows, problem rows and regional rows for the Mont Blanc map (three services)."""
+    day = today.isoformat()
+    by_region = {}
+    for feed in CHX_FEEDS:
+        st, raw = get_raw(f"{EAWS}/eaws_bulletins/{day}/{day}-{feed}.json")
+        for b in (json.loads(raw).get("bulletins") or [] if st == 200 and raw else []):
+            for r in b.get("regions") or []:
+                if r["regionID"] in CHX_REGIONS:
+                    by_region[r["regionID"]] = b
+    regional = []
+    for rid, info in sorted(CHX_REGIONS.items(), key=lambda kv: -kv[1]["share"]):
+        b = by_region.get(rid)
+        who, url, lang = chx_service(rid)
+        bands = eu_bands(b) if b else []
+        ratings = [{"date": day, "band": k, "band_label": lab, "level": lvl, "rating": rt} for k, lab, lvl, rt in bands]
+        probs = [{k: p[k] for k in ("problem", "aspects", "elevations")} for p in (chx_problems(rid, b) if b else [])]
+        tx = fr_text if rid.startswith("FR") else clean
+        hl = tx(((b or {}).get("avalancheActivity") or {}).get("highlights")) or tx(((b or {}).get("avalancheActivity") or {}).get("comment"))
+        regional.append({
+            "zone": CHX, "area_id": rid, "name": info["name"], "forecaster": who,
+            "issued": (b or {}).get("publicationTime", "")[:10], "valid_until": ((b or {}).get("validTime") or {}).get("endTime", "")[:10],
+            "max_level": max((x["level"] for x in ratings), default=0),
+            "today": ", ".join(f"{x['band_label'].lower()} {x['rating'].lower()}" for x in ratings),
+            "ratings": json.dumps(ratings), "problems": json.dumps(probs, ensure_ascii=False),
+            "highlights": hl[:600], "url": url,
+            "rings": json.dumps(info["rings"], separators=(",", ":")),
+        })
+    b = by_region.get(CHX_HOME)
+    if not b:
+        names = sorted({chx_service(r)[0] for r in by_region})
+        bull = {"zone": CHX, "region": "Mont-Blanc", "forecaster": "Météo-France", "issued": "", "valid_until": "",
+                "headline": "No Météo-France bulletin for the Mont-Blanc massif today. It runs daily from about mid-December to spring; "
+                            "until then check meteofrance.com/meteo-montagne for early-season notes."
+                            + (f" Bulletins in force today on the map: {', '.join(names)} (see the regional map)." if names else ""),
+                "snowpack": "", "detail": "", "trend": "", "confidence": "", "language": "en", "url": CHX_SERVICE["FR"][1]}
+        return bull, [], [], regional
+    act, snow = b.get("avalancheActivity") or {}, b.get("snowpackStructure") or {}
+    issued = b.get("publicationTime", "")[:10]
+    head = fr_text(act.get("highlights")) or fr_text(act.get("comment")).split("\n")[0]
+    detail = fr_text(act.get("comment"))
+    if detail.startswith(head):
+        detail = detail[len(head):].strip()
+    bull = {"zone": CHX, "region": "Mont-Blanc", "forecaster": "Météo-France", "issued": issued,
+            "valid_until": (b.get("validTime") or {}).get("endTime", "")[:10],
+            "headline": head, "snowpack": fr_text(snow.get("comment")), "detail": detail,
+            "trend": clean(((b.get("tendency") or [{}])[0]).get("highlights")), "confidence": "", "language": "fr",
+            "url": CHX_SERVICE["FR"][1]}
+    danger = [{"zone": CHX, "date": day, "band": k, "band_label": lab, "level": lvl, "rating": rt, "kind": "bulletin", "issued": issued}
+              for k, lab, lvl, rt in eu_bands(b)]
+    probs = [{"zone": CHX, "problem": p["problem"], "likelihood": p["likelihood"], "size": p["size"],
+              "elevations": p["elevations"], "aspects": p["aspects"], "issued": issued} for p in fr_problems(b)]
+    return bull, danger, probs, regional
+
+
+CHX_IMIS = [("FOU2", "Glacier de l'Evole", 2800), ("FOU1", "Le Portalet", 3344)]  # SLF IMIS, above La Fouly (Swiss Val Ferret)
+CHX_IMIS_WIND = "FOU1"
+SLF_API = "https://measurement-api.slf.ch/public/api/imis"
+
+
+def chx_stations(now, prev_rows):
+    """SLF IMIS stations in the massif: the API gives the last 7 days of half-hourly readings, so earlier days
+    carry over from yesterday's file. Returns (daily rows, half-hourly wind at the ridge station for the last WIND_HOURS)."""
+    tz = TZ[CHX]
+    prev = [r for r in prev_rows if r.get("zone") == CHX]
+    start_day = (now - timedelta(days=6)).astimezone(tz).date()
+    rows, wind = [], []
+    k = lambda v, f=1.0: None if v is None else v * f
+    for code, name, elev in CHX_IMIS:
+        try:
+            data = get(f"{SLF_API}/station/{code}/measurements", {"period_in_days": 7})
+        except (OSError, ValueError) as e:
+            print("SLF station unavailable:", code, e)
+            rows += [r for r in prev if r["station"] == name]
+            continue
+        obs = []
+        for p in data:
+            t = datetime.fromisoformat(p["measure_date"].replace("Z", "+00:00"))
+            obs.append((t.astimezone(tz).date(), p.get("HS"), p.get("TA_30MIN_MEAN"), k(p.get("VW_30MIN_MAX"), 3.6), None, k(p.get("VW_30MIN_MEAN"), 3.6)))
+            if code == CHX_IMIS_WIND and t >= now - timedelta(hours=WIND_HOURS) and p.get("VW_30MIN_MEAN") is not None and p.get("DW_30MIN_MEAN") is not None:
+                wind.append((p["VW_30MIN_MEAN"] * 3.6, p["DW_30MIN_MEAN"], k(p.get("VW_30MIN_MAX"), 3.6)))
+        fresh = [r for r in daily_rows(CHX, name, elev, obs) if r["date"] > start_day.isoformat()]  # the first day is partial
+        old = [r for r in prev if r["station"] == name and r["date"] <= start_day.isoformat()]
+        merged = sorted(old + fresh, key=lambda r: r["date"])
+        pd_ = None
+        for r in merged:
+            dv = r.get("snow_depth_cm")
+            if isinstance(dv, (int, float)):
+                r["depth_change_cm"] = "" if pd_ is None else dv - pd_
+                pd_ = dv
+        rows += merged
+    return rows, wind
+
+
+MF_HOR = "https://files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/HOR/"
+CHX_MF = [("74056001", "Chamonix", 1042), ("74056005", "Le Tour", 1500), ("74056405", "Aiguilles Rouges", 2365),
+          ("74056421", "Couvercle", 2758), ("74056006", "Aiguille du Midi", 3845)]  # Météo-France; the two Nivose stations are 2,365 and 2,758 m
+CHX_MF_WIND = "74056006"
+
+
+def chx_mf_stations(now):
+    """Météo-France hourly observations for Haute-Savoie (open data, updated daily): daily rows since the season start,
+    and the last WIND_HOURS of hourly wind at the Aiguille du Midi."""
+    import gzip, io
+    st, raw = 404, b""
+    for y in (now.year + 1, now.year, now.year - 1):  # the "latest" file is named for the years it spans, and renamed each January
+        st, raw = get_raw(f"{MF_HOR}H_74_latest-{y - 1}-{y}.csv.gz")
+        if st == 200 and raw:
+            break
+    if st != 200 or not raw:
+        raise ValueError("no Météo-France hourly file for Haute-Savoie")
+    rdr = csv.reader(io.TextIOWrapper(gzip.GzipFile(fileobj=io.BytesIO(raw)), encoding="latin-1"), delimiter=";")
+    head = next(rdr)
+    ix = {k: i for i, k in enumerate(head)}
+    meta = {c: (n, e) for c, n, e in CHX_MF}
+    tz = TZ[CHX]
+    since = (SEASON_START - timedelta(days=1)).strftime("%Y%m%d00")
+    obs, wind = {c: [] for c in meta}, []
+    f = lambda row, k, m=1.0: None if row[ix[k]] == "" else float(row[ix[k]]) * m
+    for row in rdr:
+        if row[0] not in meta or row[ix["AAAAMMJJHH"]] < since:
+            continue
+        t = datetime.strptime(row[ix["AAAAMMJJHH"]], "%Y%m%d%H").replace(tzinfo=timezone.utc)
+        ff, dd, fx = f(row, "FF", 3.6), f(row, "DD"), f(row, "FXI", 3.6)
+        obs[row[0]].append((t.astimezone(tz).date(), f(row, "NEIGETOT"), f(row, "T"), fx, f(row, "RR1"), ff))
+        if row[0] == CHX_MF_WIND and t >= now - timedelta(hours=WIND_HOURS) and ff is not None and dd is not None:
+            wind.append((t, ff, dd, fx))
+    rows = []
+    for c, (name, elev) in meta.items():
+        rows += [r for r in daily_rows(CHX, name, elev, obs[c]) if r["date"] >= SEASON_START.isoformat()]
+    return rows, [w[1:] for w in sorted(wind)]
+
+
+def chx_wind(now):
+    """Modelled hourly wind high in the massif, last WIND_HOURS (Open-Meteo)."""
+    lat, lon, elev, name = CHX_WIND
+    d = get("https://api.open-meteo.com/v1/forecast", {"latitude": lat, "longitude": lon, "elevation": elev, "past_days": 3,
+                                                       "forecast_days": 1, "timezone": "UTC",
+                                                       "hourly": "wind_speed_10m,wind_direction_10m,wind_gusts_10m"})
+    h = d["hourly"]
+    t0 = now - timedelta(hours=WIND_HOURS)
+    obs = []
+    for t, sp, dr, g in zip(h["time"], h["wind_speed_10m"], h["wind_direction_10m"], h["wind_gusts_10m"]):
+        tt = datetime.fromisoformat(t).replace(tzinfo=timezone.utc)
+        if t0 <= tt <= now and sp is not None and dr is not None:
+            obs.append((sp, dr, g))
+    return obs, name, elev
+
 
 def write_csv(path, rows, fields):
     """Writes PATH as JSON rows (path ends .json); blanks become null, numbers stay numbers."""
@@ -955,6 +1165,14 @@ def main():
     except (OSError, ValueError, KeyError) as e:  # keep yesterday's Colorado rows if SNOTEL is down
         print("SNOTEL unavailable:", e)
         stations += [r for r in prev_rows if r.get("zone") == RMNP]
+    chx_rows, chx_ridge = chx_stations(now, prev_rows)
+    try:
+        mf_rows, chx_midi = chx_mf_stations(now)
+    except (OSError, ValueError, KeyError, IndexError) as e:  # keep yesterday's French rows
+        print("Météo-France stations unavailable:", e)
+        mf_names = {n for c, n, e in CHX_MF}
+        mf_rows, chx_midi = [r for r in prev_rows if r.get("zone") == CHX and r.get("station") in mf_names], []
+    stations += mf_rows + chx_rows
     write_csv(f"{out}/stations_daily.json", stations, list(stations[0].keys()))
 
     ws, wr = [], []
@@ -970,6 +1188,22 @@ def main():
         wr += b
     except (OSError, ValueError, KeyError) as e:
         print("Colorado wind unavailable:", e)
+    try:
+        midi = next((n, e) for c, n, e in CHX_MF if c == CHX_MF_WIND)
+        ridge = next((n, e) for c, n, e in CHX_IMIS if c == CHX_IMIS_WIND)
+        # the Aiguille du Midi loads the Chamonix side; Le Portalet (Swiss side) is a second card and the stand-in
+        main = (chx_midi, midi[0], midi[1]) if len(chx_midi) >= 36 else (chx_ridge, ridge[0], ridge[1]) if len(chx_ridge) >= 72 else chx_wind(now)
+        a, b = wind_summary(CHX, now, stations, main)
+        ws.append(a)
+        wr += b
+        if chx_ridge:
+            key = f"{CHX} · {ridge[0]}"
+            a, b = wind_summary(key, now, stations, (chx_ridge, ridge[0], ridge[1]))
+            a["zone"] = key
+            ws.append(a)
+            wr += b
+    except (OSError, ValueError, KeyError) as e:
+        print("Chamonix wind unavailable:", e)
     for zname, sid, name, elev in EXTRA_WIND:
         try:
             a, b = wind_summary(zname, now, stations, wind_obs(zname, now, ("avcan", sid, name, elev)))
@@ -1002,7 +1236,16 @@ def main():
             "headline": "The CAIC forecast couldn't be fetched this morning; check avalanche.state.co.us.", "snowpack": "", "detail": "",
             "trend": "", "confidence": "", "language": "en", "url": "https://avalanche.state.co.us/"}
         cdanger, cprob, crf = [], [], []
-    rf = regional_forecasts() + regional_forecasts(ROSS, ROSS_BOUNDS) + irf + crf
+    try:
+        xb, xdanger, xprob, xrf = chx_bulletins(now.astimezone(TZ[CHX]).date())
+    except (OSError, ValueError, KeyError) as e:
+        print("Mont Blanc bulletins unavailable:", e)
+        xb = dict(prev_bull[CHX]) if CHX in prev_bull else {
+            "zone": CHX, "region": "Mont-Blanc", "forecaster": "Météo-France", "issued": "", "valid_until": "",
+            "headline": "The Mont Blanc bulletins couldn't be fetched this morning; check meteofrance.com/meteo-montagne.", "snowpack": "",
+            "detail": "", "trend": "", "confidence": "", "language": "en", "url": CHX_SERVICE["FR"][1]}
+        xdanger, xprob, xrf = [], [], []
+    rf = regional_forecasts() + regional_forecasts(ROSS, ROSS_BOUNDS) + irf + crf + xrf
     write_csv(f"{out}/regional_forecasts.json", rf, list(rf[0].keys()))
 
     today_bc = now.astimezone(TZ[ROGERS]).date()
@@ -1018,7 +1261,7 @@ def main():
                 hist[(r["zone"], r["date"], r["band"])] = r
     rb, rdanger, rprob = avcan_bulletin()
     sb, sdanger, sprob = avcan_bulletin(ROSS, 49.10, -117.84)  # Red Mountain
-    for r in rdanger + sdanger + idanger + cdanger:
+    for r in rdanger + sdanger + idanger + cdanger + xdanger:
         hist[(r["zone"], r["date"], r["band"])] = r
     vb = None
     for attempt in range(3):  # the ICGC server sometimes drops connections for a while; give it a few minutes
@@ -1052,9 +1295,9 @@ def main():
     fields = ["zone", "date", "band", "band_label", "level", "rating", "kind", "issued"]
     write_csv(f"{out}/danger_history.json", sorted(hist.values(), key=lambda r: (r["zone"], r["date"], r["band"])), fields)
 
-    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb, cb], list(rb.keys()))
-    probs = rprob + vprob + iprob + sprob + cprob
-    for zname, issued in ((ROGERS, rb["issued"]), (VALLTER, vb["issued"]), (IBK, ib["issued"]), (ROSS, sb["issued"]), (RMNP, cb["issued"])):
+    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb, cb, xb], list(rb.keys()))
+    probs = rprob + vprob + iprob + sprob + cprob + xprob
+    for zname, issued in ((ROGERS, rb["issued"]), (VALLTER, vb["issued"]), (IBK, ib["issued"]), (ROSS, sb["issued"]), (RMNP, cb["issued"]), (CHX, xb["issued"])):
         if not any(p["zone"] == zname for p in probs):  # one blank row keeps each zone (and the file) readable
             probs.append({"zone": zname, "problem": None, "issued": issued})
     write_csv(f"{out}/problems.json", probs,
@@ -1066,7 +1309,10 @@ def main():
          outlook(ROSS, 49.2044, -117.8966, 1575, "America/Vancouver", "Strawberry Pass") + \
          outlook(ROSS, 49.0581, -117.0400, 1780, "America/Vancouver", "Kootenay Pass") + \
          outlook(RMNP, 40.3118, -105.6448, 2900, "America/Denver", "Bear Lake") + \
-         outlook(RMNP, 40.4206, -105.8162, 3280, "America/Denver", "Milner Pass")
+         outlook(RMNP, 40.4206, -105.8162, 3280, "America/Denver", "Milner Pass") + \
+         outlook(CHX, 45.9030, 6.8880, 2300, "Europe/Paris", "Plan de l'Aiguille (Chamonix)") + \
+         outlook(CHX, 45.8330, 6.9350, 2200, "Europe/Paris", "Pavillon (Courmayeur)") + \
+         outlook(CHX, 46.0100, 7.0900, 2200, "Europe/Paris", "Val Ferret / Champex")
     write_csv(f"{out}/outlook.json", ol, list(ol[0].keys()))
     sg = snow_grid()
     if sg:

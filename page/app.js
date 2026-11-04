@@ -374,7 +374,7 @@
   };
   window.swMapSettings = settings;
   // contour lines from the overview grid: smoothed 3x3, marching squares, map-edge runs dropped, lightly thinned
-  const TOPO = { 'Rogers Pass': { step: 50, minor: 100, index: 500 }, 'Vallter / Ulldeter': { step: 25, minor: 50, index: 250 }, Innsbruck: { step: 50, minor: 100, index: 500 }, Rossland: { step: 50, minor: 100, index: 500 }, 'Rocky Mountain NP': { step: 50, minor: 100, index: 500 } };
+  const TOPO = { 'Rogers Pass': { step: 50, minor: 100, index: 500 }, 'Vallter / Ulldeter': { step: 25, minor: 50, index: 250 }, Innsbruck: { step: 50, minor: 100, index: 500 }, Rossland: { step: 50, minor: 100, index: 500 }, 'Rocky Mountain NP': { step: 50, minor: 100, index: 500 }, Chamonix: { step: 50, minor: 100, index: 500 } };
   const topoCache = {};
   window.swContours = (row, t) => {
     if (topoCache[row.zone]) return topoCache[row.zone];
@@ -416,7 +416,7 @@
     });
     return (topoCache[row.zone] = out);
   };
-  const ALPINE = { 'Rogers Pass': 1900, 'Vallter / Ulldeter': 2100, Innsbruck: 2000, Rossland: 1900, 'Rocky Mountain NP': 3400 }; // roughly the treeline; wind loading is mapped above it
+  const ALPINE = { 'Rogers Pass': 1900, 'Vallter / Ulldeter': 2100, Innsbruck: 2000, Rossland: 1900, 'Rocky Mountain NP': 3400, Chamonix: 2200 }; // roughly the treeline; wind loading is mapped above it
   window.swAlpine = ALPINE;
   const maskCache = {}, pathCache = {};
   window.swWindMaskFor = (row, t, w) => {
@@ -1085,7 +1085,7 @@
     try { tm = timing(zone, st, ok('outlook') || []); } catch (e) { tm = null; }
     const pnames = bl.probs.map((p) => String(p.problem).toLowerCase());
     const persistent = pnames.some((n) => /persistent/.test(n));
-    const wet = pnames.some((n) => /wet|glide/.test(n));
+    const wet = pnames.some((n) => /wet|glid/.test(n));
     const bigSnow = tm && tm.fc && (tm.fc.snowfall_cm || 0) >= 20;
     const p0 = st.route.points[0];
     const fn = (s) => {
@@ -1622,7 +1622,7 @@ ${trk.join('\n')}
   const RATING = ['no rating', 'low', 'moderate', 'considerable', 'high', 'very high'];
 
   // ---- timing: when you reach each part of the route, where the sun is then, and whether it's warm ----
-  const ZONE_TZ = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', 'Rocky Mountain NP': 'America/Denver', 'Vallter / Ulldeter': 'Europe/Madrid', Innsbruck: 'Europe/Vienna' };
+  const ZONE_TZ = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', 'Rocky Mountain NP': 'America/Denver', 'Vallter / Ulldeter': 'Europe/Madrid', Innsbruck: 'Europe/Vienna', Chamonix: 'Europe/Paris' };
   const RAD = Math.PI / 180;
   const tzOffMin = (tz, ms) => {
     const p = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).formatToParts(new Date(ms));
@@ -1864,7 +1864,7 @@ ${trk.join('\n')}
     // field reports near the route (Rogers Pass)
     const reps = (ok('avalanche_reports') || []).filter((x) => x.zone === zone && x.id && (x.avalanches > 0 || x.signs || x.kind === 'incident'));
     if (reps.length) {
-      const zn = Number(String(st.res.zoneCrs || '').slice(-2)) || (zone === 'Rogers Pass' || zone === 'Rossland' ? 11 : zone === 'Rocky Mountain NP' ? 13 : 31);
+      const zn = Number(String(st.res.zoneCrs || '').slice(-2)) || (zone === 'Rogers Pass' || zone === 'Rossland' ? 11 : zone === 'Rocky Mountain NP' ? 13 : zone === 'Chamonix' ? 32 : 31);
       const near = reps.map((x) => {
         const [ex, ny] = window.swRouteCore.utm(x.lat, x.lon, zn);
         let best = Infinity;

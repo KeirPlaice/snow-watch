@@ -20,7 +20,7 @@ HEAD = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="Avalanche danger, snowpack, slope maps and a GPX route check for Rogers Pass, Rossland to Kootenay Pass, Vallter, Innsbruck and Rocky Mountain National Park.">
+<meta name="description" content="Avalanche danger, snowpack, slope maps and a GPX route check for Rogers Pass, Rossland to Kootenay Pass, Vallter, Innsbruck, Rocky Mountain National Park and Chamonix (Mont Blanc).">
 <meta name="theme-color" content="#F5F4EF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">

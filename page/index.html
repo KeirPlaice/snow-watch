@@ -263,9 +263,9 @@ details.sw-how[open] > summary{display:none}
 <div class="sw-page">
   <header class="sw-head">
     <h1>Snow &amp; Avalanche Watch</h1>
-    <p>Avalanche danger, snowpack and the week ahead for Rogers Pass, Rossland to Kootenay Pass, the hills above Vallter, the mountains around Innsbruck and Rocky Mountain National Park. Refreshed every morning.</p>
+    <p>Avalanche danger, snowpack and the week ahead for Rogers Pass, Rossland to Kootenay Pass, the hills above Vallter, the mountains around Innsbruck, Rocky Mountain National Park and the Mont Blanc massif around Chamonix. Refreshed every morning.</p>
   </header>
-  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="rossland" aria-selected="false">Rossland & Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="vallter" aria-selected="false">Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="innsbruck" aria-selected="false">Innsbruck</button><button class="sw-tab" role="tab" data-tab="rmnp" aria-selected="false">Rocky Mountain NP</button></nav>
+  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="rossland" aria-selected="false">Rossland & Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="vallter" aria-selected="false">Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="innsbruck" aria-selected="false">Innsbruck</button><button class="sw-tab" role="tab" data-tab="rmnp" aria-selected="false">Rocky Mountain NP</button><button class="sw-tab" role="tab" data-tab="chamonix" aria-selected="false">Chamonix</button></nav>
 
   <section class="sw-zone" id="rogers" data-zone="Rogers Pass" data-temp="Fidelity" data-wind="MacDonald West Shoulder">
     <p class="sw-sub">Glacier National Park, Selkirk Mountains, BC · forecast by Parks Canada via Avalanche Canada</p>
@@ -479,6 +479,7 @@ details.sw-how[open] > summary{display:none}
         </div>
       </div>
     </div>
+
 
     <h2 class="sw-section">On the ground, latest day</h2>
     <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
@@ -821,6 +822,7 @@ details.sw-how[open] > summary{display:none}
         </div>
       </div>
     </div>
+
 
     <h2 class="sw-section">On the ground, latest day</h2>
     <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
@@ -1183,6 +1185,7 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
+
     <h2 class="sw-section">On the ground, latest day</h2>
     <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
     <div class="sw-tiles">
@@ -1501,6 +1504,7 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
+
     <h2 class="sw-section">On the ground, latest day</h2>
     <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
     <div class="sw-tiles">
@@ -1810,6 +1814,7 @@ details.sw-how[open] > summary{display:none}
       <p class="sw-note">Field reports aren't included for Colorado yet. The CAIC publishes observations and reported avalanches across the state at <a href="https://avalanche.state.co.us/" target="_blank" rel="noopener">avalanche.state.co.us</a>; check them for the Front Range before you go.</p>
     </div>
 
+
     <h2 class="sw-section">On the ground, latest day</h2>
     <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
     <div class="sw-tiles">
@@ -1998,14 +2003,417 @@ details.sw-how[open] > summary{display:none}
       </ul>
     </div>
   </section>
+  <section class="sw-zone" id="chamonix" data-zone="Chamonix" data-temp="Couvercle" data-wind="Aiguille du Midi" hidden>
+    <p class="sw-sub">The Mont Blanc massif: Chamonix, Courmayeur and the Swiss Val Ferret · bulletins by Météo-France, the SLF and the Aosta Valley avalanche office</p>
+
+    <div class="sw-grid sw-grid-top">
+      <div class="sw-card" id="chamonix-danger">
+        <h2 class="sw-h">Avalanche danger</h2>
+        <p class="sw-note">Danger above and below the bulletin's elevation threshold, from Météo-France's bulletin for the Mont-Blanc massif (the French side). The Italian and Swiss sides have their own bulletins; see below.</p>
+        <div class="sw-danger" data-draw="danger" data-source="danger_now"></div>
+        <dl class="sw-meta">
+          <dt>Issued</dt><dd data-draw="cell" data-source="bulletins" data-field="issued" data-where="zone=Chamonix">—</dd>
+          <dt>Valid until</dt><dd data-draw="cell" data-source="bulletins" data-field="valid_until" data-where="zone=Chamonix">—</dd>
+        </dl>
+        <h3 class="sw-h3">Forecasts across the map</h3>
+        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Three services cover the massif: Météo-France (Mont-Blanc and Chablais), the SLF (Swiss side) and the Aosta Valley avalanche office (Italian side), each with its own micro-regions and ratings. The route check uses whichever region covers most of your route, so a route that crosses a border takes one side's rating; check both bulletins.</p></details>
+        <ul class="sw-regional" data-draw="regional" data-source="regional_forecasts"></ul>
+      </div>
+      <div class="sw-card" id="chamonix-bulletin">
+        <h2 class="sw-h">What the forecasters say</h2>
+        <details class="sw-how"><summary>How this works</summary><p class="sw-note">The current bulletin's headline and snowpack notes. Météo-France writes its bulletin in French; the text appears as published. It doesn't tag avalanche problems, so the problems below are read off its text and marked as such.</p></details>
+        <div class="sw-bulletin" data-draw="bulletin" data-source="bulletins"></div>
+        <h3 class="sw-h3">Avalanche problems</h3>
+        <div class="sw-problems" data-draw="problems" data-source="problems"></div>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide sw-mapcard" id="chamonix-map" data-pfx="chamonix">
+      <h2 class="sw-h">Slope map</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">About 36 by 36 km over the whole Mont Blanc massif: the Aiguilles Rouges and Le Buet, the Chamonix valley from Les Houches to Le Tour, the Vallée Blanche and Mer de Glace, Argentière, the Trient and Swiss Val Ferret, and Courmayeur with the Italian Val Veny and Val Ferret. Zoom in and it sharpens to 30 m. Grid north is up. Contour lines (optional) are every 100 m, with an extra interval when zoomed in. Drag to move around; ctrl- or ⌘-scroll, pinch or the buttons to zoom (plain scrolling zooms once the map is expanded). Hover for elevation, slope and aspect.</p></details>
+      <div class="sw-map-ctrl">
+        <div class="sw-seg" role="group" aria-label="Map view">
+          <button type="button" class="sw-mode" data-mode="slope" aria-pressed="true">Slope angle</button>
+          <button type="button" class="sw-mode" data-mode="watch" aria-pressed="false">Terrain to watch</button>
+          <button type="button" class="sw-mode" data-mode="wind" aria-pressed="false">Wind loading</button>
+        </div>
+        <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
+        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
+          <option value="off">none</option>
+          <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
+          <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
+        </select></label>
+        </div></details>
+        <div class="sw-zoombar">
+          <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
+          <button type="button" class="sw-zbtn sw-zout" aria-label="Zoom out">−</button>
+          <button type="button" class="sw-zbtn sw-zreset">Reset view</button>
+          <button type="button" class="sw-zbtn sw-expand">⤢ Expand</button>
+          <button type="button" class="sw-zbtn sw-collapse" hidden>✕ Close</button>
+        </div>
+      </div>
+      <div class="sw-search">
+        <input type="search" class="sw-search-in" placeholder="Search peaks, passes, places, stations, or lat, lon" aria-label="Search the maps" autocomplete="off" spellcheck="false">
+        <ul class="sw-search-list" role="listbox" hidden></ul>
+      </div>
+      <div class="sw-watch" hidden>
+        <div class="sw-watch-row">
+          <span class="sw-watch-lab">Aspects</span>
+          <span class="sw-aspects">
+            <label><input type="checkbox" class="sw-asp" value="N" checked>N</label>
+            <label><input type="checkbox" class="sw-asp" value="NE" checked>NE</label>
+            <label><input type="checkbox" class="sw-asp" value="E" checked>E</label>
+            <label><input type="checkbox" class="sw-asp" value="SE" checked>SE</label>
+            <label><input type="checkbox" class="sw-asp" value="S" checked>S</label>
+            <label><input type="checkbox" class="sw-asp" value="SW" checked>SW</label>
+            <label><input type="checkbox" class="sw-asp" value="W" checked>W</label>
+            <label><input type="checkbox" class="sw-asp" value="NW" checked>NW</label>
+          </span>
+        </div>
+        <div class="sw-watch-row">
+          <label class="sw-watch-lab" for="chamonix-emin">Elevation</label>
+          <span><input id="chamonix-emin" class="sw-emin" type="number" step="50" min="0" max="5000" placeholder="lowest" aria-label="Lowest elevation in metres"> to <input class="sw-emax" type="number" step="50" min="0" max="5000" placeholder="highest" aria-label="Highest elevation in metres"> m</span>
+          <label class="sw-watch-lab" for="chamonix-smin">Slopes from</label>
+          <select id="chamonix-smin" class="sw-smin">
+            <option value="25">25°</option><option value="30" selected>30°</option><option value="35">35°</option><option value="40">40°</option>
+          </select>
+        </div>
+        <div class="sw-watch-row">
+          <button type="button" class="sw-match">Match current bulletin</button>
+          <button type="button" class="sw-reset-watch">Reset</button>
+        </div>
+        <p class="sw-note sw-match-note" data-draw="match-note" data-source="problems danger_now">—</p>
+      </div>
+      <div class="sw-map dash-skeleton" data-draw="map" data-source="terrain_chx wind_summary snow_grid avalanche_reports glaciers"></div>
+      <div class="sw-fc-legend" hidden></div>
+      <ul class="sw-legend sw-leg-slope">
+        <li><i class="sw-sw" style="background:var(--sw-s27)"></i>27–29°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s30)"></i>30–34°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s35)"></i>35–39°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s40)"></i>40–44°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s45)"></i>45° and steeper</li>
+        <li><span class="sw-mk-peak">▲</span>Summit</li>
+        <li><span class="sw-mk-col">◆</span>Col or pass</li>
+        <li><span class="sw-mk-stn">●</span>Weather station</li>
+        
+        <li class="sw-leg-glac" hidden><i class="sw-sw" style="background:rgba(150,205,255,.8);border-color:#145FAA"></i>Glacier or permanent snowfield</li>
+      </ul>
+      <ul class="sw-legend sw-leg-wind" hidden>
+        <li><i class="sw-sw" style="background:var(--sw-wind)"></i>Likely wind-loaded (lee of recent winds)</li>
+        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
+      </ul>
+      <p class="sw-note sw-wind-note" data-draw="wind-note" data-source="wind_summary" hidden>—</p>
+      <ul class="sw-legend sw-leg-watch" hidden>
+        <li><i class="sw-sw" style="background:var(--sw-watch)"></i>Matches your filter</li>
+        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
+      </ul>
+      <span class="sw-blockmarks"><i hidden data-block="t30_chx_0_0" data-rc="0,0" data-source="t30_chx_0_0"></i><i hidden data-block="t30_chx_0_1" data-rc="0,1" data-source="t30_chx_0_1"></i><i hidden data-block="t30_chx_1_0" data-rc="1,0" data-source="t30_chx_1_0"></i><i hidden data-block="t30_chx_1_1" data-rc="1,1" data-source="t30_chx_1_1"></i></span>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note sw-map-caveat">Slopes from the 30 m Copernicus GLO-30 surface model across all three countries. Zoomed out, the map shows a 90 m summary that keeps each 90 m cell's average 30 m steepness; the route check always uses 30 m. It smooths short steep rolls, couloirs and gully walls, so real angles can be steeper, and it clips needle summits by 100 m or more (the Aiguille du Midi reads about 3,700 m), so heights near rock spires are low. Forest edges can show as false steep patches. Crevasses and serac fall are not avalanche terrain in this model and are not mapped: on glaciers they are often the bigger hazard. Names from GeoNames (France, Italy, Switzerland); peaks are pinned to the model summit. A planning aid, not a substitute for measuring slopes on the ground.</p></details>
+      <div class="sw-route-bar">
+        <label class="sw-zbtn sw-upload">Check a GPX route<input type="file" class="sw-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
+        <button type="button" class="sw-zbtn sw-route-clear" hidden>Remove route</button>
+        <span class="sw-timing" hidden>
+          <label class="sw-paths-tog">Start <input type="datetime-local" class="sw-start" step="900" aria-label="Start date and time, local time at the map"></label>
+          <label class="sw-paths-tog">Pace <select class="sw-pace"><option value="0.8">relaxed</option><option value="1" selected>steady</option><option value="1.25">fast</option></select></label>
+        </span>
+        <span class="sw-watchgpx" hidden><button type="button" class="sw-zbtn sw-watchgpx-btn">Download hazard-marked route for watch</button></span>
+        <span class="sw-route-msg" data-draw="route-msg" data-source="terrain_chx">—</span>
+        <span class="sw-route-hint">Your file stays in this browser; nothing is uploaded or saved.</span>
+        <span class="sw-route-msg sw-watchgpx-note" aria-live="polite"></span>
+      </div>
+      <div class="sw-route" hidden>
+        <h3 class="sw-h3">Route check</h3>
+        <div class="sw-brief">
+          <p class="sw-brief-verdict" data-draw="route-verdict" data-source="danger_now problems regional_forecasts">—</p>
+          <div class="sw-brief-lab">Route profile</div>
+          <div class="sw-chart sw-chart-short" data-draw="route-profile" data-source="terrain_chx"></div>
+          <div class="sw-brief-lab">Hazard sections</div>
+          <div class="sw-hz-filter" role="group" aria-label="Show hazards">
+            <span>Show:</span>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="all"> All</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="underfoot" checked> ▼ On the slope</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="overhead"> ▲ From above</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="other" checked> Glaciers and cliffs</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="highOnly"> High-consequence only</label>
+          </div>
+          <div class="sw-tablebox sw-route-box">
+            <table class="sw-table sw-route-table">
+              <thead><tr><th>#</th><th>Km</th><th class="sw-num">Elevation (m)</th><th>Level</th><th>What's there</th></tr></thead>
+              <tbody data-draw="route-rows" data-source="terrain_chx danger_now problems regional_forecasts outlook"></tbody>
+            </table>
+          </div>
+          <details class="sw-how"><summary>How this works</summary><p class="sw-note">Select a section to zoom the map to it. Most avalanche accidents are triggered by the victim or someone in their group, so the slope underfoot always counts. A slope above counts in full only when today’s data gives it a reason to come down on you: considerable or higher danger at its elevation, a persistent slab problem with the start zone within 300 m (these can be triggered from a distance), a wet-snow problem, 20 cm or more of new snow forecast, a wind-loaded start zone, or warm sun on it when you pass. Otherwise it is shown as exposure. Other parties above you can still trigger it, so cross one at a time and don’t stop underneath. Each Show box matches a group in this table (a section on a slope you could trigger counts as “On the slope” even when there is also a slope above). The Show options apply to this table, the map, the profile, Previous / Next on the map and the watch file.</p></details>
+          <div class="sw-brief-lab">Conditions</div>
+          <ul class="sw-brief-list" data-draw="route-conditions" data-source="danger_now problems stations_daily outlook wind_summary avalanche_reports"></ul>
+          <p class="sw-note">Generated from the route's terrain, today's bulletin and the station and forecast data on this dashboard. A guide to where to focus, not a go/no-go decision.</p>
+          <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Download hazard-marked route for watch” saves your route as a .gpx with a waypoint at the start of each section the Show options above let through (the same ones as in the table and on the map), named like “HIGH 3 slope above”, “CARE 5 …” or “EXPOSED 7 …”; section numbers match the table above. Import it into your watch’s app as a route and navigate it, and the watch alerts you as you approach each waypoint.</p></details>
+        </div>
+        <p class="sw-route-sum" data-draw="route-summary" data-source="terrain_chx wind_summary avalanche_reports glaciers">—</p>
+        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Timing uses your start time (local time at the map) and pace to estimate when you reach each section (Munter method: an hour per 4 km plus 400 m climbed at a steady pace, faster downhill), then checks where the sun is and the day's forecast warmth. It ignores shade cast by ridges, so a slope may get sun later than shown.</p></details>
+        <ul class="sw-legend">
+          <li><span class="sw-expo sw-expo-underfoot">▼ On the slope</span> the slope you're on can avalanche: solid line</li>
+          <li><span class="sw-expo sw-expo-overhead">▲ Slope above</span> a slope above can run onto you: dashed line</li>
+          <li><span class="sw-dedge"><i style="background:#4DB848"></i><i style="background:#FFE600"></i><i style="background:#F7941E"></i><i style="background:#E8222A"></i><i style="background:#231F20"></i></span>Outer edge: today's danger rating at that elevation (when a rating is in force)</li>
+          <li><i class="sw-sw" style="background:var(--sw-r2)"></i>High consequence</li>
+          <li><i class="sw-sw" style="background:var(--sw-r1)"></i>Take care</li>
+          <li><i class="sw-sw" style="background:#8A7CC2"></i>Exposure: under a slope above that today’s conditions don’t raise</li>
+          <li><i class="sw-sw" style="background:#fff"></i>No terrain flags</li>
+        </ul>
+        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Every 10 m of the route is checked against the terrain model for: the slope underfoot (30° and up is avalanche terrain, 35° and up is steep); slopes of 30–60° above the route that face it, within 1 km and at least 30 m higher, steep enough to reach it (an angle of 22° or more up from the route to the start zone, the "alpha angle" used to screen avalanche runouts; 28° or more from a 35°+ slope counts as high); and cliffs or very steep drops within 40 m below. "Today" marks sections whose terrain matches the Terrain to watch filter, when that view is on. This reads the terrain only. It knows nothing about the snowpack, and can miss small features or flag paths that are sheltered in reality: a screening tool for planning, not a substitute for the bulletin, training and judgement on the day.</p></details>
+      </div>
+    </div>
+
+    <div class="sw-avzone" data-zone="Chamonix" id="avalanches-chamonix">
+      <h2 class="sw-section">Recent avalanches</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Field reports aren't included for the Mont Blanc massif yet. Observed avalanches are shared at <a href="https://www.data-avalanche.org/" target="_blank" rel="noopener">data-avalanche.org</a> (French Alps) and in the SLF and Aosta Valley bulletins; the Chamonix guides' office and the PGHM post conditions too. Check them before you go.</p></details>
+    </div>
+
+
+    <h2 class="sw-section">On the ground, latest day</h2>
+    <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
+    <div class="sw-tiles">
+      <div class="sw-tile">
+        <div class="sw-tile-name">Chamonix</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Chamonix">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Chamonix">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Chamonix">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Chamonix">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Chamonix">—</span> °C</dd>
+          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Chamonix">—</span> km/h</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Chamonix">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Le Tour</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Le Tour">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Le Tour">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Le Tour">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Le Tour">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Le Tour">—</span> °C</dd>
+          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Le Tour">—</span> km/h</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Le Tour">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Aiguilles Rouges</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Aiguilles Rouges">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Aiguilles Rouges">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Aiguilles Rouges">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Aiguilles Rouges">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Aiguilles Rouges">—</span> °C</dd>
+          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Aiguilles Rouges">—</span> km/h</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Aiguilles Rouges">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Couvercle</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Couvercle">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Couvercle">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Couvercle">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Couvercle">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Couvercle">—</span> °C</dd>
+          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Couvercle">—</span> km/h</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Couvercle">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Aiguille du Midi</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Aiguille du Midi">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Aiguille du Midi">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Aiguille du Midi">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Aiguille du Midi">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Aiguille du Midi">—</span> °C</dd>
+          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Aiguille du Midi">—</span> km/h</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Aiguille du Midi">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Glacier de l'Evole</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Glacier de l'Evole">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Glacier de l'Evole">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Glacier de l'Evole">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Glacier de l'Evole">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Glacier de l'Evole">—</span> °C</dd>
+          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Glacier de l'Evole">—</span> km/h</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Glacier de l'Evole">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Le Portalet</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Le Portalet">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Le Portalet">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Le Portalet">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Le Portalet">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Le Portalet">—</span> °C</dd>
+          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Le Portalet">—</span> km/h</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Le Portalet">—</span></dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="chamonix-windcard">
+      <h2 class="sw-h">Wind, last 72 hours · Aiguille du Midi</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">At the Aiguille du Midi, Météo-France's station at 3,845 m. Météo-France's open hourly file is updated once a day, so this usually runs to early this morning. If it's missing, the SLF's Le Portalet station stands in. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Chamonix">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Chamonix">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Chamonix">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Chamonix">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Chamonix">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="chamonix-windcard-2" data-zone="Chamonix · Le Portalet">
+      <h2 class="sw-h">Wind, last 72 hours · Le Portalet</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">At the SLF's ridge station at 3,344 m above La Fouly (Swiss Val Ferret), on the east side of the massif; half-hourly, so it's more current. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Chamonix · Le Portalet">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Chamonix · Le Portalet">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Chamonix · Le Portalet">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Chamonix · Le Portalet">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Chamonix · Le Portalet">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="chamonix-depth">
+      <h2 class="sw-h">Snow depth this season</h2>
+      <p class="sw-note">Daily median snow height at each station since 1 October, in cm. Wind-scoured ridge sensors can read low.</p>
+      <div class="sw-chart dash-skeleton" data-draw="depth" data-source="stations_daily"></div>
+    </div>
+
+    <div class="sw-grid">
+      <div class="sw-card" id="chamonix-temp" data-temp="Couvercle">
+        <h2 class="sw-h">Temperature, daily low to high · Couvercle</h2>
+        <p class="sw-note">Météo-France Nivose snow station at 2,758 m above the Talèfre glacier and the Mer de Glace. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="chamonix-temp-2" data-temp="Aiguilles Rouges">
+        <h2 class="sw-h">Temperature, daily low to high · Aiguilles Rouges</h2>
+        <p class="sw-note">Météo-France Nivose snow station at 2,365 m in the Aiguilles Rouges, across the valley from Mont Blanc. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="chamonix-wind" data-wind="Aiguille du Midi" data-wfield="gust_max_kmh">
+        <h2 class="sw-h">Strongest wind gust each day</h2>
+        <p class="sw-note">Météo-France station on the Aiguille du Midi at 3,845 m; the strongest hourly gust each day. In km/h.</p>
+        <div class="sw-chart dash-skeleton" data-draw="wind" data-source="stations_daily"></div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="chamonix-outlook" data-point="Plan de l'Aiguille (Chamonix)">
+      <h2 class="sw-h">Next 7 days · Plan de l'Aiguille (Chamonix)</h2>
+      <p class="sw-note">Open-Meteo model forecast for the Plan de l'Aiguille above Chamonix, 2,300 m. Times in Central European time.</p>
+      <div class="sw-kpis">
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Plan de l'Aiguille (Chamonix)">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Plan de l'Aiguille (Chamonix)">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+      </div>
+      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
+      <div class="sw-tablebox">
+        <table class="sw-table" data-source="outlook" data-row-key="point,date">
+          <thead><tr>
+            <th data-field="date">Day</th>
+            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
+            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
+            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
+            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
+          </tr></thead>
+          <tbody data-draw="outlook-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="chamonix-outlook-2" data-point="Pavillon (Courmayeur)">
+      <h2 class="sw-h">Next 7 days · Pavillon (Courmayeur)</h2>
+      <p class="sw-note">Open-Meteo model forecast for the Pavillon du Mont Fréty above Courmayeur, 2,200 m. Times in Central European time.</p>
+      <div class="sw-kpis">
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Pavillon (Courmayeur)">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Pavillon (Courmayeur)">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+      </div>
+      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
+      <div class="sw-tablebox">
+        <table class="sw-table" data-source="outlook" data-row-key="point,date">
+          <thead><tr>
+            <th data-field="date">Day</th>
+            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
+            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
+            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
+            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
+          </tr></thead>
+          <tbody data-draw="outlook-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="chamonix-outlook-3" data-point="Val Ferret / Champex">
+      <h2 class="sw-h">Next 7 days · Val Ferret / Champex</h2>
+      <p class="sw-note">Open-Meteo model forecast for the Swiss Val Ferret above Champex, 2,200 m. Times in Central European time.</p>
+      <div class="sw-kpis">
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Val Ferret / Champex">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Val Ferret / Champex">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+      </div>
+      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
+      <div class="sw-tablebox">
+        <table class="sw-table" data-source="outlook" data-row-key="point,date">
+          <thead><tr>
+            <th data-field="date">Day</th>
+            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
+            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
+            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
+            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
+          </tr></thead>
+          <tbody data-draw="outlook-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="chamonix-history">
+      <h2 class="sw-h">Danger through the season</h2>
+      <p class="sw-note">Each square is one day's rating for that elevation band. This builds up day by day from the daily refresh.</p>
+      <div class="sw-chart sw-chart-strip dash-skeleton" data-draw="history" data-source="danger_history"></div>
+      <ul class="sw-legend">
+        <li><i class="sw-sw" style="background:var(--sw-d0)"></i>No rating yet</li>
+        <li><i class="sw-sw" style="background:var(--sw-d1)"></i>1 Low</li>
+        <li><i class="sw-sw" style="background:var(--sw-d2)"></i>2 Moderate</li>
+        <li><i class="sw-sw" style="background:var(--sw-d3)"></i>3 Considerable</li>
+        <li><i class="sw-sw" style="background:var(--sw-d4)"></i>4 High</li>
+        <li><i class="sw-sw" style="background:var(--sw-d5)"></i>5 Extreme / Very high</li>
+      </ul>
+    </div>
+  </section>
 
 
 </div>
 
 <script>
 // terrain rows live in two datasets: Rossland on its own (the main file is near its size limit)
-window.swTerrainData = (zone) => dash.data(zone === 'Rossland' ? 'terrain_rossland' : zone === 'Rocky Mountain NP' ? 'terrain_rmnp' : 'terrain');
-window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrain_rmnp'].map((id) => { const d = dash.data(id); return d.status === 'ok' ? d.data : []; }));
+window.swTerrainData = (zone) => dash.data(zone === 'Rossland' ? 'terrain_rossland' : zone === 'Rocky Mountain NP' ? 'terrain_rmnp' : zone === 'Chamonix' ? 'terrain_chx' : 'terrain');
+window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrain_rmnp', 'terrain_chx'].map((id) => { const d = dash.data(id); return d.status === 'ok' ? d.data : []; }));
 (() => {
   const parse = d3.utcParse('%Y-%m-%d');
   const fmtDay = d3.utcFormat('%b %-d');
@@ -2240,7 +2648,7 @@ dash.calc('danger_now', {
   description: 'Each zone’s ratings for today in that zone (or the latest earlier day if today isn’t rated yet).',
   inputs: ['danger_history'],
   fn: (danger_history) => {
-    const tz = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', 'Vallter / Ulldeter': 'Europe/Madrid', Innsbruck: 'Europe/Vienna', 'Rocky Mountain NP': 'America/Denver' };
+    const tz = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', 'Vallter / Ulldeter': 'Europe/Madrid', Innsbruck: 'Europe/Vienna', 'Rocky Mountain NP': 'America/Denver', Chamonix: 'Europe/Paris' };
     const today = (z) => new Intl.DateTimeFormat('en-CA', { timeZone: tz[z] || 'UTC' }).format(new Date());
     const pick = {};
     for (const r of danger_history) {
@@ -2347,7 +2755,7 @@ dash.draw('bulletin', (el) => {
   };
   add(null, b.headline, 'sw-bhead');
   add('Snowpack', b.snowpack);
-  add('Snow distribution', b.detail);
+  add(b.zone === 'Innsbruck' || b.zone === 'Chamonix' ? 'Avalanche activity' : 'Snow distribution', b.detail);
   add('Trend', b.trend);
   if (b.confidence) add('Forecaster confidence', b.confidence);
   if (b.url) {
