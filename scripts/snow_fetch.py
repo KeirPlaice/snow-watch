@@ -203,7 +203,11 @@ def wind_summary(zone, now, stations_rows, given=None):
     zr = [r for r in stations_rows if r["zone"] == zone]
     last = max((r["date"] for r in zr), default=None)
     recent = [r for r in zr if last and r["date"] > (date.fromisoformat(last) - timedelta(days=3)).isoformat()]
-    new3 = sum(max(0, r["depth_change_cm"] or 0) for r in recent if isinstance(r.get("depth_change_cm"), (int, float)))
+    per_station = {}
+    for r in recent:  # new snow in 3 days at the station that gained most (not the zone's stations added together)
+        if isinstance(r.get("depth_change_cm"), (int, float)):
+            per_station[r["station"]] = per_station.get(r["station"], 0) + max(0, r["depth_change_cm"])
+    new3 = max(per_station.values(), default=0)
     depth = max((r["snow_depth_cm"] for r in zr if r["date"] == last and isinstance(r.get("snow_depth_cm"), (int, float))), default=None)
     summary = {
         "zone": zone, "station": name, "elevation_m": elev, "period_hours": WIND_HOURS, "readings": len(obs),
@@ -731,6 +735,7 @@ GRID = {  # zone: (west, south, east, north, columns, rows, time zone)
     ROSS: (-118.08, 49.03, -117.00, 49.77, 7, 7, "America/Vancouver"),
     VALLTER: (2.20, 42.38, 2.34, 42.46, 4, 3, "Europe/Madrid"),
     IBK: (10.98, 46.95, 11.72, 47.34, 8, 5, "Europe/Vienna"),
+    "Rocky Mountain NP": (-105.95, 40.16, -105.48, 40.55, 6, 6, "America/Denver"),
 }
 
 
@@ -757,6 +762,145 @@ def snow_grid():
                              "day": day, "d": k, "snow_cm": d["daily"]["snowfall_sum"][k], "precip_mm": d["daily"]["precipitation_sum"][k],
                              "freezing_level_m": round(fl[day]) if day in fl else None})
     return rows
+
+
+# ---------- Rocky Mountain National Park, Colorado ----------
+RMNP = "Rocky Mountain NP"
+TZ[RMNP] = ZoneInfo("America/Denver")
+RMNP_BOUNDS = (-105.97, 40.14, -105.46, 40.57)
+RMNP_HOME = (40.3118, -105.6448)  # Bear Lake
+RMNP_SNOTEL = [("322:CO:SNTL", "Bear Lake", 2893), ("870:CO:SNTL", "Willow Park", 3264), ("565:CO:SNTL", "Lake Irene", 3255),
+               ("1042:CO:SNTL", "Wild Basin", 2868), ("688:CO:SNTL", "Phantom Valley", 2752), ("1031:CO:SNTL", "Never Summer", 3139),
+               ("412:CO:SNTL", "Copeland Lake", 2612)]
+RMNP_WIND = (40.3000, -105.6900, 3700, "Continental Divide above Bear Lake (model)")  # no public ridge-top wind station
+CAIC = "https://avalanche.state.co.us/avid"
+CAIC_LEVEL = {"low": 1, "moderate": 2, "considerable": 3, "high": 4, "extreme": 5}
+CAIC_BANDS = (("alp", "upper", "Above treeline"), ("tln", "middle", "Near treeline"), ("btl", "lower", "Below treeline"))
+CAIC_PROBLEM = {"windSlab": "Wind slab", "stormSlab": "Storm slab", "persistentSlab": "Persistent slab",
+                "deepPersistentSlab": "Deep persistent slab", "wetSlab": "Wet slab", "wetLoose": "Wet loose",
+                "looseDry": "Dry loose", "dryLoose": "Dry loose", "cornice": "Cornice", "glide": "Glide avalanches"}
+CAIC_LIKELY = {"unlikely": "Unlikely", "possible": "Possible", "likely": "Likely", "veryLikely": "Very likely", "certain": "Almost certain"}
+CAIC_ASP = {"n": "N", "ne": "NE", "e": "E", "se": "SE", "s": "S", "sw": "SW", "w": "W", "nw": "NW"}
+CAIC_ELEV = {"alp": "Above treeline", "tln": "Near treeline", "btl": "Below treeline"}
+
+
+def rmnp_stations(now):
+    """SNOTEL daily rows since the season start: depth (in -> cm), temps (F -> C), precipitation from the season total."""
+    d = get("https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/data", {
+        "stationTriplets": ",".join(t for t, n, e in RMNP_SNOTEL), "elements": "SNWD,TMAX,TMIN,PREC",
+        "duration": "DAILY", "beginDate": (SEASON_START - timedelta(days=1)).isoformat(), "endDate": now.astimezone(TZ[RMNP]).date().isoformat()})
+    meta = {t: (n, e) for t, n, e in RMNP_SNOTEL}
+    rows = []
+    for st in d:
+        name, elev = meta[st["stationTriplet"]]
+        by = {}
+        for el in st.get("data") or []:
+            code = el["stationElement"]["elementCode"]
+            for v in el.get("values") or []:
+                by.setdefault(v["date"][:10], {})[code] = v.get("value")
+        prev_depth, prev_prec = None, None
+        for day in sorted(by):
+            v = by[day]
+            depth = None if v.get("SNWD") is None else round(v["SNWD"] * 2.54)
+            prec = v.get("PREC")
+            daily_p = None if prec is None or prev_prec is None else max(0.0, (prec - prev_prec) * 25.4)
+            if prec is not None:
+                prev_prec = prec
+            change = depth - prev_depth if depth is not None and prev_depth is not None else None
+            if depth is not None:
+                prev_depth = depth
+            if date.fromisoformat(day) < SEASON_START:
+                continue
+            f2c = lambda x: "" if x is None else round((x - 32) * 5 / 9, 1)
+            rows.append({"zone": RMNP, "station": name, "elevation_m": elev, "date": day,
+                         "snow_depth_cm": "" if depth is None else depth, "depth_change_cm": "" if change is None else change,
+                         "temp_min_c": f2c(v.get("TMIN")), "temp_max_c": f2c(v.get("TMAX")), "gust_max_kmh": "",
+                         "precip_mm": "" if daily_p is None else round(daily_p, 1), "wind_max_kmh": "", "readings": 1})
+    return rows
+
+
+def rmnp_wind(now):
+    """Modelled hourly wind on the Divide above Bear Lake, last WIND_HOURS (Open-Meteo)."""
+    lat, lon, elev, name = RMNP_WIND
+    d = get("https://api.open-meteo.com/v1/forecast", {"latitude": lat, "longitude": lon, "elevation": elev, "past_days": 3,
+                                                       "forecast_days": 1, "timezone": "UTC",
+                                                       "hourly": "wind_speed_10m,wind_direction_10m,wind_gusts_10m"})
+    h = d["hourly"]
+    t0 = now - timedelta(hours=WIND_HOURS)
+    obs = []
+    for t, sp, dr, g in zip(h["time"], h["wind_speed_10m"], h["wind_direction_10m"], h["wind_gusts_10m"]):
+        tt = datetime.fromisoformat(t).replace(tzinfo=timezone.utc)
+        if t0 <= tt <= now and sp is not None and dr is not None:
+            obs.append((sp, dr, g))
+    return obs, name, elev
+
+
+def caic(today):
+    """CAIC forecast for the zone over Bear Lake, plus every rated CAIC zone on the map."""
+    from shapely.geometry import shape, box, Point
+    prods = [p for p in get(f"{CAIC}/products/all", {"productType": "avalancheforecast", "includeExpired": "true"})
+             if p.get("type") == "avalancheforecast"]
+    areas = {f["id"]: f for f in get(f"{CAIC}/products/all/area", {"productType": "avalancheforecast", "includeExpired": "true"})["features"]}
+    B, home = box(*RMNP_BOUNDS), Point(RMNP_HOME[1], RMNP_HOME[0])
+    by_area = {}
+    for p in prods:  # the newest product for each area
+        if p["areaId"] in areas and (p["areaId"] not in by_area or p["issueDateTime"] > by_area[p["areaId"]]["issueDateTime"]):
+            by_area[p["areaId"]] = p
+    def day_of(iso):
+        return datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone(TZ[RMNP]).date().isoformat()
+    def ratings(p):
+        out = []
+        for d in (p.get("dangerRatings") or {}).get("days") or []:
+            for key, band, label in CAIC_BANDS:
+                v = d.get(key) or ""
+                lv = CAIC_LEVEL.get(v, 0)
+                out.append({"date": day_of(d["date"]), "band": band, "band_label": label, "level": lv,
+                            "rating": v[:1].upper() + v[1:] if lv else ("No forecast" if v == "noForecast" else "No rating")})
+        return out
+    def problems(p):
+        out = []
+        days = (p.get("avalancheProblems") or {}).get("days") or []
+        for pr in (days[0] if days else []):
+            ae = pr.get("aspectElevations") or []
+            asp = [a for a in CAIC_ASP if any(x.split("_")[0] == a for x in ae)]
+            elv = [e for e in CAIC_ELEV if any(x.endswith("_" + e) for x in ae)]
+            sz = pr.get("expectedSize") or {}
+            out.append({"problem": CAIC_PROBLEM.get(pr.get("type"), pr.get("type") or ""),
+                        "likelihood": CAIC_LIKELY.get(pr.get("likelihood"), pr.get("likelihood") or ""),
+                        "size": f"{sz.get('min', '')}–{sz.get('max', '')}".strip("–"),
+                        "aspects": ", ".join(CAIC_ASP[a] for a in asp), "elevations": ", ".join(CAIC_ELEV[e] for e in elv)})
+        return out
+    def summary(p):
+        days = (p.get("avalancheSummary") or {}).get("days") or []
+        return clean(days[0].get("content")) if days else ""
+    main_id = next((a for a, f in areas.items() if a in by_area and shape(f["geometry"]).contains(home)), None)
+    rf = []
+    for aid, p in by_area.items():
+        g = shape(areas[aid]["geometry"])
+        if not g.intersects(B):
+            continue
+        rt = ratings(p)
+        today_r = [x for x in rt if x["date"] == min((y["date"] for y in rt), default=None)]
+        if not any(x["level"] for x in today_r):
+            continue
+        clip = g.intersection(B.buffer(0.05)).simplify(0.002)
+        polys = list(clip.geoms) if clip.geom_type == "MultiPolygon" else [clip] if clip.geom_type == "Polygon" else []
+        rf.append({"zone": RMNP, "area_id": aid, "name": "Front Range" if aid == main_id else "Neighbouring CAIC zone",
+                   "forecaster": "CAIC", "issued": day_of(p["issueDateTime"]), "valid_until": day_of(p["expiryDateTime"]),
+                   "max_level": max((x["level"] for x in today_r), default=0),
+                   "today": ", ".join(f"{x['band_label'].lower()} {x['rating'].lower()}" for x in today_r),
+                   "ratings": json.dumps(rt), "problems": json.dumps(problems(p), ensure_ascii=False),
+                   "highlights": summary(p)[:600], "url": "https://avalanche.state.co.us/",
+                   "rings": json.dumps([[[round(x, 4), round(y, 4)] for x, y in pg.exterior.coords] for pg in polys], separators=(",", ":"))})
+    p = by_area.get(main_id)
+    issued = day_of(p["issueDateTime"]) if p else ""
+    bull = {"zone": RMNP, "region": "Front Range", "forecaster": "Colorado Avalanche Information Center (CAIC)",
+            "issued": issued, "valid_until": day_of(p["expiryDateTime"]) if p else "",
+            "headline": summary(p) if p else "No CAIC forecast for the Front Range today.", "snowpack": "", "detail": "",
+            "trend": "", "confidence": "", "language": "en", "url": "https://avalanche.state.co.us/"}
+    danger = [dict(r, zone=RMNP, kind="forecast", issued=issued) for r in (ratings(p) if p else []) if r["level"]]
+    probs = [dict(x, zone=RMNP, issued=issued) for x in (problems(p) if p else [])]
+    return bull, danger, probs, rf
 
 
 def write_csv(path, rows, fields):
@@ -806,6 +950,11 @@ def main():
         stations += xema_station(code, name, elev)
     ibk_rows, ibk_wind = ibk_stations(now, prev_rows)
     stations += ibk_rows
+    try:
+        stations += rmnp_stations(now)
+    except (OSError, ValueError, KeyError) as e:  # keep yesterday's Colorado rows if SNOTEL is down
+        print("SNOTEL unavailable:", e)
+        stations += [r for r in prev_rows if r.get("zone") == RMNP]
     write_csv(f"{out}/stations_daily.json", stations, list(stations[0].keys()))
 
     ws, wr = [], []
@@ -815,6 +964,12 @@ def main():
         a, b = wind_summary(zname, now, stations, (ibk_wind, wname, welev) if zname == IBK else None)
         ws.append(a)
         wr += b
+    try:
+        a, b = wind_summary(RMNP, now, stations, rmnp_wind(now))
+        ws.append(a)
+        wr += b
+    except (OSError, ValueError, KeyError) as e:
+        print("Colorado wind unavailable:", e)
     for zname, sid, name, elev in EXTRA_WIND:
         try:
             a, b = wind_summary(zname, now, stations, wind_obs(zname, now, ("avcan", sid, name, elev)))
@@ -838,7 +993,16 @@ def main():
               "headline": "The Euregio bulletin couldn't be fetched this morning; check avalanche.report.", "snowpack": "", "detail": "",
               "trend": "", "confidence": "", "language": "en", "url": "https://avalanche.report/"}
         idanger, iprob, irf, ibk_in = [], [], [], False
-    rf = regional_forecasts() + regional_forecasts(ROSS, ROSS_BOUNDS) + irf
+    try:
+        cb, cdanger, cprob, crf = caic(now.astimezone(TZ[RMNP]).date())
+    except (OSError, ValueError, KeyError) as e:
+        print("CAIC unavailable:", e)
+        cb = dict(prev_bull[RMNP]) if RMNP in prev_bull else {
+            "zone": RMNP, "region": "Front Range", "forecaster": "Colorado Avalanche Information Center (CAIC)", "issued": "", "valid_until": "",
+            "headline": "The CAIC forecast couldn't be fetched this morning; check avalanche.state.co.us.", "snowpack": "", "detail": "",
+            "trend": "", "confidence": "", "language": "en", "url": "https://avalanche.state.co.us/"}
+        cdanger, cprob, crf = [], [], []
+    rf = regional_forecasts() + regional_forecasts(ROSS, ROSS_BOUNDS) + irf + crf
     write_csv(f"{out}/regional_forecasts.json", rf, list(rf[0].keys()))
 
     today_bc = now.astimezone(TZ[ROGERS]).date()
@@ -854,7 +1018,7 @@ def main():
                 hist[(r["zone"], r["date"], r["band"])] = r
     rb, rdanger, rprob = avcan_bulletin()
     sb, sdanger, sprob = avcan_bulletin(ROSS, 49.10, -117.84)  # Red Mountain
-    for r in rdanger + sdanger + idanger:
+    for r in rdanger + sdanger + idanger + cdanger:
         hist[(r["zone"], r["date"], r["band"])] = r
     vb = None
     for attempt in range(3):  # the ICGC server sometimes drops connections for a while; give it a few minutes
@@ -888,9 +1052,9 @@ def main():
     fields = ["zone", "date", "band", "band_label", "level", "rating", "kind", "issued"]
     write_csv(f"{out}/danger_history.json", sorted(hist.values(), key=lambda r: (r["zone"], r["date"], r["band"])), fields)
 
-    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb], list(rb.keys()))
-    probs = rprob + vprob + iprob + sprob
-    for zname, issued in ((ROGERS, rb["issued"]), (VALLTER, vb["issued"]), (IBK, ib["issued"]), (ROSS, sb["issued"])):
+    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb, cb], list(rb.keys()))
+    probs = rprob + vprob + iprob + sprob + cprob
+    for zname, issued in ((ROGERS, rb["issued"]), (VALLTER, vb["issued"]), (IBK, ib["issued"]), (ROSS, sb["issued"]), (RMNP, cb["issued"])):
         if not any(p["zone"] == zname for p in probs):  # one blank row keeps each zone (and the file) readable
             probs.append({"zone": zname, "problem": None, "issued": issued})
     write_csv(f"{out}/problems.json", probs,
@@ -900,7 +1064,9 @@ def main():
          outlook(VALLTER, 42.42, 2.25, 2400, "Europe/Madrid", "Vallter") + \
          outlook(IBK, 47.15, 11.25, 2300, "Europe/Vienna", "Sellrain–Stubai") + \
          outlook(ROSS, 49.2044, -117.8966, 1575, "America/Vancouver", "Strawberry Pass") + \
-         outlook(ROSS, 49.0581, -117.0400, 1780, "America/Vancouver", "Kootenay Pass")
+         outlook(ROSS, 49.0581, -117.0400, 1780, "America/Vancouver", "Kootenay Pass") + \
+         outlook(RMNP, 40.3118, -105.6448, 2900, "America/Denver", "Bear Lake") + \
+         outlook(RMNP, 40.4206, -105.8162, 3280, "America/Denver", "Milner Pass")
     write_csv(f"{out}/outlook.json", ol, list(ol[0].keys()))
     sg = snow_grid()
     if sg:

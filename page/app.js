@@ -374,7 +374,7 @@
   };
   window.swMapSettings = settings;
   // contour lines from the overview grid: smoothed 3x3, marching squares, map-edge runs dropped, lightly thinned
-  const TOPO = { 'Rogers Pass': { step: 50, minor: 100, index: 500 }, 'Vallter / Ulldeter': { step: 25, minor: 50, index: 250 }, Innsbruck: { step: 50, minor: 100, index: 500 }, Rossland: { step: 50, minor: 100, index: 500 } };
+  const TOPO = { 'Rogers Pass': { step: 50, minor: 100, index: 500 }, 'Vallter / Ulldeter': { step: 25, minor: 50, index: 250 }, Innsbruck: { step: 50, minor: 100, index: 500 }, Rossland: { step: 50, minor: 100, index: 500 }, 'Rocky Mountain NP': { step: 50, minor: 100, index: 500 } };
   const topoCache = {};
   window.swContours = (row, t) => {
     if (topoCache[row.zone]) return topoCache[row.zone];
@@ -416,7 +416,7 @@
     });
     return (topoCache[row.zone] = out);
   };
-  const ALPINE = { 'Rogers Pass': 1900, 'Vallter / Ulldeter': 2100, Innsbruck: 2000, Rossland: 1900 }; // roughly the treeline; wind loading is mapped above it
+  const ALPINE = { 'Rogers Pass': 1900, 'Vallter / Ulldeter': 2100, Innsbruck: 2000, Rossland: 1900, 'Rocky Mountain NP': 3400 }; // roughly the treeline; wind loading is mapped above it
   window.swAlpine = ALPINE;
   const maskCache = {}, pathCache = {};
   window.swWindMaskFor = (row, t, w) => {
@@ -989,6 +989,7 @@
     const top = rated.sort((a, b) => b.level - a.level)[0];
     if (top) txt += ` Highest rating: ${top.rating} (${top.band_label}).`;
     if (zone === 'Rogers Pass' || zone === 'Rossland') txt += ' Avalanche Canada names bands, not heights, so set the elevation range yourself.';
+    if (zone === 'Rocky Mountain NP') txt += ' The CAIC names bands (above, near and below treeline), not heights, so set the elevation range yourself; treeline here is roughly 3,300–3,500 m.';
     el.textContent = txt.trim();
   });
 })();
@@ -1621,7 +1622,7 @@ ${trk.join('\n')}
   const RATING = ['no rating', 'low', 'moderate', 'considerable', 'high', 'very high'];
 
   // ---- timing: when you reach each part of the route, where the sun is then, and whether it's warm ----
-  const ZONE_TZ = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', 'Vallter / Ulldeter': 'Europe/Madrid', Innsbruck: 'Europe/Vienna' };
+  const ZONE_TZ = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', 'Rocky Mountain NP': 'America/Denver', 'Vallter / Ulldeter': 'Europe/Madrid', Innsbruck: 'Europe/Vienna' };
   const RAD = Math.PI / 180;
   const tzOffMin = (tz, ms) => {
     const p = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).formatToParts(new Date(ms));
@@ -1713,7 +1714,7 @@ ${trk.join('\n')}
   // ---- today's rating at a given elevation ----
   // Avalanche Canada rates alpine / treeline / below treeline without heights; these are the rough
   // heights of those bands here (treeline wanders by aspect and valley, so it's approximate).
-  const BANDS_M = { 'Rogers Pass': [1800, 2100], Rossland: [1700, 2000] };
+  const BANDS_M = { 'Rogers Pass': [1800, 2100], Rossland: [1700, 2000], 'Rocky Mountain NP': [3300, 3500] };
   const DCOL = ['#9A9A9A', '#4DB848', '#FFE600', '#F7941E', '#E8222A', '#231F20'];
   const bandRater = (zone, rated) => {
     const by = (b) => rated.find((x) => x.band === b);
@@ -1863,7 +1864,7 @@ ${trk.join('\n')}
     // field reports near the route (Rogers Pass)
     const reps = (ok('avalanche_reports') || []).filter((x) => x.zone === zone && x.id && (x.avalanches > 0 || x.signs || x.kind === 'incident'));
     if (reps.length) {
-      const zn = Number(String(st.res.zoneCrs || '').slice(-2)) || (zone === 'Rogers Pass' || zone === 'Rossland' ? 11 : 31);
+      const zn = Number(String(st.res.zoneCrs || '').slice(-2)) || (zone === 'Rogers Pass' || zone === 'Rossland' ? 11 : zone === 'Rocky Mountain NP' ? 13 : 31);
       const near = reps.map((x) => {
         const [ex, ny] = window.swRouteCore.utm(x.lat, x.lon, zn);
         let best = Infinity;
@@ -2084,4 +2085,525 @@ ${trk.join('\n')}
       tr.append(td); tb.append(tr);
     }
   });
+})();
+
+;
+
+(() => {
+  // phones: map layers and long explanations fold away; wider screens show them open
+  const narrow = window.matchMedia('(max-width: 640px)');
+  const fold = () => { for (const d of document.querySelectorAll('details.sw-layers, details.sw-how')) d.open = !narrow.matches; };
+  fold();
+  if (narrow.addEventListener) narrow.addEventListener('change', () => { fold(); dash.draw('map'); });
+})();
+(() => {
+  const ASP = window.swASP;
+  for (const card of document.querySelectorAll('.sw-mapcard')) {
+    const pfx = card.dataset.pfx;
+    const set = (o) => dash.setParams(Object.fromEntries(Object.entries(o).map(([k, v]) => [pfx + '_' + k, v])));
+    for (const b of card.querySelectorAll('.sw-mode')) b.addEventListener('click', () => set({ mode: b.dataset.mode }));
+    const aspects = () => [...card.querySelectorAll('.sw-asp')].filter((c) => c.checked).map((c) => c.value);
+    for (const c of card.querySelectorAll('.sw-asp')) c.addEventListener('change', () => set({ aspects: aspects() }));
+    for (const inp of card.querySelectorAll('.sw-emin, .sw-emax')) {
+      inp.addEventListener('change', () => {
+        const v = inp.value === '' ? null : Number(inp.value);
+        if (v === null || (inp.validity.valid && Number.isFinite(v))) set({ [inp.classList.contains('sw-emin') ? 'emin' : 'emax']: v });
+      });
+    }
+    const mapEl = () => card.querySelector('.sw-map');
+    for (const b of card.querySelectorAll('.sw-zin')) b.addEventListener('click', () => window.swMaps.get(mapEl())?.zoomBy(1.8));
+    for (const b of card.querySelectorAll('.sw-zout')) b.addEventListener('click', () => window.swMaps.get(mapEl())?.zoomBy(1 / 1.8));
+    for (const b of card.querySelectorAll('.sw-zreset')) b.addEventListener('click', () => window.swMaps.get(mapEl())?.reset());
+    const sizeButtons = () => {
+      const big = card.classList.contains('sw-map-big');
+      for (const x of card.querySelectorAll('.sw-expand')) x.hidden = big;
+      for (const x of card.querySelectorAll('.sw-collapse')) x.hidden = !big;
+    };
+    // expanded: the map fills the whole screen (true full screen where the browser allows it,
+    // otherwise the card covers the whole page; phones in particular often refuse full screen for a page)
+    // Phones: the card moves to the top of the document (so nothing around it can shrink or clip it), is sized
+    // in pixels to the visible screen, and redraws only once the size settles (no flicker as browser bars move).
+    const narrow = () => window.matchMedia('(max-width: 640px)').matches;
+    let home = null, lastH = 0, redrawT = null;
+    const screenH = () => Math.round((window.visualViewport && window.visualViewport.height) || window.innerHeight);
+    const fitBig = () => {
+      if (!card.classList.contains('sw-map-big') || !home) return;
+      const h = screenH();
+      if (Math.abs(h - lastH) < 2) return;
+      lastH = h;
+      card.style.height = h + 'px';
+      clearTimeout(redrawT); redrawT = setTimeout(() => dash.draw('map'), 150);
+    };
+    const portalIn = () => {
+      // carry the theme and type across, in case they're set on a wrapper rather than the page
+      const cs = getComputedStyle(card);
+      for (let i = 0; i < cs.length; i++) { const k = cs[i]; if (k.startsWith('--')) card.style.setProperty(k, cs.getPropertyValue(k)); }
+      for (const k of ['font-family', 'font-size', 'line-height', 'color']) card.style.setProperty(k, cs.getPropertyValue(k));
+      if (!card.dataset.zone) card.dataset.zone = card.closest('[data-zone]').dataset.zone; // lookups by zone keep working
+      home = document.createComment('map card');
+      card.replaceWith(home);
+      document.body.append(card);
+      lastH = 0; fitBig();
+      if (window.visualViewport) window.visualViewport.addEventListener('resize', fitBig);
+    };
+    const portalOut = () => {
+      if (!home) return;
+      if (window.visualViewport) window.visualViewport.removeEventListener('resize', fitBig);
+      home.replaceWith(card); home = null;
+      card.style.height = '';
+    };
+    const closeBig = () => {
+      card.classList.remove('sw-map-big'); sizeButtons();
+      document.documentElement.classList.remove('sw-noscroll');
+      portalOut();
+      if (document.fullscreenElement === card) document.exitFullscreen().catch(() => {}); else dash.draw('map');
+    };
+    for (const b of card.querySelectorAll('.sw-expand')) b.addEventListener('click', () => {
+      card.classList.add('sw-map-big'); sizeButtons();
+      document.documentElement.classList.add('sw-noscroll');
+      const done = () => dash.draw('map');
+      if (narrow() || !card.requestFullscreen) { portalIn(); window.scrollTo(0, 0); done(); return; }
+      card.requestFullscreen({ navigationUI: 'hide' }).then(done, () => { portalIn(); done(); });
+    });
+    for (const b of card.querySelectorAll('.sw-collapse')) b.addEventListener('click', closeBig);
+    document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && card.classList.contains('sw-map-big') && !document.fullscreenElement) closeBig(); });
+    window.addEventListener('resize', () => {
+      if (!card.classList.contains('sw-map-big')) return;
+      if (home) fitBig(); else { clearTimeout(redrawT); redrawT = setTimeout(() => dash.draw('map'), 150); }
+    });
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && card.classList.contains('sw-map-big') && card.dataset.wasFs) { delete card.dataset.wasFs; closeBig(); return; }
+      if (document.fullscreenElement === card) card.dataset.wasFs = '1';
+      dash.draw('map');
+    });
+    for (const c of card.querySelectorAll('.sw-paths')) c.addEventListener('change', () => set({ paths: c.checked }));
+    for (const c of card.querySelectorAll('.sw-obs')) c.addEventListener('change', () => set({ obs: c.checked }));
+    for (const c of card.querySelectorAll('.sw-doc')) c.addEventListener('change', () => set({ doc: c.checked }));
+    for (const c of card.querySelectorAll('.sw-topo')) c.addEventListener('change', () => set({ topo: c.checked }));
+    for (const c of card.querySelectorAll('.sw-fc')) c.addEventListener('change', () => set({ fc: c.value }));
+    for (const c of card.querySelectorAll('.sw-glac')) c.addEventListener('change', () => set({ glac: c.checked }));
+    for (const s of card.querySelectorAll('.sw-smin')) s.addEventListener('change', () => set({ smin: Number(s.value) }));
+    for (const b of card.querySelectorAll('.sw-reset-watch')) b.addEventListener('click', () => set({ aspects: ASP, emin: null, emax: null, smin: 30 }));
+    for (const b of card.querySelectorAll('.sw-match')) {
+      b.addEventListener('click', () => {
+        const zone = card.closest('[data-zone]').dataset.zone;
+        const pr = dash.data('problems'), dn = dash.data('danger_now');
+        const probs = pr.status === 'ok' ? pr.data.filter((r) => r.zone === zone && r.problem) : [];
+        const norm = { NORTH: 'N', NORTHEAST: 'NE', EAST: 'E', SOUTHEAST: 'SE', SOUTH: 'S', SOUTHWEST: 'SW', WEST: 'W', NORTHWEST: 'NW' };
+        const asp = new Set();
+        for (const p of probs) for (const a of String(p.aspects || '').split(',')) {
+          const k = a.toUpperCase().replace(/[^A-Z]/g, '');
+          const v = norm[k] || (ASP.includes(k) ? k : null);
+          if (v) asp.add(v);
+        }
+        let emin = null;
+        const rows = dn.status === 'ok' ? dn.data.filter((r) => r.zone === zone && Number(r.level) > 0) : [];
+        const upper = rows.find((r) => r.band === 'upper'), lower = rows.find((r) => r.band === 'lower');
+        const m = upper && /(\d[\d,.]*)\s*m/.exec(upper.band_label || '');
+        if (m && lower && Number(upper.level) > Number(lower.level)) emin = Number(m[1].replace(/[,.]/g, ''));
+        set({ mode: 'watch', aspects: asp.size ? ASP.filter((a) => asp.has(a)) : ASP, emin, emax: null, smin: 30 });
+      });
+    }
+  }
+  // keep controls in step with the current settings
+  dash.onData(() => {
+    for (const card of document.querySelectorAll('.sw-mapcard')) {
+      const s = window.swMapSettings(card.dataset.pfx);
+      for (const b of card.querySelectorAll('.sw-mode')) b.setAttribute('aria-pressed', String(b.dataset.mode === s.mode));
+      for (const w of card.querySelectorAll('.sw-watch, .sw-leg-watch')) w.hidden = s.mode !== 'watch';
+      for (const w of card.querySelectorAll('.sw-leg-wind, .sw-wind-note')) w.hidden = s.mode !== 'wind';
+      for (const w of card.querySelectorAll('.sw-leg-slope')) w.hidden = s.mode !== 'slope';
+      for (const c of card.querySelectorAll('.sw-paths')) c.checked = s.paths;
+      for (const c of card.querySelectorAll('.sw-obs')) c.checked = s.obs;
+      for (const c of card.querySelectorAll('.sw-doc')) c.checked = s.doc;
+      for (const c of card.querySelectorAll('.sw-topo')) c.checked = s.topo;
+      for (const c of card.querySelectorAll('.sw-fc')) c.value = s.fc;
+      for (const c of card.querySelectorAll('.sw-glac')) c.checked = s.glac;
+      for (const l of card.querySelectorAll('.sw-leg-glac')) l.hidden = !s.glac;
+      for (const c of card.querySelectorAll('.sw-asp')) c.checked = s.aspects.includes(c.value);
+      for (const i of card.querySelectorAll('.sw-emin')) if (i !== document.activeElement) i.value = s.emin ?? '';
+      for (const i of card.querySelectorAll('.sw-emax')) if (i !== document.activeElement) i.value = s.emax ?? '';
+      for (const x of card.querySelectorAll('.sw-smin')) x.value = String(s.smin);
+    }
+  });
+})();
+
+;
+
+(() => {
+  const OCT = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+  const zoneOf = (el) => el.closest('[data-zone]').dataset.zone;
+  const wsum = (zone) => { const d = dash.data('wind_summary'); return d.status === 'ok' ? d.data.find((x) => x.zone === zone) : null; };
+
+  dash.draw('wind-sum', (el) => {
+    const w = wsum(zoneOf(el));
+    if (!w) { el.textContent = '—'; return; }
+    if (!w.transport_hours) { el.textContent = 'Winds have been too light to move snow in the last 72 hours.'; return; }
+    const strength = w.strong_hours >= 6 ? 'strong' : w.transport_hours >= 12 ? 'sustained moderate' : 'moderate';
+    let txt = `${w.transport_hours} hours of ${strength} wind, mostly from the ${w.from_dir}, averaging ${w.mean_transport_kmh} km/h when it was blowing hard enough to move snow. `;
+    const la = w.loaded_aspects.split(','), loaded = la.length > 1 ? la.slice(0, -1).join(', ') + ' and ' + la[la.length - 1] : la[0];
+    if (window.swWindActive(w)) txt += `Expect fresh wind slabs on ${loaded}-facing slopes below ridges and in gullies.`;
+    else txt += `There’s little snow for it to move yet (${w.snow_depth_cm ?? 0} cm on the ground), so loading is limited for now.`;
+    el.textContent = txt;
+  });
+
+  dash.draw('wind-note', (el) => {
+    const w = wsum(zoneOf(el));
+    if (!w) { el.textContent = '—'; return; }
+    const alp = window.swAlpine[zoneOf(el)];
+    if (w.from_deg === null) { el.textContent = 'Winds have been too light to move snow in the last 72 hours, so no slopes are shaded.'; return; }
+    el.textContent = `Slopes of 25–55° above about ${d3.format(',')(alp)} m that face away from the recent ${w.from_dir} wind and sit sheltered below a ridge or rise within 300 m upwind. A model of where slabs are likely, from one ridge station’s wind; local winds funnel and swirl, so expect loading on other aspects too, especially cross-loaded gully sides.` + (window.swWindActive(w) ? '' : ' There’s little snow to move yet, so treat this as where loading will build once it snows.');
+  });
+
+  dash.draw('wind-rose', (el) => {
+    el.replaceChildren();
+    const d = dash.data('wind_rose');
+    if (d.status !== 'ok') return;
+    const rows = d.data.filter((x) => x.zone === zoneOf(el));
+    const S = 220, cx = S / 2, cy = S / 2, R = S / 2 - 22;
+    const max = Math.max(1, d3.max(rows, (x) => x.hours) || 1);
+    const rs = d3.scaleSqrt([0, max], [0, R]);
+    const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${S} ${S}`).attr('width', '100%');
+    for (const f of [0.5, 1]) svg.append('circle').attr('cx', cx).attr('cy', cy).attr('r', rs(max * f)).attr('fill', 'none').attr('stroke', 'var(--cds-chart-grid)');
+    const arc = d3.arc();
+    const tip = document.createElement('div'); tip.className = 'sw-tip'; tip.hidden = true; el.append(tip);
+    rows.forEach((x) => {
+      const i = OCT.indexOf(x.from_dir), a0 = ((i * 45 - 20) * Math.PI) / 180, a1 = ((i * 45 + 20) * Math.PI) / 180;
+      const g = svg.append('g').attr('transform', `translate(${cx},${cy})`);
+      g.append('path').attr('d', arc({ innerRadius: 0, outerRadius: rs(x.hours || 0), startAngle: a0, endAngle: a1 })).attr('fill', dash.colors[0]).attr('opacity', 0.35);
+      g.append('path').attr('d', arc({ innerRadius: 0, outerRadius: rs(x.transport_hours || 0), startAngle: a0, endAngle: a1 })).attr('fill', dash.colors[0]);
+      g.append('path').attr('d', arc({ innerRadius: 0, outerRadius: R, startAngle: a0, endAngle: a1 })).attr('fill', 'transparent')
+        .on('pointermove', (ev) => {
+          tip.replaceChildren();
+          const h = document.createElement('div'); h.className = 'sw-tdate'; h.textContent = `From the ${x.from_dir}`;
+          const l1 = document.createElement('div'); l1.textContent = `${x.hours} h, ${x.transport_hours} h strong enough to move snow`;
+          const l2 = document.createElement('div'); l2.textContent = x.mean_kmh === null ? '' : `Average ${x.mean_kmh} km/h`;
+          tip.append(h, l1, l2); tip.hidden = false;
+          const [px, py] = d3.pointer(ev, el);
+          tip.style.left = Math.max(0, Math.min(el.clientWidth - tip.offsetWidth, px + 10)) + 'px';
+          tip.style.top = Math.max(0, py - tip.offsetHeight - 6) + 'px';
+        })
+        .on('pointerleave', () => { tip.hidden = true; });
+    });
+    OCT.forEach((o, i) => {
+      const a = (i * 45 * Math.PI) / 180;
+      svg.append('text').attr('x', cx + Math.sin(a) * (R + 12)).attr('y', cy - Math.cos(a) * (R + 12)).attr('dy', '0.35em')
+        .attr('text-anchor', 'middle').attr('font-size', 11).style('fill', 'var(--color-fg-muted)').text(o);
+    });
+  });
+})();
+
+;
+
+(() => {
+  const C = window.swRouteCore;
+  const fmtDay = d3.utcFormat('%b %-d'), parse = d3.utcParse('%Y-%m-%d'), f1 = d3.format('~f');
+  const KIND = { avalanche: 'Avalanche', signs: 'Warning signs', incident: 'Caught', report: 'Conditions' };
+  const KCOL = { avalanche: 'var(--sw-av)', signs: 'var(--sw-r1)', incident: '#231F20', report: 'var(--cds-chart-muted)' };
+  const docCache = {};
+  const zoneOfEl = (el) => el.closest('[data-zone]').dataset.zone;
+  const refOf = (el) => (el.closest('[data-ref]') || {}).dataset?.ref || 'the pass';
+  dash.draw('regional', (ul) => {
+    ul.replaceChildren();
+    const d = dash.data('regional_forecasts');
+    if (d.status !== 'ok') return;
+    const zr = d.data.filter((x) => x.zone === zoneOfEl(ul));
+    if (zr.length > 3 && !zr.some((x) => x.today)) {
+      const li = document.createElement('li');
+      li.textContent = `No ratings yet for any of the ${zr.length} forecast regions on this map; they'll be listed here once the bulletin starts.`;
+      ul.append(li); return;
+    }
+    for (const r of zr) {
+      const li = document.createElement('li');
+      const b = document.createElement('b'); b.textContent = r.name; li.append(b);
+      li.append(` (${r.forecaster}): ${r.today || 'no rating'}${r.issued ? ', issued ' + fmtDay(parse(r.issued)) : ''}. `);
+      if (r.url) { const a = document.createElement('a'); a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Open'; li.append(a); }
+      ul.append(li);
+    }
+  });
+  window.swDocFor = (zone, rows) => (docCache[zone] = docCache[zone] || rows.filter((r) => r.zone === zone).map((r) => {
+    const p = C.preparePaths([{ path_id: r.code, valley: r.valley, rings: r.rings }])[0];
+    return Object.assign(p, { year: r.year, code: r.code });
+  }));
+  const reports = () => { const d = dash.data('avalanche_reports'); return d.status === 'ok' ? d.data.filter((r) => r.id) : null; };
+  const filtered = (rows) => {
+    const p = dash.params();
+    const range = p.av_range || 'all', only = p.av_only === true;
+    return rows.filter((r) => (range === 'all' || r.dist_km <= Number(range)) && (!only || r.kind !== 'report'));
+  };
+  const terrainRow = (zone) => window.swTerrainAll().find((r) => r.zone === zone) || null;
+  const toCell = (row, lat, lon) => {
+    const [x, y] = C.utm(lat, lon, C.zoneOfCrs(row.crs));
+    return [(x - row.x0) / row.cell_m, (row.y0 - y) / row.cell_m];
+  };
+  const what = (r) => {
+    const bits = [];
+    if (r.avalanches) bits.push(`${r.count_label && String(r.count_label) !== '1' ? r.count_label + ' avalanches' : 'avalanche'}${r.max_size ? ', size ' + f1(r.max_size) : ''}`);
+    if (r.types) bits.push(r.types);
+    if (r.triggers) bits.push(r.triggers);
+    if (r.aspects) bits.push(r.aspects + (r.elevations ? '' : ' aspect'));
+    if (r.elevations) bits.push(r.elevations + (r.elev_m ? ` (${d3.format(',')(r.elev_m)} m)` : ''));
+    if (r.avalanche_date && r.avalanche_date !== r.date) bits.push('ran ' + fmtDay(parse(r.avalanche_date)));
+    if (r.signs) bits.push(r.signs);
+    if (r.caught) bits.push(r.caught);
+    return bits.join(' · ');
+  };
+
+  // map markers for reports inside the Rogers Pass map
+  window.swObsHits = {};
+  window.swObsOverlay = (sel, zone, row, toX, toY, s, card) => {
+    window.swObsHits[zone] = [];
+    if (!card.querySelector('.sw-obs') || !s.obs) return;
+    const rows = reports();
+    if (!rows) return;
+    for (const r of rows.filter((x) => x.zone === zone).slice().reverse()) {
+      const [c, rr] = toCell(row, r.lat, r.lon);
+      if (c < 0 || rr < 0 || c > row.width || rr > row.height) continue;
+      const x = toX(c), y = toY(rr), col = { avalanche: '#C4122F', signs: '#FFB000', incident: '#231F20', report: '#8A8A8A' }[r.kind];
+      if (r.kind === 'avalanche' || r.kind === 'incident') {
+        const k = 6 + Math.min(4, (r.max_size || 1));
+        sel.append('path').attr('d', `M${x},${y - k}L${x + k},${y}L${x},${y + k}L${x - k},${y}Z`).attr('fill', col).attr('stroke', '#fff').attr('stroke-width', 1.5);
+      } else {
+        sel.append('circle').attr('cx', x).attr('cy', y).attr('r', 5).attr('fill', col).attr('stroke', '#fff').attr('stroke-width', 1.5);
+      }
+      window.swObsHits[zone].push({ x, y, label: `${fmtDay(parse(r.date))}: ${r.title}${r.kind !== 'report' ? ' (' + KIND[r.kind].toLowerCase() + ')' : ''}` });
+    }
+  };
+
+  window.swShowOnMap = (zone, lat, lon) => {
+    const card = document.querySelector(`.sw-zone[data-zone="${CSS.escape(zone)}"] .sw-mapcard`);
+    const row = terrainRow(zone);
+    if (!card || !row) return;
+    const tab = document.querySelector(`.sw-tab[data-tab="${card.dataset.pfx}"]`);
+    if (tab) tab.click();
+    const mapEl = card.querySelector('.sw-map');
+    setTimeout(() => {
+      mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const m = window.swMaps.get(mapEl);
+      if (m && lat !== undefined) { const [c, r] = toCell(row, lat, lon); const pad = 1500 / row.cell_m; setTimeout(() => m.zoomTo(c - pad, r - pad, c + pad, r + pad), 450); }
+      else if (m) m.redraw();
+    }, 60);
+  };
+
+  // controls
+  for (const sel of document.querySelectorAll('.sw-av-range')) sel.addEventListener('change', () => dash.setParams({ av_range: sel.value }));
+  for (const c of document.querySelectorAll('.sw-av-only')) c.addEventListener('change', () => dash.setParams({ av_only: c.checked }));
+  dash.onData(() => {
+    const p = dash.params();
+    for (const sel of document.querySelectorAll('.sw-av-range')) sel.value = p.av_range || 'all';
+    for (const c of document.querySelectorAll('.sw-av-only')) c.checked = p.av_only === true;
+  });
+
+  dash.draw('av-sum', (el) => {
+    const all = reports();
+    if (!all) { el.textContent = '—'; return; }
+    const zone = zoneOfEl(el), ref = refOf(el);
+    const rows = all.filter((r) => r.zone === zone);
+    if (!rows.length) { el.textContent = zone === 'Rogers Pass' || zone === 'Rossland' ? 'No field reports in the last 30 days.' : 'No reports in the last 30 days. Both feeds are mostly filed in winter.'; return; }
+    const av = rows.filter((r) => r.avalanches > 0);
+    const latest = av[0];
+    const big = d3.greatest(av.filter((r) => r.max_size), (r) => r.max_size);
+    let t = `${rows.length} report${rows.length === 1 ? '' : 's'} in the last 30 days, ${av.length} of them describing avalanches.`;
+    if (latest) t += ` Most recent: ${latest.title} (${fmtDay(parse(latest.date))}, ${latest.dist_km} km from ${ref}), ${what(latest)}.`;
+    if (big && big !== latest) t += ` Largest: size ${f1(big.max_size)}, ${big.title} (${fmtDay(parse(big.date))}).`;
+    const near = av.filter((r) => r.dist_km <= 10).length;
+    if (av.length) t += ` ${near} within 10 km of ${ref}.`;
+    el.textContent = t;
+  });
+
+  dash.draw('av-chart', (el) => {
+    el.replaceChildren();
+    const all = reports();
+    if (!all) return;
+    const rows = filtered(all.filter((r) => r.zone === zoneOfEl(el)));
+    const end = d3.max(all, (r) => r.date) || new Date().toISOString().slice(0, 10);
+    const days = d3.utcDays(d3.utcDay.offset(parse(end), -29), d3.utcDay.offset(parse(end), 1)).map((d) => d.toISOString().slice(0, 10));
+    const order = ['report', 'signs', 'avalanche', 'incident'];
+    const by = d3.rollup(rows, (v) => v, (r) => r.date);
+    const W = Math.max(280, el.clientWidth), H = 180, m = { top: 10, right: 24, bottom: 24, left: 26 };
+    const w = W - m.left - m.right, h = H - m.top - m.bottom;
+    const ymax = Math.max(3, d3.max(days, (d) => (by.get(d) || []).length) || 0);
+    const x = d3.scaleBand(days, [0, w]).padding(0.2), y = d3.scaleLinear([0, ymax], [h, 0]).nice();
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
+    const ya = g.append('g').call(d3.axisLeft(y).ticks(Math.min(ymax, 4)).tickFormat(d3.format('d')).tickSize(-w)).attr('font-size', null).attr('font-family', null);
+    ya.select('.domain').remove(); ya.selectAll('.tick line').attr('stroke', 'var(--cds-chart-grid)'); ya.selectAll('.tick text').attr('dx', -4);
+    const every = Math.max(1, Math.ceil(60 / x.step()));
+    const xa = g.append('g').attr('transform', `translate(0,${h})`).call(d3.axisBottom(x).tickValues(days.filter((_, i) => i % every === 0)).tickFormat((d) => fmtDay(parse(d))).tickSizeOuter(0))
+      .attr('font-size', null).attr('font-family', null);
+    xa.select('.domain').attr('stroke', 'var(--cds-chart-axis)'); xa.selectAll('.tick line').remove();
+    window.swTrim(xa);
+    const tip = document.createElement('div'); tip.className = 'sw-tip'; tip.hidden = true; el.append(tip);
+    const bw = Math.min(28, x.bandwidth());
+    for (const d of days) {
+      const list = (by.get(d) || []).slice().sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind));
+      list.forEach((r, i) => {
+        g.append('rect').attr('x', x(d) + (x.bandwidth() - bw) / 2).attr('width', bw).attr('y', y(i + 1) + 1).attr('height', Math.max(1, y(i) - y(i + 1) - 1))
+          .attr('rx', 2).style('fill', KCOL[r.kind])
+          .on('pointermove', (ev) => {
+            tip.replaceChildren();
+            const hd = document.createElement('div'); hd.className = 'sw-tdate'; hd.textContent = fmtDay(parse(d));
+            const l1 = document.createElement('div'); l1.textContent = r.title;
+            const l2 = document.createElement('div'); l2.textContent = what(r) || KIND[r.kind];
+            tip.append(hd, l1, l2); tip.hidden = false;
+            const [px, py] = d3.pointer(ev, el);
+            tip.style.left = Math.max(0, Math.min(el.clientWidth - tip.offsetWidth, px + 12)) + 'px';
+            tip.style.top = Math.max(0, py - tip.offsetHeight - 8) + 'px';
+          })
+          .on('pointerleave', () => { tip.hidden = true; });
+      });
+    }
+  });
+
+  dash.draw('av-rows', (tb) => {
+    tb.replaceChildren();
+    const all = reports();
+    if (!all) return;
+    const zone = zoneOfEl(tb);
+    const row = terrainRow(zone);
+    const rows = filtered(all.filter((r) => r.zone === zone));
+    for (const r of rows) {
+      const tr = document.createElement('tr'); tr.dataset.key = r.id;
+      const td = (t) => { const c = document.createElement('td'); if (t !== undefined) c.textContent = t; tr.append(c); return c; };
+      td(fmtDay(parse(r.date)));
+      const tt = td();
+      const a = document.createElement('a'); a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = r.title || 'Report'; tt.append(a);
+      if (r.comment) { const c = document.createElement('span'); c.className = 'sw-av-c'; c.textContent = r.comment.length > 220 ? r.comment.slice(0, 220) + '…' : r.comment; tt.append(c); }
+      const dc = td(f1(r.dist_km)); dc.className = 'sw-num';
+      const kc = td(); const k = document.createElement('span'); k.className = 'sw-kind sw-kind-' + r.kind; k.textContent = KIND[r.kind]; kc.append(k);
+      const wc = td(what(r)); wc.className = 'sw-hide-narrow';
+      const mc = td();
+      if (row) {
+        const [c, rr] = toCell(row, r.lat, r.lon);
+        if (c >= 0 && rr >= 0 && c <= row.width && rr <= row.height) {
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'sw-zbtn'; b.textContent = 'Map';
+          b.onclick = () => window.swShowOnMap(zone, r.lat, r.lon);
+          mc.append(b);
+        }
+      }
+      tb.append(tr);
+    }
+    if (!rows.length) { const tr = document.createElement('tr'); const c = document.createElement('td'); c.colSpan = 6; c.textContent = 'No reports match.'; tr.append(c); tb.append(tr); }
+  });
+
+  dash.draw('av-bulletin', (el) => {
+    el.replaceChildren();
+    const d = dash.data('bulletins');
+    if (d.status !== 'ok') return;
+    const b = d.data.find((r) => r.zone === 'Vallter / Ulldeter');
+    const dn = dash.data('danger_now');
+    const inSeason = dn.status === 'ok' && dn.data.some((r) => r.zone === 'Vallter / Ulldeter' && Number(r.level) > 0);
+    const add = (t, lang) => { const p = document.createElement('p'); p.textContent = t; if (lang) p.lang = lang; el.append(p); };
+    if (!b || !inSeason) { add(`The ICGC bulletin isn't running yet${b && b.valid_until ? ' (it resumes by ' + fmtDay(parse(b.valid_until)) + ')' : ''}, so there are no official notes on recent activity.`); return; }
+    const text = [b.snowpack, b.detail, b.trend].filter(Boolean).join(' ');
+    const hits = text.split(/(?<=[.!?])\s+/).filter((x) => /allau|plaques?|purg|caigud|desencaden|activitat|lliscament|esllavissad|purga/i.test(x));
+    if (!hits.length) { add('The current bulletin doesn’t mention recent avalanche activity.'); return; }
+    add(`Bulletin of ${fmtDay(parse(b.issued))}, in Catalan:`);
+    for (const h of hits) add('“' + h.trim() + '”', 'ca');
+  });
+
+})();
+
+;
+
+(() => {
+  // search every map's named places; the current map's matches first
+  const KIND = { peak: 'summit', summit: 'summit', col: 'pass or col', place: 'place', glacier: 'glacier', station: 'weather station', circ: 'cirque' };
+  const norm = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/ß/g, 'ss');
+  const cache = new Map();
+  const markersOf = (row) => { if (!cache.has(row)) cache.set(row, JSON.parse(row.markers || '[]')); return cache.get(row); };
+  window.swSearchHit = {};
+  window.swSearchOverlay = (sel, zone, toX, toY) => {
+    const h = window.swSearchHit[zone];
+    if (!h) return;
+    const x = toX(h.col), y = toY(h.row);
+    sel.append('circle').attr('cx', x).attr('cy', y).attr('r', 14).attr('fill', 'none').attr('stroke', '#fff').attr('stroke-width', 5);
+    sel.append('circle').attr('cx', x).attr('cy', y).attr('r', 14).attr('fill', 'none').attr('stroke', '#C4122F').attr('stroke-width', 2.5);
+    if (h.coords) sel.append('circle').attr('cx', x).attr('cy', y).attr('r', 2.5).attr('fill', '#C4122F');
+  };
+  const goTo = (zone, col, rowN, label, coords) => {
+    const card = document.querySelector(`.sw-zone[data-zone="${CSS.escape(zone)}"] .sw-mapcard`);
+    const row = window.swTerrainAll().find((r) => r.zone === zone);
+    if (!card || !row) return;
+    window.swSearchHit[zone] = { col, row: rowN, label, coords };
+    const tab = document.querySelector(`.sw-tab[data-tab="${card.dataset.pfx}"]`);
+    if (tab && tab.getAttribute('aria-selected') !== 'true') tab.click();
+    const mapEl = card.querySelector('.sw-map');
+    setTimeout(() => {
+      const m = window.swMaps.get(mapEl);
+      if (!m) return;
+      const pad = 1500 / row.cell_m;
+      m.zoomTo(col - pad, rowN - pad, col + pad, rowN + pad);
+      setTimeout(() => m.redraw(), 450);
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  };
+  const results = (q, here) => {
+    const out = [];
+    const rows = window.swTerrainAll();
+    const ll = /^\s*(-?\d{1,2}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/.exec(q);
+    if (ll) {
+      const lat = Number(ll[1]), lon = Number(ll[2]);
+      for (const row of rows) {
+        const [x, y] = window.swRouteCore.utm(lat, lon, window.swRouteCore.zoneOfCrs(row.crs));
+        const c = (x - row.x0) / row.cell_m, r = (row.y0 - y) / row.cell_m;
+        if (c >= 0 && r >= 0 && c < row.width && r < row.height)
+          out.push({ zone: row.zone, col: c, row: r, name: `${lat.toFixed(4)}, ${lon.toFixed(4)}`, meta: 'coordinates', coords: true, score: 0 });
+      }
+      return out;
+    }
+    const n = norm(q).trim();
+    if (n.length < 2) return out;
+    for (const row of rows) {
+      for (const m of markersOf(row)) {
+        if (!m.name) continue;
+        const t = norm(m.name);
+        const i = t.indexOf(n);
+        if (i < 0) continue;
+        const score = (t === n ? 0 : i === 0 ? 1 : /[\s\-(]/.test(t[i - 1]) ? 2 : 3) + (row.zone === here ? 0 : 10) + (m.kind === 'peak' ? 0 : 0.5);
+        out.push({ zone: row.zone, col: m.col, row: m.row, name: m.name, score,
+          meta: [KIND[m.kind] || m.kind, m.elev_m ? d3.format(',')(m.elev_m) + ' m' : null, row.zone === here ? null : row.zone + ' map'].filter(Boolean).join(' · ') });
+      }
+    }
+    out.sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
+    const seen = new Set();
+    return out.filter((o) => { const k = o.zone + '|' + o.name; if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 10);
+  };
+  for (const card of document.querySelectorAll('.sw-mapcard')) {
+    const here = card.closest('[data-zone]').dataset.zone;
+    const inp = card.querySelector('.sw-search-in'), ul = card.querySelector('.sw-search-list');
+    if (!inp || !ul) continue;
+    let list = [], active = -1;
+    const close = () => { ul.hidden = true; ul.replaceChildren(); active = -1; };
+    const pick = (o) => { inp.value = o.coords ? o.name : o.name; close(); goTo(o.zone, o.col, o.row, o.name, o.coords); };
+    const render = () => {
+      ul.replaceChildren();
+      if (!inp.value.trim()) { close(); return; }
+      if (!list.length) {
+        const li = document.createElement('li'); li.className = 'sw-s-none';
+        li.textContent = window.swTerrainAll().length ? 'No match on the maps.' : 'Maps still loading…'; ul.append(li); ul.hidden = false; return;
+      }
+      list.forEach((o, i) => {
+        const li = document.createElement('li'); li.setAttribute('role', 'option'); li.setAttribute('aria-selected', String(i === active));
+        const a = document.createElement('span'); a.textContent = o.name;
+        const b = document.createElement('span'); b.className = 'sw-s-meta'; b.textContent = o.meta;
+        li.append(a, b);
+        li.addEventListener('mousedown', (ev) => { ev.preventDefault(); pick(o); });
+        ul.append(li);
+      });
+      ul.hidden = false;
+    };
+    inp.addEventListener('input', () => {
+      if (!inp.value.trim() && window.swSearchHit[here]) { delete window.swSearchHit[here]; const m = window.swMaps.get(card.querySelector('.sw-map')); if (m) m.redraw(); }
+      list = results(inp.value, here); active = list.length ? 0 : -1; render();
+    });
+    inp.addEventListener('keydown', (ev) => {
+      if (ev.key === 'ArrowDown' && list.length) { active = (active + 1) % list.length; render(); ev.preventDefault(); }
+      else if (ev.key === 'ArrowUp' && list.length) { active = (active - 1 + list.length) % list.length; render(); ev.preventDefault(); }
+      else if (ev.key === 'Enter' && list[active]) { pick(list[active]); ev.preventDefault(); }
+      else if (ev.key === 'Escape') { close(); }
+    });
+    inp.addEventListener('blur', () => setTimeout(close, 150));
+    inp.addEventListener('focus', () => { if (inp.value.trim()) { list = results(inp.value, here); render(); } });
+  }
 })();

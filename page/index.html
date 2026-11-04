@@ -261,9 +261,9 @@ details.sw-how[open] > summary{display:none}
 <div class="sw-page">
   <header class="sw-head">
     <h1>Snow &amp; Avalanche Watch</h1>
-    <p>Avalanche danger, snowpack and the week ahead for Rogers Pass, Rossland to Kootenay Pass, the hills above Vallter and the mountains around Innsbruck. Refreshed every morning.</p>
+    <p>Avalanche danger, snowpack and the week ahead for Rogers Pass, Rossland to Kootenay Pass, the hills above Vallter, the mountains around Innsbruck and Rocky Mountain National Park. Refreshed every morning.</p>
   </header>
-  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="rossland" aria-selected="false">Rossland & Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="vallter" aria-selected="false">Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="innsbruck" aria-selected="false">Innsbruck</button></nav>
+  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="rossland" aria-selected="false">Rossland & Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="vallter" aria-selected="false">Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="innsbruck" aria-selected="false">Innsbruck</button><button class="sw-tab" role="tab" data-tab="rmnp" aria-selected="false">Rocky Mountain NP</button></nav>
 
   <section class="sw-zone" id="rogers" data-zone="Rogers Pass" data-temp="Fidelity" data-wind="MacDonald West Shoulder">
     <p class="sw-sub">Glacier National Park, Selkirk Mountains, BC · forecast by Parks Canada via Avalanche Canada</p>
@@ -1640,17 +1640,370 @@ details.sw-how[open] > summary{display:none}
       </ul>
     </div>
   </section>
+  <section class="sw-zone" id="rmnp" data-zone="Rocky Mountain NP" data-temp="Bear Lake" data-wind="Continental Divide above Bear Lake (model)" hidden>
+    <p class="sw-sub">Rocky Mountain National Park, Front Range, Colorado · forecast by the Colorado Avalanche Information Center (CAIC)</p>
+
+    <div class="sw-grid sw-grid-top">
+      <div class="sw-card" id="rmnp-danger">
+        <h2 class="sw-h">Avalanche danger</h2>
+        <p class="sw-note">Danger by elevation band from the CAIC forecast for the Front Range zone, which covers almost all of the park.</p>
+        <div class="sw-danger" data-draw="danger" data-source="danger_now"></div>
+        <dl class="sw-meta">
+          <dt>Issued</dt><dd data-draw="cell" data-source="bulletins" data-field="issued" data-where="zone=Rocky Mountain NP">—</dd>
+          <dt>Valid until</dt><dd data-draw="cell" data-source="bulletins" data-field="valid_until" data-where="zone=Rocky Mountain NP">—</dd>
+        </dl>
+        <h3 class="sw-h3">Forecasts across the map</h3>
+        <p class="sw-note">This card is the CAIC forecast for the zone over Bear Lake. Any other CAIC zone that reaches onto the map is listed here, and the route check uses whichever covers most of your route.</p>
+        <ul class="sw-regional" data-draw="regional" data-source="regional_forecasts"></ul>
+      </div>
+      <div class="sw-card" id="rmnp-bulletin">
+        <h2 class="sw-h">What the forecasters say</h2>
+        <p class="sw-note">The current bulletin's headline and snowpack notes.</p>
+        <div class="sw-bulletin" data-draw="bulletin" data-source="bulletins"></div>
+        <h3 class="sw-h3">Avalanche problems</h3>
+        <div class="sw-problems" data-draw="problems" data-source="problems"></div>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide sw-mapcard" id="rmnp-map" data-pfx="rmnp">
+      <h2 class="sw-h">Slope map</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">About 43 by 47 km: the Never Summer Mountains, Trail Ridge, the Mummy Range, the Bear Lake corridor and Glacier Gorge, Longs Peak and Wild Basin. Zoom in and it sharpens to 30 m. Grid north is up. Contour lines (optional) are every 100 m, with an extra interval when zoomed in. Drag to move around; ctrl- or ⌘-scroll, pinch or the buttons to zoom (plain scrolling zooms once the map is expanded). Hover for elevation, slope and aspect.</p></details>
+      <div class="sw-map-ctrl">
+        <div class="sw-seg" role="group" aria-label="Map view">
+          <button type="button" class="sw-mode" data-mode="slope" aria-pressed="true">Slope angle</button>
+          <button type="button" class="sw-mode" data-mode="watch" aria-pressed="false">Terrain to watch</button>
+          <button type="button" class="sw-mode" data-mode="wind" aria-pressed="false">Wind loading</button>
+        </div>
+        <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
+        <label class="sw-paths-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
+          <option value="off">none</option>
+          <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
+          <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
+        </select></label>
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
+        </div></details>
+        <div class="sw-zoombar">
+          <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
+          <button type="button" class="sw-zbtn sw-zout" aria-label="Zoom out">−</button>
+          <button type="button" class="sw-zbtn sw-zreset">Reset view</button>
+          <button type="button" class="sw-zbtn sw-expand">⤢ Expand</button>
+          <button type="button" class="sw-zbtn sw-collapse" hidden>✕ Close</button>
+        </div>
+      </div>
+      <div class="sw-search">
+        <input type="search" class="sw-search-in" placeholder="Search peaks, passes, places, stations, or lat, lon" aria-label="Search the maps" autocomplete="off" spellcheck="false">
+        <ul class="sw-search-list" role="listbox" hidden></ul>
+      </div>
+      <div class="sw-watch" hidden>
+        <div class="sw-watch-row">
+          <span class="sw-watch-lab">Aspects</span>
+          <span class="sw-aspects">
+            <label><input type="checkbox" class="sw-asp" value="N" checked>N</label>
+            <label><input type="checkbox" class="sw-asp" value="NE" checked>NE</label>
+            <label><input type="checkbox" class="sw-asp" value="E" checked>E</label>
+            <label><input type="checkbox" class="sw-asp" value="SE" checked>SE</label>
+            <label><input type="checkbox" class="sw-asp" value="S" checked>S</label>
+            <label><input type="checkbox" class="sw-asp" value="SW" checked>SW</label>
+            <label><input type="checkbox" class="sw-asp" value="W" checked>W</label>
+            <label><input type="checkbox" class="sw-asp" value="NW" checked>NW</label>
+          </span>
+        </div>
+        <div class="sw-watch-row">
+          <label class="sw-watch-lab" for="rmnp-emin">Elevation</label>
+          <span><input id="rmnp-emin" class="sw-emin" type="number" step="50" min="0" max="5000" placeholder="lowest" aria-label="Lowest elevation in metres"> to <input class="sw-emax" type="number" step="50" min="0" max="5000" placeholder="highest" aria-label="Highest elevation in metres"> m</span>
+          <label class="sw-watch-lab" for="rmnp-smin">Slopes from</label>
+          <select id="rmnp-smin" class="sw-smin">
+            <option value="25">25°</option><option value="30" selected>30°</option><option value="35">35°</option><option value="40">40°</option>
+          </select>
+        </div>
+        <div class="sw-watch-row">
+          <button type="button" class="sw-match">Match current bulletin</button>
+          <button type="button" class="sw-reset-watch">Reset</button>
+        </div>
+        <p class="sw-note sw-match-note" data-draw="match-note" data-source="problems danger_now">—</p>
+      </div>
+      <div class="sw-map dash-skeleton" data-draw="map" data-source="terrain_rmnp wind_summary snow_grid avalanche_reports glaciers"></div>
+      <div class="sw-fc-legend" hidden></div>
+      <ul class="sw-legend sw-leg-slope">
+        <li><i class="sw-sw" style="background:var(--sw-s27)"></i>27–29°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s30)"></i>30–34°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s35)"></i>35–39°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s40)"></i>40–44°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s45)"></i>45° and steeper</li>
+        <li><span class="sw-mk-peak">▲</span>Summit</li>
+        <li><span class="sw-mk-col">◆</span>Col or pass</li>
+        <li><span class="sw-mk-stn">●</span>Weather station</li>
+        
+        <li class="sw-leg-glac" hidden><i class="sw-sw" style="background:rgba(150,205,255,.8);border-color:#145FAA"></i>Glacier or permanent snowfield</li>
+      </ul>
+      <ul class="sw-legend sw-leg-wind" hidden>
+        <li><i class="sw-sw" style="background:var(--sw-wind)"></i>Likely wind-loaded (lee of recent winds)</li>
+        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
+      </ul>
+      <p class="sw-note sw-wind-note" data-draw="wind-note" data-source="wind_summary" hidden>—</p>
+      <ul class="sw-legend sw-leg-watch" hidden>
+        <li><i class="sw-sw" style="background:var(--sw-watch)"></i>Matches your filter</li>
+        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
+      </ul>
+      <span class="sw-blockmarks"><i hidden data-block="t30_rmnp_0_0" data-rc="0,0" data-source="t30_rmnp_0_0"></i><i hidden data-block="t30_rmnp_0_1" data-rc="0,1" data-source="t30_rmnp_0_1"></i><i hidden data-block="t30_rmnp_1_0" data-rc="1,0" data-source="t30_rmnp_1_0"></i><i hidden data-block="t30_rmnp_1_1" data-rc="1,1" data-source="t30_rmnp_1_1"></i></span>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note sw-map-caveat">Slopes from the 30 m Copernicus GLO-30 surface model, not the much finer USGS lidar. Zoomed out, the map shows a 90 m summary that keeps each 90 m cell's average 30 m steepness; the route check always uses 30 m. It smooths short steep rolls, couloirs and gully walls, so real angles can be steeper, and forest edges can show as false steep patches. Glaciers are named but not outlined. The park boundary isn't drawn. The stations are NRCS SNOTEL sites, mostly in sheltered openings in the trees, so they read snow and temperature well but not ridge conditions. Names from GeoNames (USGS GNIS); peaks are pinned to the model summit. A planning aid, not a substitute for measuring slopes on the ground.</p></details>
+      <div class="sw-route-bar">
+        <label class="sw-zbtn sw-upload">Check a GPX route<input type="file" class="sw-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
+        <button type="button" class="sw-zbtn sw-route-clear" hidden>Remove route</button>
+        <span class="sw-timing" hidden>
+          <label class="sw-paths-tog">Start <input type="datetime-local" class="sw-start" step="900" aria-label="Start date and time, local time at the map"></label>
+          <label class="sw-paths-tog">Pace <select class="sw-pace"><option value="0.8">relaxed</option><option value="1" selected>steady</option><option value="1.25">fast</option></select></label>
+        </span>
+        <span class="sw-watchgpx" hidden><button type="button" class="sw-zbtn sw-watchgpx-btn">Download hazard-marked route for watch</button></span>
+        <span class="sw-route-msg" data-draw="route-msg" data-source="terrain_rmnp">—</span>
+        <span class="sw-route-hint">Your file stays in this browser; nothing is uploaded or saved.</span>
+        <span class="sw-route-msg sw-watchgpx-note" aria-live="polite"></span>
+      </div>
+      <div class="sw-route" hidden>
+        <h3 class="sw-h3">Route check</h3>
+        <div class="sw-brief">
+          <p class="sw-brief-verdict" data-draw="route-verdict" data-source="danger_now problems regional_forecasts">—</p>
+          <div class="sw-brief-lab">Route profile</div>
+          <div class="sw-chart sw-chart-short" data-draw="route-profile" data-source="terrain_rmnp"></div>
+          <div class="sw-brief-lab">Hazard sections</div>
+          <div class="sw-hz-filter" role="group" aria-label="Show hazards">
+            <span>Show:</span>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="all"> All</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="underfoot" checked> ▼ On the slope</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="overhead"> ▲ From above</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="other" checked> Glaciers and cliffs</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="highOnly"> High-consequence only</label>
+          </div>
+          <div class="sw-tablebox sw-route-box">
+            <table class="sw-table sw-route-table">
+              <thead><tr><th>#</th><th>Km</th><th class="sw-num">Elevation (m)</th><th>Level</th><th>What's there</th></tr></thead>
+              <tbody data-draw="route-rows" data-source="terrain_rmnp danger_now problems regional_forecasts outlook"></tbody>
+            </table>
+          </div>
+          <details class="sw-how"><summary>How this works</summary><p class="sw-note">Select a section to zoom the map to it. Most avalanche accidents are triggered by the victim or someone in their group, so the slope underfoot always counts. A slope above counts in full only when today’s data gives it a reason to come down on you: considerable or higher danger at its elevation, a persistent slab problem with the start zone within 300 m (these can be triggered from a distance), a wet-snow problem, 20 cm or more of new snow forecast, a wind-loaded start zone, or warm sun on it when you pass. Otherwise it is shown as exposure. Other parties above you can still trigger it, so cross one at a time and don’t stop underneath. Each Show box matches a group in this table (a section on a slope you could trigger counts as “On the slope” even when there is also a slope above). The Show options apply to this table, the map, the profile, Previous / Next on the map and the watch file.</p></details>
+          <div class="sw-brief-lab">Conditions</div>
+          <ul class="sw-brief-list" data-draw="route-conditions" data-source="danger_now problems stations_daily outlook wind_summary avalanche_reports"></ul>
+          <p class="sw-note">Generated from the route's terrain, today's bulletin and the station and forecast data on this dashboard. A guide to where to focus, not a go/no-go decision.</p>
+          <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Download hazard-marked route for watch” saves your route as a .gpx with a waypoint at the start of each section the Show options above let through (the same ones as in the table and on the map), named like “HIGH 3 slope above”, “CARE 5 …” or “EXPOSED 7 …”; section numbers match the table above. Import it into your watch’s app as a route and navigate it, and the watch alerts you as you approach each waypoint.</p></details>
+        </div>
+        <p class="sw-route-sum" data-draw="route-summary" data-source="terrain_rmnp wind_summary avalanche_reports glaciers">—</p>
+        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Timing uses your start time (local time at the map) and pace to estimate when you reach each section (Munter method: an hour per 4 km plus 400 m climbed at a steady pace, faster downhill), then checks where the sun is and the day's forecast warmth. It ignores shade cast by ridges, so a slope may get sun later than shown.</p></details>
+        <ul class="sw-legend">
+          <li><span class="sw-expo sw-expo-underfoot">▼ On the slope</span> the slope you're on can avalanche: solid line</li>
+          <li><span class="sw-expo sw-expo-overhead">▲ Slope above</span> a slope above can run onto you: dashed line</li>
+          <li><span class="sw-dedge"><i style="background:#4DB848"></i><i style="background:#FFE600"></i><i style="background:#F7941E"></i><i style="background:#E8222A"></i><i style="background:#231F20"></i></span>Outer edge: today's danger rating at that elevation (when a rating is in force)</li>
+          <li><i class="sw-sw" style="background:var(--sw-r2)"></i>High consequence</li>
+          <li><i class="sw-sw" style="background:var(--sw-r1)"></i>Take care</li>
+          <li><i class="sw-sw" style="background:#8A7CC2"></i>Exposure: under a slope above that today’s conditions don’t raise</li>
+          <li><i class="sw-sw" style="background:#fff"></i>No terrain flags</li>
+        </ul>
+        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Every 10 m of the route is checked against the terrain model for: the slope underfoot (30° and up is avalanche terrain, 35° and up is steep); slopes of 30–60° above the route that face it, within 1 km and at least 30 m higher, steep enough to reach it (an angle of 22° or more up from the route to the start zone, the "alpha angle" used to screen avalanche runouts; 28° or more from a 35°+ slope counts as high); and cliffs or very steep drops within 40 m below. "Today" marks sections whose terrain matches the Terrain to watch filter, when that view is on. This reads the terrain only. It knows nothing about the snowpack, and can miss small features or flag paths that are sheltered in reality: a screening tool for planning, not a substitute for the bulletin, training and judgement on the day.</p></details>
+      </div>
+    </div>
+
+    <div class="sw-avzone" data-zone="Rocky Mountain NP" id="avalanches-rmnp">
+      <h2 class="sw-section">Recent avalanches</h2>
+      <p class="sw-note">Field reports aren't included for Colorado yet. The CAIC publishes observations and reported avalanches across the state at <a href="https://avalanche.state.co.us/" target="_blank" rel="noopener">avalanche.state.co.us</a>; check them for the Front Range before you go.</p>
+    </div>
+
+    <h2 class="sw-section">On the ground, latest day</h2>
+    <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
+    <div class="sw-tiles">
+      <div class="sw-tile">
+        <div class="sw-tile-name">Bear Lake</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Bear Lake">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Bear Lake">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Bear Lake">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Bear Lake">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Bear Lake">—</span> °C</dd>
+          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Bear Lake">—</span> mm</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Bear Lake">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Willow Park</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Willow Park">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Willow Park">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Willow Park">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Willow Park">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Willow Park">—</span> °C</dd>
+          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Willow Park">—</span> mm</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Willow Park">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Lake Irene</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Lake Irene">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Lake Irene">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Lake Irene">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Lake Irene">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Lake Irene">—</span> °C</dd>
+          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Lake Irene">—</span> mm</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Lake Irene">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Wild Basin</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Wild Basin">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Wild Basin">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Wild Basin">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Wild Basin">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Wild Basin">—</span> °C</dd>
+          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Wild Basin">—</span> mm</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Wild Basin">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Phantom Valley</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Phantom Valley">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Phantom Valley">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Phantom Valley">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Phantom Valley">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Phantom Valley">—</span> °C</dd>
+          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Phantom Valley">—</span> mm</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Phantom Valley">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Never Summer</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Never Summer">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Never Summer">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Never Summer">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Never Summer">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Never Summer">—</span> °C</dd>
+          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Never Summer">—</span> mm</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Never Summer">—</span></dd>
+        </dl>
+      </div>
+      <div class="sw-tile">
+        <div class="sw-tile-name">Copeland Lake</div>
+        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Copeland Lake">—</span> m</div>
+        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Copeland Lake">—</span><span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Copeland Lake">—</span> cm</dd>
+          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Copeland Lake">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Copeland Lake">—</span> °C</dd>
+          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Copeland Lake">—</span> mm</dd>
+          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Copeland Lake">—</span></dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="rmnp-windcard">
+      <h2 class="sw-h">Wind, last 72 hours</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Modelled (Open-Meteo) on the Continental Divide above Bear Lake at 3,700 m: no ridge-top wind station in the park publishes its data. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Rocky Mountain NP">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Rocky Mountain NP">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Rocky Mountain NP">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Rocky Mountain NP">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Rocky Mountain NP">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="rmnp-depth">
+      <h2 class="sw-h">Snow depth this season</h2>
+      <p class="sw-note">Daily median snow height at each station since 1 October, in cm. Wind-scoured ridge sensors can read low.</p>
+      <div class="sw-chart dash-skeleton" data-draw="depth" data-source="stations_daily"></div>
+    </div>
+
+    <div class="sw-grid">
+      <div class="sw-card" id="rmnp-temp" data-temp="Bear Lake">
+        <h2 class="sw-h">Temperature, daily low to high · Bear Lake</h2>
+        <p class="sw-note">SNOTEL at Bear Lake, 2,893 m. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="rmnp-temp-2" data-temp="Willow Park">
+        <h2 class="sw-h">Temperature, daily low to high · Willow Park</h2>
+        <p class="sw-note">SNOTEL at Willow Park below Trail Ridge, 3,264 m. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="rmnp-outlook" data-point="Bear Lake">
+      <h2 class="sw-h">Next 7 days · Bear Lake</h2>
+      <p class="sw-note">Open-Meteo model forecast for Bear Lake at 2,900 m. Times in Mountain time.</p>
+      <div class="sw-kpis">
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Bear Lake">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Bear Lake">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+      </div>
+      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
+      <div class="sw-tablebox">
+        <table class="sw-table" data-source="outlook" data-row-key="point,date">
+          <thead><tr>
+            <th data-field="date">Day</th>
+            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
+            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
+            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
+            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
+          </tr></thead>
+          <tbody data-draw="outlook-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="rmnp-outlook-2" data-point="Milner Pass">
+      <h2 class="sw-h">Next 7 days · Milner Pass</h2>
+      <p class="sw-note">Open-Meteo model forecast for Milner Pass on Trail Ridge Road, 3,280 m. Times in Mountain time.</p>
+      <div class="sw-kpis">
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Milner Pass">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Milner Pass">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+      </div>
+      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
+      <div class="sw-tablebox">
+        <table class="sw-table" data-source="outlook" data-row-key="point,date">
+          <thead><tr>
+            <th data-field="date">Day</th>
+            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
+            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
+            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
+            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
+          </tr></thead>
+          <tbody data-draw="outlook-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="rmnp-history">
+      <h2 class="sw-h">Danger through the season</h2>
+      <p class="sw-note">Each square is one day's rating for that elevation band. This builds up day by day from the daily refresh.</p>
+      <div class="sw-chart sw-chart-strip dash-skeleton" data-draw="history" data-source="danger_history"></div>
+      <ul class="sw-legend">
+        <li><i class="sw-sw" style="background:var(--sw-d0)"></i>No rating yet</li>
+        <li><i class="sw-sw" style="background:var(--sw-d1)"></i>1 Low</li>
+        <li><i class="sw-sw" style="background:var(--sw-d2)"></i>2 Moderate</li>
+        <li><i class="sw-sw" style="background:var(--sw-d3)"></i>3 Considerable</li>
+        <li><i class="sw-sw" style="background:var(--sw-d4)"></i>4 High</li>
+        <li><i class="sw-sw" style="background:var(--sw-d5)"></i>5 Extreme / Very high</li>
+      </ul>
+    </div>
+  </section>
 
 
 </div>
 
 <script>
 // terrain rows live in two datasets: Rossland on its own (the main file is near its size limit)
-window.swTerrainData = (zone) => dash.data(zone === 'Rossland' ? 'terrain_rossland' : 'terrain');
-window.swTerrainAll = () => {
-  const a = dash.data('terrain'), b = dash.data('terrain_rossland');
-  return [...(a.status === 'ok' ? a.data : []), ...(b.status === 'ok' ? b.data : [])];
-};
+window.swTerrainData = (zone) => dash.data(zone === 'Rossland' ? 'terrain_rossland' : zone === 'Rocky Mountain NP' ? 'terrain_rmnp' : 'terrain');
+window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrain_rmnp'].map((id) => { const d = dash.data(id); return d.status === 'ok' ? d.data : []; }));
 (() => {
   const parse = d3.utcParse('%Y-%m-%d');
   const fmtDay = d3.utcFormat('%b %-d');
@@ -1882,12 +2235,18 @@ dash.calc('latest_obs', {
 
 dash.calc('danger_now', {
   title: 'Latest danger rating',
-  description: 'Each zone’s ratings for the most recent day in the danger history.',
+  description: 'Each zone’s ratings for today in that zone (or the latest earlier day if today isn’t rated yet).',
   inputs: ['danger_history'],
   fn: (danger_history) => {
-    const latest = {};
-    for (const r of danger_history) if (!latest[r.zone] || r.date > latest[r.zone]) latest[r.zone] = r.date;
-    return danger_history.filter((r) => r.date === latest[r.zone]);
+    const tz = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', 'Vallter / Ulldeter': 'Europe/Madrid', Innsbruck: 'Europe/Vienna', 'Rocky Mountain NP': 'America/Denver' };
+    const today = (z) => new Intl.DateTimeFormat('en-CA', { timeZone: tz[z] || 'UTC' }).format(new Date());
+    const pick = {};
+    for (const r of danger_history) {
+      const t = today(r.zone), cur = pick[r.zone];
+      const better = !cur || (r.date <= t && (cur > t || r.date > cur)) || (r.date > t && cur > t && r.date < cur);
+      if (better) pick[r.zone] = r.date;
+    }
+    return danger_history.filter((r) => r.date === pick[r.zone]);
   },
 });
 
@@ -2146,531 +2505,6 @@ dash.draw('history', (el) => {
 </script>
 
 <script src="app.js"></script>
-
-<script>
-(() => {
-  // phones: map layers and long explanations fold away; wider screens show them open
-  const narrow = window.matchMedia('(max-width: 640px)');
-  const fold = () => { for (const d of document.querySelectorAll('details.sw-layers, details.sw-how')) d.open = !narrow.matches; };
-  fold();
-  if (narrow.addEventListener) narrow.addEventListener('change', () => { fold(); dash.draw('map'); });
-})();
-(() => {
-  const ASP = window.swASP;
-  for (const card of document.querySelectorAll('.sw-mapcard')) {
-    const pfx = card.dataset.pfx;
-    const set = (o) => dash.setParams(Object.fromEntries(Object.entries(o).map(([k, v]) => [pfx + '_' + k, v])));
-    for (const b of card.querySelectorAll('.sw-mode')) b.addEventListener('click', () => set({ mode: b.dataset.mode }));
-    const aspects = () => [...card.querySelectorAll('.sw-asp')].filter((c) => c.checked).map((c) => c.value);
-    for (const c of card.querySelectorAll('.sw-asp')) c.addEventListener('change', () => set({ aspects: aspects() }));
-    for (const inp of card.querySelectorAll('.sw-emin, .sw-emax')) {
-      inp.addEventListener('change', () => {
-        const v = inp.value === '' ? null : Number(inp.value);
-        if (v === null || (inp.validity.valid && Number.isFinite(v))) set({ [inp.classList.contains('sw-emin') ? 'emin' : 'emax']: v });
-      });
-    }
-    const mapEl = () => card.querySelector('.sw-map');
-    for (const b of card.querySelectorAll('.sw-zin')) b.addEventListener('click', () => window.swMaps.get(mapEl())?.zoomBy(1.8));
-    for (const b of card.querySelectorAll('.sw-zout')) b.addEventListener('click', () => window.swMaps.get(mapEl())?.zoomBy(1 / 1.8));
-    for (const b of card.querySelectorAll('.sw-zreset')) b.addEventListener('click', () => window.swMaps.get(mapEl())?.reset());
-    const sizeButtons = () => {
-      const big = card.classList.contains('sw-map-big');
-      for (const x of card.querySelectorAll('.sw-expand')) x.hidden = big;
-      for (const x of card.querySelectorAll('.sw-collapse')) x.hidden = !big;
-    };
-    // expanded: the map fills the whole screen (true full screen where the browser allows it,
-    // otherwise the card covers the whole page; phones in particular often refuse full screen for a page)
-    // Phones: the card moves to the top of the document (so nothing around it can shrink or clip it), is sized
-    // in pixels to the visible screen, and redraws only once the size settles (no flicker as browser bars move).
-    const narrow = () => window.matchMedia('(max-width: 640px)').matches;
-    let home = null, lastH = 0, redrawT = null;
-    const screenH = () => Math.round((window.visualViewport && window.visualViewport.height) || window.innerHeight);
-    const fitBig = () => {
-      if (!card.classList.contains('sw-map-big') || !home) return;
-      const h = screenH();
-      if (Math.abs(h - lastH) < 2) return;
-      lastH = h;
-      card.style.height = h + 'px';
-      clearTimeout(redrawT); redrawT = setTimeout(() => dash.draw('map'), 150);
-    };
-    const portalIn = () => {
-      // carry the theme and type across, in case they're set on a wrapper rather than the page
-      const cs = getComputedStyle(card);
-      for (let i = 0; i < cs.length; i++) { const k = cs[i]; if (k.startsWith('--')) card.style.setProperty(k, cs.getPropertyValue(k)); }
-      for (const k of ['font-family', 'font-size', 'line-height', 'color']) card.style.setProperty(k, cs.getPropertyValue(k));
-      if (!card.dataset.zone) card.dataset.zone = card.closest('[data-zone]').dataset.zone; // lookups by zone keep working
-      home = document.createComment('map card');
-      card.replaceWith(home);
-      document.body.append(card);
-      lastH = 0; fitBig();
-      if (window.visualViewport) window.visualViewport.addEventListener('resize', fitBig);
-    };
-    const portalOut = () => {
-      if (!home) return;
-      if (window.visualViewport) window.visualViewport.removeEventListener('resize', fitBig);
-      home.replaceWith(card); home = null;
-      card.style.height = '';
-    };
-    const closeBig = () => {
-      card.classList.remove('sw-map-big'); sizeButtons();
-      document.documentElement.classList.remove('sw-noscroll');
-      portalOut();
-      if (document.fullscreenElement === card) document.exitFullscreen().catch(() => {}); else dash.draw('map');
-    };
-    for (const b of card.querySelectorAll('.sw-expand')) b.addEventListener('click', () => {
-      card.classList.add('sw-map-big'); sizeButtons();
-      document.documentElement.classList.add('sw-noscroll');
-      const done = () => dash.draw('map');
-      if (narrow() || !card.requestFullscreen) { portalIn(); window.scrollTo(0, 0); done(); return; }
-      card.requestFullscreen({ navigationUI: 'hide' }).then(done, () => { portalIn(); done(); });
-    });
-    for (const b of card.querySelectorAll('.sw-collapse')) b.addEventListener('click', closeBig);
-    document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && card.classList.contains('sw-map-big') && !document.fullscreenElement) closeBig(); });
-    window.addEventListener('resize', () => {
-      if (!card.classList.contains('sw-map-big')) return;
-      if (home) fitBig(); else { clearTimeout(redrawT); redrawT = setTimeout(() => dash.draw('map'), 150); }
-    });
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement && card.classList.contains('sw-map-big') && card.dataset.wasFs) { delete card.dataset.wasFs; closeBig(); return; }
-      if (document.fullscreenElement === card) card.dataset.wasFs = '1';
-      dash.draw('map');
-    });
-    for (const c of card.querySelectorAll('.sw-paths')) c.addEventListener('change', () => set({ paths: c.checked }));
-    for (const c of card.querySelectorAll('.sw-obs')) c.addEventListener('change', () => set({ obs: c.checked }));
-    for (const c of card.querySelectorAll('.sw-doc')) c.addEventListener('change', () => set({ doc: c.checked }));
-    for (const c of card.querySelectorAll('.sw-topo')) c.addEventListener('change', () => set({ topo: c.checked }));
-    for (const c of card.querySelectorAll('.sw-fc')) c.addEventListener('change', () => set({ fc: c.value }));
-    for (const c of card.querySelectorAll('.sw-glac')) c.addEventListener('change', () => set({ glac: c.checked }));
-    for (const s of card.querySelectorAll('.sw-smin')) s.addEventListener('change', () => set({ smin: Number(s.value) }));
-    for (const b of card.querySelectorAll('.sw-reset-watch')) b.addEventListener('click', () => set({ aspects: ASP, emin: null, emax: null, smin: 30 }));
-    for (const b of card.querySelectorAll('.sw-match')) {
-      b.addEventListener('click', () => {
-        const zone = card.closest('[data-zone]').dataset.zone;
-        const pr = dash.data('problems'), dn = dash.data('danger_now');
-        const probs = pr.status === 'ok' ? pr.data.filter((r) => r.zone === zone && r.problem) : [];
-        const norm = { NORTH: 'N', NORTHEAST: 'NE', EAST: 'E', SOUTHEAST: 'SE', SOUTH: 'S', SOUTHWEST: 'SW', WEST: 'W', NORTHWEST: 'NW' };
-        const asp = new Set();
-        for (const p of probs) for (const a of String(p.aspects || '').split(',')) {
-          const k = a.toUpperCase().replace(/[^A-Z]/g, '');
-          const v = norm[k] || (ASP.includes(k) ? k : null);
-          if (v) asp.add(v);
-        }
-        let emin = null;
-        const rows = dn.status === 'ok' ? dn.data.filter((r) => r.zone === zone && Number(r.level) > 0) : [];
-        const upper = rows.find((r) => r.band === 'upper'), lower = rows.find((r) => r.band === 'lower');
-        const m = upper && /(\d[\d,.]*)\s*m/.exec(upper.band_label || '');
-        if (m && lower && Number(upper.level) > Number(lower.level)) emin = Number(m[1].replace(/[,.]/g, ''));
-        set({ mode: 'watch', aspects: asp.size ? ASP.filter((a) => asp.has(a)) : ASP, emin, emax: null, smin: 30 });
-      });
-    }
-  }
-  // keep controls in step with the current settings
-  dash.onData(() => {
-    for (const card of document.querySelectorAll('.sw-mapcard')) {
-      const s = window.swMapSettings(card.dataset.pfx);
-      for (const b of card.querySelectorAll('.sw-mode')) b.setAttribute('aria-pressed', String(b.dataset.mode === s.mode));
-      for (const w of card.querySelectorAll('.sw-watch, .sw-leg-watch')) w.hidden = s.mode !== 'watch';
-      for (const w of card.querySelectorAll('.sw-leg-wind, .sw-wind-note')) w.hidden = s.mode !== 'wind';
-      for (const w of card.querySelectorAll('.sw-leg-slope')) w.hidden = s.mode !== 'slope';
-      for (const c of card.querySelectorAll('.sw-paths')) c.checked = s.paths;
-      for (const c of card.querySelectorAll('.sw-obs')) c.checked = s.obs;
-      for (const c of card.querySelectorAll('.sw-doc')) c.checked = s.doc;
-      for (const c of card.querySelectorAll('.sw-topo')) c.checked = s.topo;
-      for (const c of card.querySelectorAll('.sw-fc')) c.value = s.fc;
-      for (const c of card.querySelectorAll('.sw-glac')) c.checked = s.glac;
-      for (const l of card.querySelectorAll('.sw-leg-glac')) l.hidden = !s.glac;
-      for (const c of card.querySelectorAll('.sw-asp')) c.checked = s.aspects.includes(c.value);
-      for (const i of card.querySelectorAll('.sw-emin')) if (i !== document.activeElement) i.value = s.emin ?? '';
-      for (const i of card.querySelectorAll('.sw-emax')) if (i !== document.activeElement) i.value = s.emax ?? '';
-      for (const x of card.querySelectorAll('.sw-smin')) x.value = String(s.smin);
-    }
-  });
-})();
-</script>
-
-
-<script>
-(() => {
-  const OCT = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-  const zoneOf = (el) => el.closest('[data-zone]').dataset.zone;
-  const wsum = (zone) => { const d = dash.data('wind_summary'); return d.status === 'ok' ? d.data.find((x) => x.zone === zone) : null; };
-
-  dash.draw('wind-sum', (el) => {
-    const w = wsum(zoneOf(el));
-    if (!w) { el.textContent = '—'; return; }
-    if (!w.transport_hours) { el.textContent = 'Winds have been too light to move snow in the last 72 hours.'; return; }
-    const strength = w.strong_hours >= 6 ? 'strong' : w.transport_hours >= 12 ? 'sustained moderate' : 'moderate';
-    let txt = `${w.transport_hours} hours of ${strength} wind, mostly from the ${w.from_dir}, averaging ${w.mean_transport_kmh} km/h when it was blowing hard enough to move snow. `;
-    const la = w.loaded_aspects.split(','), loaded = la.length > 1 ? la.slice(0, -1).join(', ') + ' and ' + la[la.length - 1] : la[0];
-    if (window.swWindActive(w)) txt += `Expect fresh wind slabs on ${loaded}-facing slopes below ridges and in gullies.`;
-    else txt += `There’s little snow for it to move yet (${w.snow_depth_cm ?? 0} cm on the ground), so loading is limited for now.`;
-    el.textContent = txt;
-  });
-
-  dash.draw('wind-note', (el) => {
-    const w = wsum(zoneOf(el));
-    if (!w) { el.textContent = '—'; return; }
-    const alp = window.swAlpine[zoneOf(el)];
-    if (w.from_deg === null) { el.textContent = 'Winds have been too light to move snow in the last 72 hours, so no slopes are shaded.'; return; }
-    el.textContent = `Slopes of 25–55° above about ${d3.format(',')(alp)} m that face away from the recent ${w.from_dir} wind and sit sheltered below a ridge or rise within 300 m upwind. A model of where slabs are likely, from one ridge station’s wind; local winds funnel and swirl, so expect loading on other aspects too, especially cross-loaded gully sides.` + (window.swWindActive(w) ? '' : ' There’s little snow to move yet, so treat this as where loading will build once it snows.');
-  });
-
-  dash.draw('wind-rose', (el) => {
-    el.replaceChildren();
-    const d = dash.data('wind_rose');
-    if (d.status !== 'ok') return;
-    const rows = d.data.filter((x) => x.zone === zoneOf(el));
-    const S = 220, cx = S / 2, cy = S / 2, R = S / 2 - 22;
-    const max = Math.max(1, d3.max(rows, (x) => x.hours) || 1);
-    const rs = d3.scaleSqrt([0, max], [0, R]);
-    const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${S} ${S}`).attr('width', '100%');
-    for (const f of [0.5, 1]) svg.append('circle').attr('cx', cx).attr('cy', cy).attr('r', rs(max * f)).attr('fill', 'none').attr('stroke', 'var(--cds-chart-grid)');
-    const arc = d3.arc();
-    const tip = document.createElement('div'); tip.className = 'sw-tip'; tip.hidden = true; el.append(tip);
-    rows.forEach((x) => {
-      const i = OCT.indexOf(x.from_dir), a0 = ((i * 45 - 20) * Math.PI) / 180, a1 = ((i * 45 + 20) * Math.PI) / 180;
-      const g = svg.append('g').attr('transform', `translate(${cx},${cy})`);
-      g.append('path').attr('d', arc({ innerRadius: 0, outerRadius: rs(x.hours || 0), startAngle: a0, endAngle: a1 })).attr('fill', dash.colors[0]).attr('opacity', 0.35);
-      g.append('path').attr('d', arc({ innerRadius: 0, outerRadius: rs(x.transport_hours || 0), startAngle: a0, endAngle: a1 })).attr('fill', dash.colors[0]);
-      g.append('path').attr('d', arc({ innerRadius: 0, outerRadius: R, startAngle: a0, endAngle: a1 })).attr('fill', 'transparent')
-        .on('pointermove', (ev) => {
-          tip.replaceChildren();
-          const h = document.createElement('div'); h.className = 'sw-tdate'; h.textContent = `From the ${x.from_dir}`;
-          const l1 = document.createElement('div'); l1.textContent = `${x.hours} h, ${x.transport_hours} h strong enough to move snow`;
-          const l2 = document.createElement('div'); l2.textContent = x.mean_kmh === null ? '' : `Average ${x.mean_kmh} km/h`;
-          tip.append(h, l1, l2); tip.hidden = false;
-          const [px, py] = d3.pointer(ev, el);
-          tip.style.left = Math.max(0, Math.min(el.clientWidth - tip.offsetWidth, px + 10)) + 'px';
-          tip.style.top = Math.max(0, py - tip.offsetHeight - 6) + 'px';
-        })
-        .on('pointerleave', () => { tip.hidden = true; });
-    });
-    OCT.forEach((o, i) => {
-      const a = (i * 45 * Math.PI) / 180;
-      svg.append('text').attr('x', cx + Math.sin(a) * (R + 12)).attr('y', cy - Math.cos(a) * (R + 12)).attr('dy', '0.35em')
-        .attr('text-anchor', 'middle').attr('font-size', 11).style('fill', 'var(--color-fg-muted)').text(o);
-    });
-  });
-})();
-</script>
-
-
-<script>
-(() => {
-  const C = window.swRouteCore;
-  const fmtDay = d3.utcFormat('%b %-d'), parse = d3.utcParse('%Y-%m-%d'), f1 = d3.format('~f');
-  const KIND = { avalanche: 'Avalanche', signs: 'Warning signs', incident: 'Caught', report: 'Conditions' };
-  const KCOL = { avalanche: 'var(--sw-av)', signs: 'var(--sw-r1)', incident: '#231F20', report: 'var(--cds-chart-muted)' };
-  const docCache = {};
-  const zoneOfEl = (el) => el.closest('[data-zone]').dataset.zone;
-  const refOf = (el) => (el.closest('[data-ref]') || {}).dataset?.ref || 'the pass';
-  dash.draw('regional', (ul) => {
-    ul.replaceChildren();
-    const d = dash.data('regional_forecasts');
-    if (d.status !== 'ok') return;
-    const zr = d.data.filter((x) => x.zone === zoneOfEl(ul));
-    if (zr.length > 3 && !zr.some((x) => x.today)) {
-      const li = document.createElement('li');
-      li.textContent = `No ratings yet for any of the ${zr.length} forecast regions on this map; they'll be listed here once the bulletin starts.`;
-      ul.append(li); return;
-    }
-    for (const r of zr) {
-      const li = document.createElement('li');
-      const b = document.createElement('b'); b.textContent = r.name; li.append(b);
-      li.append(` (${r.forecaster}): ${r.today || 'no rating'}${r.issued ? ', issued ' + fmtDay(parse(r.issued)) : ''}. `);
-      if (r.url) { const a = document.createElement('a'); a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Open'; li.append(a); }
-      ul.append(li);
-    }
-  });
-  window.swDocFor = (zone, rows) => (docCache[zone] = docCache[zone] || rows.filter((r) => r.zone === zone).map((r) => {
-    const p = C.preparePaths([{ path_id: r.code, valley: r.valley, rings: r.rings }])[0];
-    return Object.assign(p, { year: r.year, code: r.code });
-  }));
-  const reports = () => { const d = dash.data('avalanche_reports'); return d.status === 'ok' ? d.data.filter((r) => r.id) : null; };
-  const filtered = (rows) => {
-    const p = dash.params();
-    const range = p.av_range || 'all', only = p.av_only === true;
-    return rows.filter((r) => (range === 'all' || r.dist_km <= Number(range)) && (!only || r.kind !== 'report'));
-  };
-  const terrainRow = (zone) => window.swTerrainAll().find((r) => r.zone === zone) || null;
-  const toCell = (row, lat, lon) => {
-    const [x, y] = C.utm(lat, lon, C.zoneOfCrs(row.crs));
-    return [(x - row.x0) / row.cell_m, (row.y0 - y) / row.cell_m];
-  };
-  const what = (r) => {
-    const bits = [];
-    if (r.avalanches) bits.push(`${r.count_label && String(r.count_label) !== '1' ? r.count_label + ' avalanches' : 'avalanche'}${r.max_size ? ', size ' + f1(r.max_size) : ''}`);
-    if (r.types) bits.push(r.types);
-    if (r.triggers) bits.push(r.triggers);
-    if (r.aspects) bits.push(r.aspects + (r.elevations ? '' : ' aspect'));
-    if (r.elevations) bits.push(r.elevations + (r.elev_m ? ` (${d3.format(',')(r.elev_m)} m)` : ''));
-    if (r.avalanche_date && r.avalanche_date !== r.date) bits.push('ran ' + fmtDay(parse(r.avalanche_date)));
-    if (r.signs) bits.push(r.signs);
-    if (r.caught) bits.push(r.caught);
-    return bits.join(' · ');
-  };
-
-  // map markers for reports inside the Rogers Pass map
-  window.swObsHits = {};
-  window.swObsOverlay = (sel, zone, row, toX, toY, s, card) => {
-    window.swObsHits[zone] = [];
-    if (!card.querySelector('.sw-obs') || !s.obs) return;
-    const rows = reports();
-    if (!rows) return;
-    for (const r of rows.filter((x) => x.zone === zone).slice().reverse()) {
-      const [c, rr] = toCell(row, r.lat, r.lon);
-      if (c < 0 || rr < 0 || c > row.width || rr > row.height) continue;
-      const x = toX(c), y = toY(rr), col = { avalanche: '#C4122F', signs: '#FFB000', incident: '#231F20', report: '#8A8A8A' }[r.kind];
-      if (r.kind === 'avalanche' || r.kind === 'incident') {
-        const k = 6 + Math.min(4, (r.max_size || 1));
-        sel.append('path').attr('d', `M${x},${y - k}L${x + k},${y}L${x},${y + k}L${x - k},${y}Z`).attr('fill', col).attr('stroke', '#fff').attr('stroke-width', 1.5);
-      } else {
-        sel.append('circle').attr('cx', x).attr('cy', y).attr('r', 5).attr('fill', col).attr('stroke', '#fff').attr('stroke-width', 1.5);
-      }
-      window.swObsHits[zone].push({ x, y, label: `${fmtDay(parse(r.date))}: ${r.title}${r.kind !== 'report' ? ' (' + KIND[r.kind].toLowerCase() + ')' : ''}` });
-    }
-  };
-
-  window.swShowOnMap = (zone, lat, lon) => {
-    const card = document.querySelector(`.sw-zone[data-zone="${CSS.escape(zone)}"] .sw-mapcard`);
-    const row = terrainRow(zone);
-    if (!card || !row) return;
-    const tab = document.querySelector(`.sw-tab[data-tab="${card.dataset.pfx}"]`);
-    if (tab) tab.click();
-    const mapEl = card.querySelector('.sw-map');
-    setTimeout(() => {
-      mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      const m = window.swMaps.get(mapEl);
-      if (m && lat !== undefined) { const [c, r] = toCell(row, lat, lon); const pad = 1500 / row.cell_m; setTimeout(() => m.zoomTo(c - pad, r - pad, c + pad, r + pad), 450); }
-      else if (m) m.redraw();
-    }, 60);
-  };
-
-  // controls
-  for (const sel of document.querySelectorAll('.sw-av-range')) sel.addEventListener('change', () => dash.setParams({ av_range: sel.value }));
-  for (const c of document.querySelectorAll('.sw-av-only')) c.addEventListener('change', () => dash.setParams({ av_only: c.checked }));
-  dash.onData(() => {
-    const p = dash.params();
-    for (const sel of document.querySelectorAll('.sw-av-range')) sel.value = p.av_range || 'all';
-    for (const c of document.querySelectorAll('.sw-av-only')) c.checked = p.av_only === true;
-  });
-
-  dash.draw('av-sum', (el) => {
-    const all = reports();
-    if (!all) { el.textContent = '—'; return; }
-    const zone = zoneOfEl(el), ref = refOf(el);
-    const rows = all.filter((r) => r.zone === zone);
-    if (!rows.length) { el.textContent = zone === 'Rogers Pass' || zone === 'Rossland' ? 'No field reports in the last 30 days.' : 'No reports in the last 30 days. Both feeds are mostly filed in winter.'; return; }
-    const av = rows.filter((r) => r.avalanches > 0);
-    const latest = av[0];
-    const big = d3.greatest(av.filter((r) => r.max_size), (r) => r.max_size);
-    let t = `${rows.length} report${rows.length === 1 ? '' : 's'} in the last 30 days, ${av.length} of them describing avalanches.`;
-    if (latest) t += ` Most recent: ${latest.title} (${fmtDay(parse(latest.date))}, ${latest.dist_km} km from ${ref}), ${what(latest)}.`;
-    if (big && big !== latest) t += ` Largest: size ${f1(big.max_size)}, ${big.title} (${fmtDay(parse(big.date))}).`;
-    const near = av.filter((r) => r.dist_km <= 10).length;
-    if (av.length) t += ` ${near} within 10 km of ${ref}.`;
-    el.textContent = t;
-  });
-
-  dash.draw('av-chart', (el) => {
-    el.replaceChildren();
-    const all = reports();
-    if (!all) return;
-    const rows = filtered(all.filter((r) => r.zone === zoneOfEl(el)));
-    const end = d3.max(all, (r) => r.date) || new Date().toISOString().slice(0, 10);
-    const days = d3.utcDays(d3.utcDay.offset(parse(end), -29), d3.utcDay.offset(parse(end), 1)).map((d) => d.toISOString().slice(0, 10));
-    const order = ['report', 'signs', 'avalanche', 'incident'];
-    const by = d3.rollup(rows, (v) => v, (r) => r.date);
-    const W = Math.max(280, el.clientWidth), H = 180, m = { top: 10, right: 24, bottom: 24, left: 26 };
-    const w = W - m.left - m.right, h = H - m.top - m.bottom;
-    const ymax = Math.max(3, d3.max(days, (d) => (by.get(d) || []).length) || 0);
-    const x = d3.scaleBand(days, [0, w]).padding(0.2), y = d3.scaleLinear([0, ymax], [h, 0]).nice();
-    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
-    const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
-    const ya = g.append('g').call(d3.axisLeft(y).ticks(Math.min(ymax, 4)).tickFormat(d3.format('d')).tickSize(-w)).attr('font-size', null).attr('font-family', null);
-    ya.select('.domain').remove(); ya.selectAll('.tick line').attr('stroke', 'var(--cds-chart-grid)'); ya.selectAll('.tick text').attr('dx', -4);
-    const every = Math.max(1, Math.ceil(60 / x.step()));
-    const xa = g.append('g').attr('transform', `translate(0,${h})`).call(d3.axisBottom(x).tickValues(days.filter((_, i) => i % every === 0)).tickFormat((d) => fmtDay(parse(d))).tickSizeOuter(0))
-      .attr('font-size', null).attr('font-family', null);
-    xa.select('.domain').attr('stroke', 'var(--cds-chart-axis)'); xa.selectAll('.tick line').remove();
-    window.swTrim(xa);
-    const tip = document.createElement('div'); tip.className = 'sw-tip'; tip.hidden = true; el.append(tip);
-    const bw = Math.min(28, x.bandwidth());
-    for (const d of days) {
-      const list = (by.get(d) || []).slice().sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind));
-      list.forEach((r, i) => {
-        g.append('rect').attr('x', x(d) + (x.bandwidth() - bw) / 2).attr('width', bw).attr('y', y(i + 1) + 1).attr('height', Math.max(1, y(i) - y(i + 1) - 1))
-          .attr('rx', 2).style('fill', KCOL[r.kind])
-          .on('pointermove', (ev) => {
-            tip.replaceChildren();
-            const hd = document.createElement('div'); hd.className = 'sw-tdate'; hd.textContent = fmtDay(parse(d));
-            const l1 = document.createElement('div'); l1.textContent = r.title;
-            const l2 = document.createElement('div'); l2.textContent = what(r) || KIND[r.kind];
-            tip.append(hd, l1, l2); tip.hidden = false;
-            const [px, py] = d3.pointer(ev, el);
-            tip.style.left = Math.max(0, Math.min(el.clientWidth - tip.offsetWidth, px + 12)) + 'px';
-            tip.style.top = Math.max(0, py - tip.offsetHeight - 8) + 'px';
-          })
-          .on('pointerleave', () => { tip.hidden = true; });
-      });
-    }
-  });
-
-  dash.draw('av-rows', (tb) => {
-    tb.replaceChildren();
-    const all = reports();
-    if (!all) return;
-    const zone = zoneOfEl(tb);
-    const row = terrainRow(zone);
-    const rows = filtered(all.filter((r) => r.zone === zone));
-    for (const r of rows) {
-      const tr = document.createElement('tr'); tr.dataset.key = r.id;
-      const td = (t) => { const c = document.createElement('td'); if (t !== undefined) c.textContent = t; tr.append(c); return c; };
-      td(fmtDay(parse(r.date)));
-      const tt = td();
-      const a = document.createElement('a'); a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = r.title || 'Report'; tt.append(a);
-      if (r.comment) { const c = document.createElement('span'); c.className = 'sw-av-c'; c.textContent = r.comment.length > 220 ? r.comment.slice(0, 220) + '…' : r.comment; tt.append(c); }
-      const dc = td(f1(r.dist_km)); dc.className = 'sw-num';
-      const kc = td(); const k = document.createElement('span'); k.className = 'sw-kind sw-kind-' + r.kind; k.textContent = KIND[r.kind]; kc.append(k);
-      const wc = td(what(r)); wc.className = 'sw-hide-narrow';
-      const mc = td();
-      if (row) {
-        const [c, rr] = toCell(row, r.lat, r.lon);
-        if (c >= 0 && rr >= 0 && c <= row.width && rr <= row.height) {
-          const b = document.createElement('button'); b.type = 'button'; b.className = 'sw-zbtn'; b.textContent = 'Map';
-          b.onclick = () => window.swShowOnMap(zone, r.lat, r.lon);
-          mc.append(b);
-        }
-      }
-      tb.append(tr);
-    }
-    if (!rows.length) { const tr = document.createElement('tr'); const c = document.createElement('td'); c.colSpan = 6; c.textContent = 'No reports match.'; tr.append(c); tb.append(tr); }
-  });
-
-  dash.draw('av-bulletin', (el) => {
-    el.replaceChildren();
-    const d = dash.data('bulletins');
-    if (d.status !== 'ok') return;
-    const b = d.data.find((r) => r.zone === 'Vallter / Ulldeter');
-    const dn = dash.data('danger_now');
-    const inSeason = dn.status === 'ok' && dn.data.some((r) => r.zone === 'Vallter / Ulldeter' && Number(r.level) > 0);
-    const add = (t, lang) => { const p = document.createElement('p'); p.textContent = t; if (lang) p.lang = lang; el.append(p); };
-    if (!b || !inSeason) { add(`The ICGC bulletin isn't running yet${b && b.valid_until ? ' (it resumes by ' + fmtDay(parse(b.valid_until)) + ')' : ''}, so there are no official notes on recent activity.`); return; }
-    const text = [b.snowpack, b.detail, b.trend].filter(Boolean).join(' ');
-    const hits = text.split(/(?<=[.!?])\s+/).filter((x) => /allau|plaques?|purg|caigud|desencaden|activitat|lliscament|esllavissad|purga/i.test(x));
-    if (!hits.length) { add('The current bulletin doesn’t mention recent avalanche activity.'); return; }
-    add(`Bulletin of ${fmtDay(parse(b.issued))}, in Catalan:`);
-    for (const h of hits) add('“' + h.trim() + '”', 'ca');
-  });
-
-})();
-</script>
-
-
-<script>
-(() => {
-  // search every map's named places; the current map's matches first
-  const KIND = { peak: 'summit', summit: 'summit', col: 'pass or col', place: 'place', glacier: 'glacier', station: 'weather station', circ: 'cirque' };
-  const norm = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/ß/g, 'ss');
-  const cache = new Map();
-  const markersOf = (row) => { if (!cache.has(row)) cache.set(row, JSON.parse(row.markers || '[]')); return cache.get(row); };
-  window.swSearchHit = {};
-  window.swSearchOverlay = (sel, zone, toX, toY) => {
-    const h = window.swSearchHit[zone];
-    if (!h) return;
-    const x = toX(h.col), y = toY(h.row);
-    sel.append('circle').attr('cx', x).attr('cy', y).attr('r', 14).attr('fill', 'none').attr('stroke', '#fff').attr('stroke-width', 5);
-    sel.append('circle').attr('cx', x).attr('cy', y).attr('r', 14).attr('fill', 'none').attr('stroke', '#C4122F').attr('stroke-width', 2.5);
-    if (h.coords) sel.append('circle').attr('cx', x).attr('cy', y).attr('r', 2.5).attr('fill', '#C4122F');
-  };
-  const goTo = (zone, col, rowN, label, coords) => {
-    const card = document.querySelector(`.sw-zone[data-zone="${CSS.escape(zone)}"] .sw-mapcard`);
-    const row = window.swTerrainAll().find((r) => r.zone === zone);
-    if (!card || !row) return;
-    window.swSearchHit[zone] = { col, row: rowN, label, coords };
-    const tab = document.querySelector(`.sw-tab[data-tab="${card.dataset.pfx}"]`);
-    if (tab && tab.getAttribute('aria-selected') !== 'true') tab.click();
-    const mapEl = card.querySelector('.sw-map');
-    setTimeout(() => {
-      const m = window.swMaps.get(mapEl);
-      if (!m) return;
-      const pad = 1500 / row.cell_m;
-      m.zoomTo(col - pad, rowN - pad, col + pad, rowN + pad);
-      setTimeout(() => m.redraw(), 450);
-      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 60);
-  };
-  const results = (q, here) => {
-    const out = [];
-    const rows = window.swTerrainAll();
-    const ll = /^\s*(-?\d{1,2}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/.exec(q);
-    if (ll) {
-      const lat = Number(ll[1]), lon = Number(ll[2]);
-      for (const row of rows) {
-        const [x, y] = window.swRouteCore.utm(lat, lon, window.swRouteCore.zoneOfCrs(row.crs));
-        const c = (x - row.x0) / row.cell_m, r = (row.y0 - y) / row.cell_m;
-        if (c >= 0 && r >= 0 && c < row.width && r < row.height)
-          out.push({ zone: row.zone, col: c, row: r, name: `${lat.toFixed(4)}, ${lon.toFixed(4)}`, meta: 'coordinates', coords: true, score: 0 });
-      }
-      return out;
-    }
-    const n = norm(q).trim();
-    if (n.length < 2) return out;
-    for (const row of rows) {
-      for (const m of markersOf(row)) {
-        if (!m.name) continue;
-        const t = norm(m.name);
-        const i = t.indexOf(n);
-        if (i < 0) continue;
-        const score = (t === n ? 0 : i === 0 ? 1 : /[\s\-(]/.test(t[i - 1]) ? 2 : 3) + (row.zone === here ? 0 : 10) + (m.kind === 'peak' ? 0 : 0.5);
-        out.push({ zone: row.zone, col: m.col, row: m.row, name: m.name, score,
-          meta: [KIND[m.kind] || m.kind, m.elev_m ? d3.format(',')(m.elev_m) + ' m' : null, row.zone === here ? null : row.zone + ' map'].filter(Boolean).join(' · ') });
-      }
-    }
-    out.sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
-    const seen = new Set();
-    return out.filter((o) => { const k = o.zone + '|' + o.name; if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 10);
-  };
-  for (const card of document.querySelectorAll('.sw-mapcard')) {
-    const here = card.closest('[data-zone]').dataset.zone;
-    const inp = card.querySelector('.sw-search-in'), ul = card.querySelector('.sw-search-list');
-    if (!inp || !ul) continue;
-    let list = [], active = -1;
-    const close = () => { ul.hidden = true; ul.replaceChildren(); active = -1; };
-    const pick = (o) => { inp.value = o.coords ? o.name : o.name; close(); goTo(o.zone, o.col, o.row, o.name, o.coords); };
-    const render = () => {
-      ul.replaceChildren();
-      if (!inp.value.trim()) { close(); return; }
-      if (!list.length) {
-        const li = document.createElement('li'); li.className = 'sw-s-none';
-        li.textContent = window.swTerrainAll().length ? 'No match on the maps.' : 'Maps still loading…'; ul.append(li); ul.hidden = false; return;
-      }
-      list.forEach((o, i) => {
-        const li = document.createElement('li'); li.setAttribute('role', 'option'); li.setAttribute('aria-selected', String(i === active));
-        const a = document.createElement('span'); a.textContent = o.name;
-        const b = document.createElement('span'); b.className = 'sw-s-meta'; b.textContent = o.meta;
-        li.append(a, b);
-        li.addEventListener('mousedown', (ev) => { ev.preventDefault(); pick(o); });
-        ul.append(li);
-      });
-      ul.hidden = false;
-    };
-    inp.addEventListener('input', () => {
-      if (!inp.value.trim() && window.swSearchHit[here]) { delete window.swSearchHit[here]; const m = window.swMaps.get(card.querySelector('.sw-map')); if (m) m.redraw(); }
-      list = results(inp.value, here); active = list.length ? 0 : -1; render();
-    });
-    inp.addEventListener('keydown', (ev) => {
-      if (ev.key === 'ArrowDown' && list.length) { active = (active + 1) % list.length; render(); ev.preventDefault(); }
-      else if (ev.key === 'ArrowUp' && list.length) { active = (active - 1 + list.length) % list.length; render(); ev.preventDefault(); }
-      else if (ev.key === 'Enter' && list[active]) { pick(list[active]); ev.preventDefault(); }
-      else if (ev.key === 'Escape') { close(); }
-    });
-    inp.addEventListener('blur', () => setTimeout(close, 150));
-    inp.addEventListener('focus', () => { if (inp.value.trim()) { list = results(inp.value, here); render(); } });
-  }
-})();
-</script>
-
 
 <script>
 const showTab = (id) => {
