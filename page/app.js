@@ -544,8 +544,8 @@
         ctx.putImageData(img, 0, 0);
       };
       if (detail) {
-        for (const mk of card.querySelectorAll('[data-block]')) {
-          const id = mk.dataset.block;
+        for (const mk of card.querySelectorAll('[data-rc]')) {
+          const id = mk.dataset.source;
           if (mk.hidden) continue; // not asked for yet
           const dd = dash.data(id);
           if (dd.status !== 'ok' || !dd.data.length) continue;
@@ -842,11 +842,11 @@
         }
         if (detail) {
           const f = row.cell_m / detail.cell_m;
-          const sharp = s0 * tr.k > 1.6; // an overview cell is bigger than ~1.6 screen pixels
+          const sharp = s0 * tr.k > Math.max(1.6, f * 0.4); // an overview cell is over ~1.6 screen pixels and a detail cell over ~0.4 (so 5 m blocks wait for a real zoom)
           // the part of the grid in view, in fine cells
           const vc0 = (((0 - tr.x) / tr.k - ox) / s0) * f, vc1 = (((cw - tr.x) / tr.k - ox) / s0) * f;
           const vr0 = (((0 - tr.y) / tr.k - oy) / s0) * f, vr1 = (((ch - tr.y) / tr.k - oy) / s0) * f;
-          for (const mk of card.querySelectorAll('[data-block]')) {
+          for (const mk of card.querySelectorAll('[data-rc]')) {
             const [br, bc] = mk.dataset.rc.split(',').map(Number);
             const c0 = bc * detail.block, r0 = br * detail.block;
             const inView = c0 < vc1 && c0 + detail.block > vc0 && r0 < vr1 && r0 + detail.block > vr0;
@@ -1383,7 +1383,7 @@
         hit.add(`${Math.floor(fr / det.block)},${Math.floor(fc / det.block)}`);
       }
     }
-    for (const mk of card.querySelectorAll('[data-block]')) if (hit.has(mk.dataset.rc)) mk.hidden = false;
+    for (const mk of card.querySelectorAll('[data-rc]')) if (hit.has(mk.dataset.rc)) mk.hidden = false;
   };
 
   const showResults = (zone, on) => {
