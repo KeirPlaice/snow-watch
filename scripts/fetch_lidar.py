@@ -9,7 +9,9 @@ Prints every resource it finds, so a failed run still shows where the files are.
 """
 import json, os, sys, urllib.request, zipfile
 
-AREAS = {"innsbruck": {"bbox": (10.93, 46.91, 11.77, 47.38), "query": "Gelände Tirol"}}
+AREAS = {"innsbruck": {"bbox": (10.93, 46.91, 11.77, 47.38), "query": "Gelände Tirol",
+                       # the slope map's 5 m grid (UTM 32N, one-cell margin): x0, y0 of the 90 m overview, its size, and the fine cell
+                       "grid": {"crs": "EPSG:32632", "x0": 648450.0, "y0": 5247000.0, "width": 657, "height": 510, "f": 18, "cell": 5.0}}}
 UA = {"User-Agent": "snow-watch-terrain/1.0"}
 
 
@@ -109,6 +111,27 @@ def main():
         if os.path.exists(f) and f != os.path.join(out, f"{area}_dtm.tif"):
             os.remove(f)
     print("written", a.shape, os.path.getsize(os.path.join(out, f"{area}_dtm.tif")))
+    g = cfg.get("grid")
+    if g:  # also resample onto the slope map's grid, as decimetres in uint16 (0 = no data), in parts small enough for git
+        import gzip
+        import numpy as np
+        from affine import Affine
+        from rasterio.warp import reproject, Resampling
+        H2, W2 = g["height"] * g["f"] + 2, g["width"] * g["f"] + 2
+        dst = np.full((H2, W2), np.nan, "float32")
+        with rasterio.open(os.path.join(out, f"{area}_dtm.tif")) as d:
+            reproject(rasterio.band(d, 1), dst, src_nodata=d.nodata, dst_transform=Affine(g["cell"], 0, g["x0"] - g["cell"], 0, -g["cell"], g["y0"] + g["cell"]),
+                      dst_crs=g["crs"], dst_nodata=np.nan, resampling=Resampling.bilinear)
+        dm = np.where(np.isfinite(dst) & (dst > 0), np.round(dst * 10), 0).astype("<u2")
+        print("grid", dm.shape, "covered", round(float((dm > 0).mean()), 3))
+        rows = 1000
+        os.makedirs(os.path.join(out, "grid"), exist_ok=True)
+        for k, r0 in enumerate(range(0, H2, rows)):
+            with gzip.open(os.path.join(out, "grid", f"{area}_dm_{k:02d}.u2.gz"), "wb", 6) as f:
+                f.write(dm[r0:r0 + rows].tobytes())
+        json.dump({"shape": [H2, W2], "rows_per_part": rows, "dtype": "<u2", "unit": "dm", "nodata": 0, **g},
+                  open(os.path.join(out, "grid", f"{area}_grid.json"), "w"))
+        os.remove(os.path.join(out, f"{area}_dtm.tif"))
 
 
 if __name__ == "__main__":

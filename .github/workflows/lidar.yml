@@ -1,7 +1,8 @@
 name: Fetch lidar terrain (one-off)
 
-# Run by hand. Downloads terrain models whose servers this site's builder can't reach directly,
-# crops them to a map, and keeps the result as a workflow artifact for building the slope map.
+# Run by hand. Downloads a terrain model whose server the map builder can't reach directly,
+# resamples it onto a slope map's 5 m grid and pushes the result to the lidar-data branch
+# (fetched from there to build the map; the site never serves this branch).
 on:
   workflow_dispatch:
     inputs:
@@ -11,7 +12,7 @@ on:
         default: innsbruck
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   fetch:
@@ -24,10 +25,14 @@ jobs:
           python-version: '3.12'
       - name: Install packages
         run: pip install rasterio numpy
-      - name: Find and fetch
+      - name: Find, fetch and resample
         run: python3 scripts/fetch_lidar.py ${{ github.event.inputs.area }} out
-      - uses: actions/upload-artifact@v5
-        with:
-          name: lidar-${{ github.event.inputs.area }}
-          path: out/
-          retention-days: 7
+      - name: Push to the lidar-data branch
+        run: |
+          cd out/grid
+          git init -q -b lidar-data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Lidar grid for ${{ github.event.inputs.area }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" lidar-data
