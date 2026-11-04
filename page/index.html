@@ -68,6 +68,8 @@
 .sw-map canvas{position:absolute;display:block}
 .sw-blockmarks{display:none}
 .sw-paths-tog{display:inline-flex;align-items:center;gap:6px;font-size:var(--cds-font-size-caption)}
+.sw-paths-tog .sw-fc{font:inherit;font-size:var(--cds-font-size-caption);line-height:1.2;color:var(--color-fg);background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:1px 2px;margin:0;height:auto;width:9.5rem}
+.sw-fc-tog{padding-left:4px}
 .sw-wind-note{margin:var(--cds-gap-xs) 0 0}
 .sw-windgrid{display:grid;grid-template-columns:minmax(0,220px) 1fr;gap:var(--cds-gap-lg);align-items:center}
 @media (max-width:560px){.sw-windgrid{grid-template-columns:1fr}}
@@ -301,13 +303,13 @@ details.sw-how[open] > summary{display:none}
         </div>
         <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
         <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
-        <label class="sw-paths-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
+        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
           <option value="off">none</option>
           <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
           <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
         </select></label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
         </div></details>
         <div class="sw-zoombar">
           <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
@@ -643,13 +645,13 @@ details.sw-how[open] > summary{display:none}
         </div>
         <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
         <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
-        <label class="sw-paths-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
+        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
           <option value="off">none</option>
           <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
           <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
         </select></label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
         </div></details>
         <div class="sw-zoombar">
           <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
@@ -1045,13 +1047,13 @@ details.sw-how[open] > summary{display:none}
         </div>
         <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
         <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
-        <label class="sw-paths-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-paths" checked> Mapped avalanche paths</label>
+<label class="sw-paths-tog"><input type="checkbox" class="sw-doc"> Documented avalanches</label>
+        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
           <option value="off">none</option>
           <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
           <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
         </select></label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-paths" checked> Mapped avalanche paths</label>
-<label class="sw-paths-tog"><input type="checkbox" class="sw-doc"> Documented avalanches</label>
         </div></details>
         <div class="sw-zoombar">
           <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
@@ -1322,13 +1324,13 @@ details.sw-how[open] > summary{display:none}
         </div>
         <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
         <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
-        <label class="sw-paths-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
+        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
           <option value="off">none</option>
           <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
           <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
         </select></label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
         </div></details>
         <div class="sw-zoombar">
           <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
@@ -1676,13 +1678,13 @@ details.sw-how[open] > summary{display:none}
         </div>
         <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
         <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
-        <label class="sw-paths-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
+        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
           <option value="off">none</option>
           <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
           <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
         </select></label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
         </div></details>
         <div class="sw-zoombar">
           <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
