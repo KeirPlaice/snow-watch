@@ -79,11 +79,17 @@
   };
   window.swStandalone = true;
   // a marked element that becomes visible starts loading its datasets (the route check asks for terrain this way)
+  // and anything that becomes visible (a tab, a folded section) is drawn again at its real size,
+  // since maps and charts drawn while hidden have no width
   new MutationObserver((muts) => {
+    let shown = false;
     for (const m of muts) {
       const el = m.target;
-      if (el.nodeType === 1 && !el.hidden && el.dataset && el.dataset.source) for (const id of el.dataset.source.split(/\s+/)) if (id) window.dash.data(id);
+      if (el.nodeType !== 1 || el.hidden) continue;
+      if (el.dataset && el.dataset.source) for (const id of el.dataset.source.split(/\s+/)) if (id) window.dash.data(id);
+      if (el.matches('.sw-zone, .sw-route, .sw-watch')) shown = true; // tabs and panels, not tooltips
     }
+    if (shown) redrawAll();
   }).observe(document.documentElement, { attributes: true, attributeFilter: ['hidden'], subtree: true });
   let w = window.innerWidth;
   window.addEventListener('resize', () => { if (Math.abs(window.innerWidth - w) > 1) { w = window.innerWidth; redrawAll(); } });
