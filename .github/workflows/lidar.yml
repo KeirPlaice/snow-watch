@@ -1,0 +1,33 @@
+name: Fetch lidar terrain (one-off)
+
+# Run by hand. Downloads terrain models whose servers this site's builder can't reach directly,
+# crops them to a map, and keeps the result as a workflow artifact for building the slope map.
+on:
+  workflow_dispatch:
+    inputs:
+      area:
+        description: "Which map"
+        required: true
+        default: innsbruck
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install packages
+        run: pip install rasterio numpy
+      - name: Find and fetch
+        run: python3 scripts/fetch_lidar.py ${{ github.event.inputs.area }} out
+      - uses: actions/upload-artifact@v5
+        with:
+          name: lidar-${{ github.event.inputs.area }}
+          path: out/
+          retention-days: 7
