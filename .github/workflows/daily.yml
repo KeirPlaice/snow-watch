@@ -33,15 +33,12 @@ jobs:
       - id: pages
         uses: actions/configure-pages@v5
 
-      # yesterday's records (danger history, station days, last good bulletins) carry over from the live site;
-      # the very first run starts from the seed copies in the repository
+      # yesterday's records (danger history, station days, last good bulletins) carry over from the live site
       - name: Get yesterday's records
         run: |
           mkdir -p prev
           for f in danger_history stations_daily bulletins; do
-            if ! curl -fsSL "${{ steps.pages.outputs.base_url }}/data/$f.json" -o "prev/$f.json"; then
-              if [ -f "seed/$f.json" ]; then cp "seed/$f.json" "prev/$f.json"; else rm -f "prev/$f.json"; fi
-            fi
+            curl -fsSL "${{ steps.pages.outputs.base_url }}/data/$f.json" -o "prev/$f.json" || rm -f "prev/$f.json"
           done
           ls -l prev
 
