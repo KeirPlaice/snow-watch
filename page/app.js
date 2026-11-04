@@ -2080,7 +2080,7 @@ ${trk.join('\n')}
     if (!shown || hidden) {
       const tr = document.createElement('tr'); tr.className = 'sw-grp sw-hidden-note'; const td = document.createElement('td'); td.colSpan = 5;
       td.textContent = !st.res.sections.length ? 'No flagged sections on this route.'
-        : `${shown ? '' : 'No sections match the Show options. '}${hidden} ${shown ? 'more ' : ''}section${hidden === 1 ? '' : 's'} hidden by the Show options${showOf(st).highOnly ? ' (untick “High only” to see take-care and exposure sections)' : ''}; tick “All” to see every section.`;
+        : `${shown ? '' : 'No sections match the Show options. '}${hidden} ${shown ? 'more ' : ''}section${hidden === 1 ? '' : 's'} hidden by the Show options${showOf(st).highOnly ? ' (untick “High-consequence only” to see take-care and exposure sections)' : ''}; tick “All” to see every section.`;
       tr.append(td); tb.append(tr);
     }
   });
