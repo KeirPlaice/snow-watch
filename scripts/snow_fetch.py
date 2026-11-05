@@ -110,7 +110,9 @@ def avcan_station(sid, name, elev, today_utc, zone=ROGERS):
         for r in data:  # keyed by timestamp, so chunk boundaries don't double-count
             t = datetime.fromisoformat(r["measurementDateTime"].replace("Z", "+00:00")).astimezone(tz)
             if t.date() >= SEASON_START:
-                seen[t] = (t.date(), num(r.get("snowHeight")), num(r.get("airTempAvg")),
+                ta = num(r.get("airTempAvg"))
+                ta = ta if ta is not None and -45 <= ta <= 40 and sid not in NO_TEMP else None  # drops sensor faults
+                seen[t] = (t.date(), num(r.get("snowHeight")), ta,
                            num(r.get("windSpeedGust")), num(r.get("hourlyPrecip")), num(r.get("windSpeedAvg")))
         start = end
     return daily_rows(zone, name, elev, list(seen.values()))
@@ -152,6 +154,7 @@ COMPASS16 = {d: i * 22.5 for i, d in enumerate("N NNE NE ENE E ESE SE SSE S SSW 
 # extra 72-hour wind cards: (zone, Avalanche Canada station id, name, elevation); each gets a summary under "<zone> · <name>"
 EXTRA_WIND = [(ROSS, 75, "Strawberry Pass", 1575), (ROSS, 41, "Kootenay Pass", 1780),
               (ROGERS, 97, "Rockfall", 2240), (ROGERS, 92, "Asulkan", 2025), (ROGERS, 99, "Round Hill", 2100)]
+NO_TEMP = {92}  # Asulkan: its temperature sensor reads -118 °C this autumn and sat at -38 °C for days in October
 LAST_OBS = {}  # station name -> time of its newest wind reading (Parks Canada stations reach the feed about a day late)
 
 

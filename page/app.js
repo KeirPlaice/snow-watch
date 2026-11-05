@@ -1,5 +1,25 @@
 // Snow & Avalanche Watch: page helpers, calcs, draws, route check core, slope map, route check UI
 
+// station tiles: the page carries only each tile's station and last row; the cells are built here, before the draws run
+document.querySelectorAll('.sw-tile[data-st]').forEach((el) => {
+  const st = el.dataset.st, [lab, field, unit] = (el.dataset.last || 'Max gust|gust_max_kmh|km/h').split('|');
+  const c = (f) => { const s = document.createElement('span'); s.dataset.draw = 'cell'; s.dataset.source = 'latest_obs'; s.dataset.field = f; s.dataset.where = 'station=' + st; s.textContent = '—'; return s.outerHTML; };
+  el.innerHTML = `<div class="sw-tile-name"></div>
+        <div class="sw-tile-elev">${c('elevation_m')} m</div>
+        <div class="sw-tile-big">${c('snow_depth_cm')}<span class="sw-unit"> cm</span></div>
+        <div class="sw-tile-lab">snow on the ground</div>
+        <dl class="sw-tile-dl">
+          <dt>Change vs day before</dt><dd>${c('depth_change_cm')} cm</dd>
+          <dt>Low / high</dt><dd>${c('temp_min_c')} / ${c('temp_max_c')} °C</dd>
+          <dt></dt><dd>${c(field)} ${unit}</dd>
+          <dt>Day</dt><dd>${c('date')}</dd>
+        </dl>`;
+  el.querySelector('.sw-tile-name').textContent = st;
+  el.querySelectorAll('dt')[2].textContent = lab;
+});
+
+;
+
 // terrain rows live in two datasets: Rossland on its own (the main file is near its size limit)
 window.swTerrainData = (zone) => dash.data(zone === 'Rossland' ? 'terrain_rossland' : zone === 'Rocky Mountain NP' ? 'terrain_rmnp' : zone === 'Chamonix' ? 'terrain_chx' : 'terrain');
 window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrain_rmnp', 'terrain_chx'].map((id) => { const d = dash.data(id); return d.status === 'ok' ? d.data : []; }));
@@ -206,6 +226,86 @@ window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrai
         const [px, py] = d3.pointer(ev, el); placeTip(el, tip, px, py);
       })
       .on('pointerleave', () => { tip.hidden = true; });
+  };
+
+  // 72-hour mountain forecast: freezing level against the elevation bands, precipitation bars, ridge wind along the top
+  window.swMtn = (el, rows) => {
+    el.replaceChildren();
+    const W = Math.max(300, el.clientWidth), H = 300;
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    const pt = d3.utcParse('%Y-%m-%dT%H:%M');
+    const hrs = rows.map((r) => ({ ...r, t: pt(r.time) })).filter((r) => r.t);
+    if (!hrs.length) return;
+    const bands = [[1300, 'BTL'], [1900, 'TL'], [2500, 'ALP']];
+    const flMax = Math.max(3200, d3.max(hrs, (r) => num(r.freezing_level_m)) || 0);
+    const y0 = d3.scaleLinear([0, flMax], [1, 0]).nice();
+    const ylabW = d3.max(y0.ticks(4), (t) => measure(svg, d3.format(',')(t))) || 20;
+    const m = { top: 34, right: 34, bottom: 24, left: ylabW + 8 };
+    const w = W - m.left - m.right, hTop = 164, gap = 16, hP = H - m.top - m.bottom - hTop - gap;
+    const x = d3.scaleUtc(d3.extent(hrs, (r) => r.t), [0, w]);
+    const y = d3.scaleLinear([0, flMax], [hTop, 0]).nice();
+    const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
+    g.call((gg) => { gg.append('g').call(d3.axisLeft(y).tickValues(y.ticks(4).filter((t) => t > 0)).tickSize(-w).tickFormat(d3.format(','))).attr('font-size', null).attr('font-family', null)
+      .call((a) => { a.select('.domain').remove(); a.selectAll('.tick line').attr('stroke', 'var(--cds-chart-grid)'); a.selectAll('.tick text').attr('dx', -4); }); });
+    for (const [b, lab] of bands) {
+      g.append('line').attr('x1', 0).attr('x2', w).attr('y1', y(b)).attr('y2', y(b)).attr('stroke', 'var(--cds-chart-reference)').attr('stroke-dasharray', '4 3');
+      g.append('text').attr('class', 'sw-vlab').attr('x', w + 4).attr('y', y(b) + 4).text(lab);
+    }
+    // night shading: 6 pm to 6 am
+    for (let d = d3.utcDay.floor(x.domain()[0]); d <= x.domain()[1]; d = d3.utcDay.offset(d, 1)) {
+      const a = Math.max(0, x(d3.utcHour.offset(d, -6))), z = Math.min(w, x(d3.utcHour.offset(d, 6)));
+      if (z > a) g.insert('rect', ':first-child').attr('x', a).attr('width', z - a).attr('y', 0).attr('height', hTop + gap + hP).attr('fill', 'var(--cds-chart-grid)').attr('opacity', 0.35);
+    }
+    g.append('path').datum(hrs.filter((r) => num(r.freezing_level_m) !== null))
+      .attr('fill', 'none').attr('stroke', dash.colors[3] || 'currentColor').attr('stroke-width', 2)
+      .attr('d', d3.line().x((r) => x(r.t)).y((r) => y(Math.min(flMax, num(r.freezing_level_m)))));
+    // precipitation panel
+    const pMax = Math.max(2, d3.max(hrs, (r) => num(r.precip_mm)) || 0);
+    const yp = d3.scaleLinear([0, pMax], [hP, 0]).nice();
+    const gp = g.append('g').attr('transform', `translate(0,${hTop + gap})`);
+    gp.append('g').call(d3.axisLeft(yp).ticks(2).tickSize(-w).tickFormat(d3.format('~f'))).attr('font-size', null).attr('font-family', null)
+      .call((a) => { a.select('.domain').remove(); a.selectAll('.tick line').attr('stroke', 'var(--cds-chart-grid)'); a.selectAll('.tick text').attr('dx', -4); });
+    gp.append('text').attr('class', 'sw-vlab').attr('x', w + 4).attr('y', 10).text('mm');
+    const bw = Math.max(1, w / hrs.length - 1);
+    gp.selectAll('rect.s').data(hrs).join('rect').attr('x', (r) => x(r.t) - bw / 2).attr('width', bw)
+      .attr('y', (r) => yp(num(r.snow_tl_cm) || 0)).attr('height', (r) => hP - yp(num(r.snow_tl_cm) || 0)).attr('fill', dash.colors[0]);
+    gp.selectAll('rect.r').data(hrs).join('rect').attr('x', (r) => x(r.t) - bw / 2).attr('width', bw)
+      .attr('y', (r) => yp((num(r.snow_tl_cm) || 0) + (num(r.rain_tl_mm) || 0))).attr('height', (r) => hP - yp(num(r.rain_tl_mm) || 0)).attr('fill', dash.colors[1]);
+    const xa = g.append('g').attr('transform', `translate(0,${hTop + gap + hP})`)
+      .call(d3.axisBottom(x).ticks(d3.utcHour.every(w > 520 ? 12 : 24)).tickFormat((d) => d3.utcFormat(d3.utcHour(d) < d || d.getUTCHours() ? '%-I %p' : '%a %-d')(d)).tickSizeOuter(0))
+      .attr('font-size', null).attr('font-family', null);
+    xa.select('.domain').attr('stroke', 'var(--cds-chart-axis)'); xa.selectAll('.tick line').attr('stroke', 'var(--cds-chart-axis)'); trim(xa);
+    // ridge wind every 6 hours
+    const every = w / hrs.length * 6 < 34 ? 12 : 6;
+    const ws = hrs.filter((r) => r.t.getUTCHours() % every === 0 && num(r.ridge_kmh) !== null && num(r.ridge_from_deg) !== null);
+    const wg = svg.append('g').attr('transform', `translate(${m.left},0)`);
+    for (const r of ws) {
+      const cx = x(r.t);
+      wg.append('text').attr('class', 'sw-vlab').attr('x', cx).attr('y', 12).attr('text-anchor', 'middle').text(Math.round(num(r.ridge_kmh)));
+      // arrow points where the wind blows to: from-direction + 180°, screen y grows downward
+      wg.append('path').attr('d', 'M0,-6 L4,3 L0,1 L-4,3 Z').attr('fill', num(r.ridge_kmh) >= 20 ? 'currentColor' : 'var(--cds-chart-axis)')
+        .attr('transform', `translate(${cx},24) rotate(${(num(r.ridge_from_deg) + 180) % 360})`);
+    }
+    // hover
+    const tip = tooltip(el), fmt = d3.utcFormat('%a %-d, %-I %p'), f1 = d3.format('.1f'), f0 = d3.format(',');
+    const bis = d3.bisector((r) => r.t).center;
+    const cross = g.append('line').attr('y1', 0).attr('y2', hTop + gap + hP).attr('stroke', 'var(--cds-chart-axis)').attr('hidden', true);
+    svg.append('rect').attr('x', m.left).attr('y', 0).attr('width', w).attr('height', H - m.bottom).attr('fill', 'transparent')
+      .on('pointermove', (ev) => {
+        const [px] = d3.pointer(ev, g.node()); const r = hrs[bis(hrs, x.invert(px))]; if (!r) return;
+        cross.attr('x1', x(r.t)).attr('x2', x(r.t)).attr('hidden', null);
+        const ph = (k) => (num(r[`snow_${k}_cm`]) || 0) >= 0.05 || (num(r[`rain_${k}_mm`]) || 0) >= 0.05
+          ? ((num(r[`rain_${k}_mm`]) || 0) > (num(r[`snow_${k}_cm`]) || 0) ? `rain ${f1(num(r[`rain_${k}_mm`]))} mm` : `snow ${f1(num(r[`snow_${k}_cm`]))} cm`) : 'dry';
+        tipLines(tip, fmt(r.t) + ' (Pacific)', [
+          { text: `Freezing level ${f0(num(r.freezing_level_m))} m${r.freezing_flag === 'warm layer aloft' ? ', warm layer aloft' : ''}` },
+          { text: `Alpine ${f1(num(r.t_alp_c))} °C, ${ph('alp')}` },
+          { text: `Treeline ${f1(num(r.t_tl_c))} °C, ${ph('tl')}` },
+          { text: `Below treeline ${f1(num(r.t_btl_c))} °C, ${ph('btl')}` },
+          { text: `Ridge wind ${Math.round(num(r.ridge_kmh))} km/h from ${['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(num(r.ridge_from_deg) / 45) % 8]}` },
+        ]);
+        const [qx, qy] = d3.pointer(ev, el); placeTip(el, tip, qx, qy);
+      })
+      .on('pointerleave', () => { tip.hidden = true; cross.attr('hidden', true); });
   };
 
   window.sw = { parse, fmtDay, DANGER, DANGER_TEXT, zoneOf, num, fail, tooltip, placeTip, tipLines, measure };
@@ -447,6 +547,55 @@ dash.draw('outlook-rows', (tb) => {
       [fs(Math.round(num(r.gust_max_kmh))), 'sw-num'],
     ];
     for (const [t, c] of cells) { const td = document.createElement('td'); td.className = c; td.textContent = t; tr.append(td); }
+    tb.append(tr);
+  }
+});
+
+dash.draw('mtn-hours', (el) => {
+  const d = dash.data('mountain_forecast');
+  if (d.status !== 'ok') { fail(el, d); el.classList.toggle('dash-skeleton', d.status === 'loading'); return; }
+  el.classList.remove('dash-skeleton');
+  const rows = d.data.filter((r) => r.zone === zoneOf(el) && r.kind === 'hour');
+  if (!rows.length) { el.replaceChildren(); const p = document.createElement('p'); p.className = 'sw-note'; p.textContent = 'No model forecast today.'; el.append(p); return; }
+  window.swMtn(el, rows);
+});
+
+dash.draw('mtn-kpis', (el) => {
+  const d = dash.data('mountain_forecast');
+  const set = (k, v) => { const s = el.querySelector(`[data-k="${k}"]`); if (s) s.textContent = v; };
+  if (d.status !== 'ok') { for (const k of ['alp', 'tl', 'fl', 'wind']) set(k, '—'); return; }
+  const days = d.data.filter((r) => r.zone === zoneOf(el) && r.kind === 'day');
+  if (!days.length) return;
+  set('alp', d3.format('~f')(d3.sum(days, (r) => num(r.snow_alp_cm) || 0)));
+  set('tl', d3.format('~f')(d3.sum(days, (r) => num(r.snow_tl_cm) || 0)));
+  set('fl', d3.format(',')(d3.max(days, (r) => num(r.freezing_level_max_m))));
+  set('wind', d3.format('~f')(d3.max(days, (r) => num(r.ridge_max_kmh))));
+});
+
+dash.draw('mtn-rows', (tb) => {
+  const d = dash.data('mountain_forecast');
+  tb.replaceChildren();
+  if (d.status !== 'ok') return;
+  const wk = d3.utcFormat('%a %b %-d'), pd = d3.utcParse('%Y-%m-%d'), f0 = d3.format(','), fs = d3.format('~f'), ft = d3.format('.0f');
+  const fmtT = (v) => { const n = Math.round(num(v)); return (n < 0 ? '−' : '') + Math.abs(n); };
+  for (const r of d.data.filter((r) => r.zone === zoneOf(tb) && r.kind === 'day')) {
+    const tr = document.createElement('tr');
+    tr.dataset.key = encodeURIComponent(r.time);
+    const add = (main, sub, cls) => {
+      const td = document.createElement('td'); if (cls) td.className = cls;
+      td.append(main);
+      if (sub) { const s = document.createElement('span'); s.className = 'sw-mtn-t'; s.textContent = sub; td.append(s); }
+      tr.append(td);
+    };
+    add(wk(pd(r.time)), r.model && r.model.startsWith('HRDPS') ? '' : 'coarser model');
+    for (const k of ['alp', 'tl', 'btl']) {
+      const sn = num(r[`snow_${k}_cm`]) || 0, rn = num(r[`rain_${k}_mm`]) || 0;
+      const main = sn >= 1 && rn >= 1 ? `${fs(sn)} cm + ${fs(Math.round(rn))} mm rain` : sn >= 1 ? `${fs(sn)} cm snow` : rn >= 1 ? `${fs(Math.round(rn))} mm rain` : 'dry';
+      add(main, `${fmtT(r[`t_${k}_min_c`])} to ${fmtT(r[`t_${k}_max_c`])} °C`);
+    }
+    add(`${f0(num(r.freezing_level_min_m))}–${f0(num(r.freezing_level_max_m))}`, '', 'sw-num sw-hide-narrow');
+    add(r.ridge_mean_kmh === null ? '—' : `${ft(num(r.ridge_mean_kmh))}, max ${ft(num(r.ridge_max_kmh))}`, r.ridge_from_dir ? `from ${r.ridge_from_dir}` : '');
+    add((num(r.ridge_moving_hours) || 0) >= 3 && r.loads ? r.loads.split(',').join(', ') : '—', (num(r.ridge_moving_hours) || 0) >= 3 ? `${r.ridge_moving_hours} h of 20 km/h+` : '');
     tb.append(tr);
   }
 });
@@ -2740,13 +2889,20 @@ ${trk.join('\n')}
   dash.draw('wind-sum', (el) => {
     const w = wsum(zoneOf(el));
     if (!w) { el.textContent = '—'; return; }
-    if (!w.transport_hours) { el.textContent = 'Winds have been too light to move snow in the last 72 hours.'; return; }
+    let ends = '';
+    const until = w.until ? new Date(w.until.replace('Z', ':00Z')) : null;
+    if (until && !isNaN(until) && Date.now() - until > 3 * 3600e3) {
+      const tzs = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver' };
+      const z = zoneOf(el).split(' · ')[0];
+      ends = ` Readings end ${new Intl.DateTimeFormat('en-US', { timeZone: tzs[z] || 'UTC', weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(until)}${tzs[z] ? ' Pacific time' : ' UTC'}.`;
+    }
+    if (!w.transport_hours) { el.textContent = 'Winds have been too light to move snow in the 72 hours to the latest reading.' + ends; return; }
     const strength = w.strong_hours >= 6 ? 'strong' : w.transport_hours >= 12 ? 'sustained moderate' : 'moderate';
-    let txt = `${w.transport_hours} hours of ${strength} wind, mostly from the ${w.from_dir}, averaging ${w.mean_transport_kmh} km/h when it was blowing hard enough to move snow. `;
+    let txt = `${w.transport_hours} hour${w.transport_hours === 1 ? '' : 's'} of ${strength} wind, mostly from the ${w.from_dir}, averaging ${w.mean_transport_kmh} km/h when it was blowing hard enough to move snow. `;
     const la = w.loaded_aspects.split(','), loaded = la.length > 1 ? la.slice(0, -1).join(', ') + ' and ' + la[la.length - 1] : la[0];
     if (window.swWindActive(w)) txt += `Expect fresh wind slabs on ${loaded}-facing slopes below ridges and in gullies.`;
     else txt += `There’s little snow for it to move yet (${w.snow_depth_cm ?? 0} cm on the ground), so loading is limited for now.`;
-    el.textContent = txt;
+    el.textContent = txt + ends;
   });
 
   dash.draw('wind-note', (el) => {

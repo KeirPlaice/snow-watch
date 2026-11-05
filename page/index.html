@@ -59,6 +59,9 @@
 .sw-table td{padding:var(--cds-pad-xs) var(--cds-pad-sm);border-bottom:1px solid var(--color-border-line)}
 .sw-table .sw-num{text-align:right}
 @media (max-width:520px){.sw-hide-narrow{display:none}}
+.sw-chart-mtn{min-height:300px}
+.sw-mtn-table td{vertical-align:top}
+.sw-mtn-table .sw-mtn-t{display:block;color:var(--color-text-secondary);font-size:var(--cds-font-size-small, .85em);white-space:nowrap}
 .sw-legend{list-style:none;display:flex;flex-wrap:wrap;gap:var(--cds-gap-xs) var(--cds-gap-md);padding:0;margin:var(--cds-gap-sm) 0 0;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
 .sw-sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;border:1px solid var(--color-border-line)}
 [data-dash-source-state=empty]{color:transparent}
@@ -482,61 +485,19 @@ details.sw-how[open] > summary{display:none}
 
 
     <h2 class="sw-section">On the ground, latest day</h2>
-    <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
+    <details class="sw-how"><summary>How this works</summary><p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends. Parks Canada's stations reach the public feed once a day, around 6 am Pacific time, so the latest day is partial and its readings stop early that morning.</p></details>
     <div class="sw-tiles">
-      <div class="sw-tile">
-        <div class="sw-tile-name">Rogers Pass</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Rogers Pass">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Rogers Pass">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Rogers Pass">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Rogers Pass">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Rogers Pass">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Rogers Pass">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Rogers Pass">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Fidelity</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Fidelity">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Fidelity">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Fidelity">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Fidelity">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Fidelity">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Fidelity">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Fidelity">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Mt. Abbott</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Mt. Abbott">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Mt. Abbott">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Mt. Abbott">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Mt. Abbott">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Mt. Abbott">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Mt. Abbott">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Mt. Abbott">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">MacDonald West Shoulder</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=MacDonald West Shoulder">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=MacDonald West Shoulder">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=MacDonald West Shoulder">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=MacDonald West Shoulder">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=MacDonald West Shoulder">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=MacDonald West Shoulder">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=MacDonald West Shoulder">—</span></dd>
-        </dl>
-      </div>
+      <div class="sw-tile" data-st="Rogers Pass" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Rogers Pass</div></div>
+      <div class="sw-tile" data-st="Fidelity" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Fidelity</div></div>
+      <div class="sw-tile" data-st="Klotz" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Klotz</div></div>
+      <div class="sw-tile" data-st="Mt. Abbott" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Mt. Abbott</div></div>
+      <div class="sw-tile" data-st="Rockfall" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Rockfall</div></div>
+      <div class="sw-tile" data-st="MacDonald West Shoulder" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">MacDonald West Shoulder</div></div>
     </div>
 
     <div class="sw-card sw-wide" id="rogers-windcard">
-      <h2 class="sw-h">Wind, last 72 hours</h2>
-      <p class="sw-note">At MacDonald West Shoulder. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
+      <h2 class="sw-h">Wind, last 72 hours · MacDonald West Shoulder</h2>
+      <p class="sw-note">At MacDonald West Shoulder, Parks Canada's exposed ridge station above the highway, 1,930 m. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
       <div class="sw-windgrid">
         <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
         <div>
@@ -547,6 +508,68 @@ details.sw-how[open] > summary{display:none}
             <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Rogers Pass">—</span> km/h</dd>
             <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Rogers Pass">—</span></dd>
             <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Rogers Pass">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=MacDonald West Shoulder">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=MacDonald West Shoulder">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=MacDonald West Shoulder">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="rogers-windcard-2" data-zone="Rogers Pass · Rockfall">
+      <h2 class="sw-h">Wind, last 72 hours · Rockfall</h2>
+      <p class="sw-note">At Parks Canada's station at 2,240 m north of the pass. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Rogers Pass · Rockfall">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Rogers Pass · Rockfall">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Rogers Pass · Rockfall">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Rogers Pass · Rockfall">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Rogers Pass · Rockfall">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Rockfall">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Rockfall">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Rockfall">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="rogers-windcard-3" data-zone="Rogers Pass · Asulkan">
+      <h2 class="sw-h">Wind, last 72 hours · Asulkan</h2>
+      <p class="sw-note">At Parks Canada's station at 2,025 m in the Asulkan valley, south of the pass. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Rogers Pass · Asulkan">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Rogers Pass · Asulkan">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Rogers Pass · Asulkan">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Rogers Pass · Asulkan">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Rogers Pass · Asulkan">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Asulkan">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Asulkan">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Asulkan">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="rogers-windcard-4" data-zone="Rogers Pass · Round Hill">
+      <h2 class="sw-h">Wind, last 72 hours · Round Hill</h2>
+      <p class="sw-note">At Parks Canada's station at 2,100 m beside Mt. Fidelity, west of the pass. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Rogers Pass · Round Hill">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Rogers Pass · Round Hill">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Rogers Pass · Round Hill">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Rogers Pass · Round Hill">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Rogers Pass · Round Hill">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Round Hill">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Round Hill">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Round Hill">—</span></dd>
           </dl>
         </div>
       </div>
@@ -573,27 +596,34 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
-    <div class="sw-card sw-wide" id="rogers-outlook">
-      <h2 class="sw-h">Next 7 days</h2>
-      <p class="sw-note">Open-Meteo model forecast for the pass at treeline, 1,900 m. Times in Pacific time.</p>
-      <div class="sw-kpis">
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="zone=Rogers Pass">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="zone=Rogers Pass">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+    <div class="sw-card sw-wide" id="rogers-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Canada's GEM weather model (Environment and Climate Change Canada) for the pass: the 2.5 km HRDPS for about the first two days, then the coarser 10 km and 15 km runs, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the pass, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the pass area; the alpine often gets more, and wind redistributes it. Times in Pacific time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 2,500 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 1,900 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
       </div>
-      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 2,500 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast"></div>
+      <h3 class="sw-h3">Day by day</h3>
       <div class="sw-tablebox">
-        <table class="sw-table" data-source="outlook" data-row-key="point,date">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
           <thead><tr>
-            <th data-field="date">Day</th>
-            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
-            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
-            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
-            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
-            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
+            <th>Day</th>
+            <th>Alpine 2,500 m</th>
+            <th>Treeline 1,900 m</th>
+            <th>Below treeline 1,300 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
           </tr></thead>
-          <tbody data-draw="outlook-rows"></tbody>
+          <tbody data-draw="mtn-rows"></tbody>
         </table>
       </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
     </div>
 
     <div class="sw-card sw-wide" id="rogers-history">
@@ -827,66 +857,11 @@ details.sw-how[open] > summary{display:none}
     <h2 class="sw-section">On the ground, latest day</h2>
     <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
     <div class="sw-tiles">
-      <div class="sw-tile">
-        <div class="sw-tile-name">Strawberry Pass</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Strawberry Pass">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Strawberry Pass">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Strawberry Pass">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Strawberry Pass">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Strawberry Pass">—</span> °C</dd>
-          <dt>Max hourly wind</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="wind_max_kmh" data-where="station=Strawberry Pass">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Strawberry Pass">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Paulson Summit</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Paulson Summit">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Paulson Summit">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Paulson Summit">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Paulson Summit">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Paulson Summit">—</span> °C</dd>
-          <dt>Max hourly wind</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="wind_max_kmh" data-where="station=Paulson Summit">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Paulson Summit">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Southridge</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Southridge">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Southridge">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Southridge">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Southridge">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Southridge">—</span> °C</dd>
-          <dt>Max hourly wind</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="wind_max_kmh" data-where="station=Southridge">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Southridge">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Kootenay Pass</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Kootenay Pass">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Kootenay Pass">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Kootenay Pass">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Kootenay Pass">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Kootenay Pass">—</span> °C</dd>
-          <dt>Max hourly wind</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="wind_max_kmh" data-where="station=Kootenay Pass">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Kootenay Pass">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Stagleap</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Stagleap">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Stagleap">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Stagleap">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Stagleap">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Stagleap">—</span> °C</dd>
-          <dt>Max hourly wind</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="wind_max_kmh" data-where="station=Stagleap">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Stagleap">—</span></dd>
-        </dl>
-      </div>
+      <div class="sw-tile" data-st="Strawberry Pass" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Strawberry Pass</div></div>
+      <div class="sw-tile" data-st="Paulson Summit" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Paulson Summit</div></div>
+      <div class="sw-tile" data-st="Southridge" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Southridge</div></div>
+      <div class="sw-tile" data-st="Kootenay Pass" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Kootenay Pass</div></div>
+      <div class="sw-tile" data-st="Stagleap" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Stagleap</div></div>
     </div>
 
     <div class="sw-card sw-wide" id="rossland-windcard" data-zone="Rossland · Strawberry Pass">
@@ -1189,30 +1164,8 @@ details.sw-how[open] > summary{display:none}
     <h2 class="sw-section">On the ground, latest day</h2>
     <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
     <div class="sw-tiles">
-      <div class="sw-tile">
-        <div class="sw-tile-name">Núria</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Núria">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Núria">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Núria">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Núria">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Núria">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Núria">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Núria">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Ulldeter</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Ulldeter">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Ulldeter">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Ulldeter">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Ulldeter">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Ulldeter">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Ulldeter">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Ulldeter">—</span></dd>
-        </dl>
-      </div>
+      <div class="sw-tile" data-st="Núria" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Núria</div></div>
+      <div class="sw-tile" data-st="Ulldeter" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Ulldeter</div></div>
     </div>
 
     <div class="sw-card sw-wide" id="vallter-windcard">
@@ -1508,66 +1461,11 @@ details.sw-how[open] > summary{display:none}
     <h2 class="sw-section">On the ground, latest day</h2>
     <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
     <div class="sw-tiles">
-      <div class="sw-tile">
-        <div class="sw-tile-name">Seegrube</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Seegrube">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Seegrube">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Seegrube">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Seegrube">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Seegrube">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Seegrube">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Seegrube">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Hafelekar</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Hafelekar">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Hafelekar">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Hafelekar">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Hafelekar">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Hafelekar">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Hafelekar">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Hafelekar">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Axamer Lizum</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Axamer Lizum">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Axamer Lizum">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Axamer Lizum">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Axamer Lizum">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Axamer Lizum">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Axamer Lizum">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Axamer Lizum">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Franz-Senn-Hütte</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Franz-Senn-Hütte">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Franz-Senn-Hütte">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Franz-Senn-Hütte">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Franz-Senn-Hütte">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Franz-Senn-Hütte">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Franz-Senn-Hütte">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Franz-Senn-Hütte">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Eissee (Stubai Glacier)</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Eissee (Stubai Glacier)">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Eissee (Stubai Glacier)">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Eissee (Stubai Glacier)">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Eissee (Stubai Glacier)">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Eissee (Stubai Glacier)">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Eissee (Stubai Glacier)">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Eissee (Stubai Glacier)">—</span></dd>
-        </dl>
-      </div>
+      <div class="sw-tile" data-st="Seegrube" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Seegrube</div></div>
+      <div class="sw-tile" data-st="Hafelekar" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Hafelekar</div></div>
+      <div class="sw-tile" data-st="Axamer Lizum" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Axamer Lizum</div></div>
+      <div class="sw-tile" data-st="Franz-Senn-Hütte" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Franz-Senn-Hütte</div></div>
+      <div class="sw-tile" data-st="Eissee (Stubai Glacier)" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Eissee (Stubai Glacier)</div></div>
     </div>
 
     <div class="sw-card sw-wide" id="innsbruck-windcard">
@@ -1818,90 +1716,13 @@ details.sw-how[open] > summary{display:none}
     <h2 class="sw-section">On the ground, latest day</h2>
     <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
     <div class="sw-tiles">
-      <div class="sw-tile">
-        <div class="sw-tile-name">Bear Lake</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Bear Lake">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Bear Lake">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Bear Lake">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Bear Lake">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Bear Lake">—</span> °C</dd>
-          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Bear Lake">—</span> mm</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Bear Lake">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Willow Park</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Willow Park">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Willow Park">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Willow Park">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Willow Park">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Willow Park">—</span> °C</dd>
-          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Willow Park">—</span> mm</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Willow Park">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Lake Irene</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Lake Irene">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Lake Irene">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Lake Irene">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Lake Irene">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Lake Irene">—</span> °C</dd>
-          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Lake Irene">—</span> mm</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Lake Irene">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Wild Basin</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Wild Basin">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Wild Basin">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Wild Basin">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Wild Basin">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Wild Basin">—</span> °C</dd>
-          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Wild Basin">—</span> mm</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Wild Basin">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Phantom Valley</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Phantom Valley">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Phantom Valley">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Phantom Valley">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Phantom Valley">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Phantom Valley">—</span> °C</dd>
-          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Phantom Valley">—</span> mm</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Phantom Valley">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Never Summer</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Never Summer">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Never Summer">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Never Summer">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Never Summer">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Never Summer">—</span> °C</dd>
-          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Never Summer">—</span> mm</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Never Summer">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Copeland Lake</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Copeland Lake">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Copeland Lake">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Copeland Lake">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Copeland Lake">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Copeland Lake">—</span> °C</dd>
-          <dt>Precipitation</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="precip_mm" data-where="station=Copeland Lake">—</span> mm</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Copeland Lake">—</span></dd>
-        </dl>
-      </div>
+      <div class="sw-tile" data-st="Bear Lake" data-last="Precipitation|precip_mm|mm"><div class="sw-tile-name">Bear Lake</div></div>
+      <div class="sw-tile" data-st="Willow Park" data-last="Precipitation|precip_mm|mm"><div class="sw-tile-name">Willow Park</div></div>
+      <div class="sw-tile" data-st="Lake Irene" data-last="Precipitation|precip_mm|mm"><div class="sw-tile-name">Lake Irene</div></div>
+      <div class="sw-tile" data-st="Wild Basin" data-last="Precipitation|precip_mm|mm"><div class="sw-tile-name">Wild Basin</div></div>
+      <div class="sw-tile" data-st="Phantom Valley" data-last="Precipitation|precip_mm|mm"><div class="sw-tile-name">Phantom Valley</div></div>
+      <div class="sw-tile" data-st="Never Summer" data-last="Precipitation|precip_mm|mm"><div class="sw-tile-name">Never Summer</div></div>
+      <div class="sw-tile" data-st="Copeland Lake" data-last="Precipitation|precip_mm|mm"><div class="sw-tile-name">Copeland Lake</div></div>
     </div>
 
     <div class="sw-card sw-wide" id="rmnp-windcard">
@@ -2175,66 +1996,11 @@ details.sw-how[open] > summary{display:none}
     <h2 class="sw-section">On the ground, latest day</h2>
     <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
     <div class="sw-tiles">
-      <div class="sw-tile">
-        <div class="sw-tile-name">Chamonix</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Chamonix">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Chamonix">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Chamonix">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Chamonix">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Chamonix">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Chamonix">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Chamonix">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Le Tour</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Le Tour">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Le Tour">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Le Tour">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Le Tour">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Le Tour">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Le Tour">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Le Tour">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Aiguilles Rouges</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Aiguilles Rouges">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Aiguilles Rouges">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Aiguilles Rouges">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Aiguilles Rouges">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Aiguilles Rouges">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Aiguilles Rouges">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Aiguilles Rouges">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Couvercle</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Couvercle">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Couvercle">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Couvercle">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Couvercle">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Couvercle">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Couvercle">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Couvercle">—</span></dd>
-        </dl>
-      </div>
-      <div class="sw-tile">
-        <div class="sw-tile-name">Glacier de l'Evole</div>
-        <div class="sw-tile-elev"><span data-draw="cell" data-source="latest_obs" data-field="elevation_m" data-where="station=Glacier de l'Evole">—</span> m</div>
-        <div class="sw-tile-big"><span data-draw="cell" data-source="latest_obs" data-field="snow_depth_cm" data-where="station=Glacier de l'Evole">—</span><span class="sw-unit"> cm</span></div>
-        <div class="sw-tile-lab">snow on the ground</div>
-        <dl class="sw-tile-dl">
-          <dt>Change vs day before</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="depth_change_cm" data-where="station=Glacier de l'Evole">—</span> cm</dd>
-          <dt>Low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Glacier de l'Evole">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Glacier de l'Evole">—</span> °C</dd>
-          <dt>Max gust</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="gust_max_kmh" data-where="station=Glacier de l'Evole">—</span> km/h</dd>
-          <dt>Day</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Glacier de l'Evole">—</span></dd>
-        </dl>
-      </div>
+      <div class="sw-tile" data-st="Chamonix" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Chamonix</div></div>
+      <div class="sw-tile" data-st="Le Tour" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Le Tour</div></div>
+      <div class="sw-tile" data-st="Aiguilles Rouges" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Aiguilles Rouges</div></div>
+      <div class="sw-tile" data-st="Couvercle" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Couvercle</div></div>
+      <div class="sw-tile" data-st="Glacier de l'Evole" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Glacier de l'Evole</div></div>
     </div>
 
     <div class="sw-card sw-wide" id="chamonix-windcard">
