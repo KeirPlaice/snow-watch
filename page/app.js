@@ -390,15 +390,17 @@ window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrai
     if (!hrs.length) return;
     const bv = (el.dataset.bands || '1300,1900,2500').split(',').map(Number);
     const bands = [[bv[0], 'BTL'], [bv[1], 'TL'], [bv[2], 'ALP']];
-    const flMax = Math.max(3200, d3.max(hrs, (r) => num(r.freezing_level_m)) || 0);
-    const y0 = d3.scaleLinear([0, flMax], [1, 0]).nice();
+    const flMax = Math.max(3200, bv[2] + 700, d3.max(hrs, (r) => num(r.freezing_level_m)) || 0);
+    // start the scale about 1,000 m under the lowest band (or under the lowest freezing level), not at sea level
+    const flLo = Math.max(0, Math.floor((Math.min(bv[0] - 1000, (d3.min(hrs, (r) => num(r.freezing_level_m)) ?? bv[0]) - 200)) / 500) * 500);
+    const y0 = d3.scaleLinear([flLo, flMax], [1, 0]).nice();
     const ylabW = d3.max(y0.ticks(4), (t) => measure(svg, d3.format(',')(t))) || 20;
     const m = { top: 34, right: 34, bottom: 24, left: ylabW + 8 };
     const w = W - m.left - m.right, hTop = 164, gap = 16, hP = H - m.top - m.bottom - hTop - gap;
     const x = d3.scaleUtc(d3.extent(hrs, (r) => r.t), [0, w]);
-    const y = d3.scaleLinear([0, flMax], [hTop, 0]).nice();
+    const y = d3.scaleLinear([flLo, flMax], [hTop, 0]).nice();
     const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
-    g.call((gg) => { gg.append('g').call(d3.axisLeft(y).tickValues(y.ticks(4).filter((t) => t > 0)).tickSize(-w).tickFormat(d3.format(','))).attr('font-size', null).attr('font-family', null)
+    g.call((gg) => { gg.append('g').call(d3.axisLeft(y).tickValues(y.ticks(4).filter((t) => t > y.domain()[0])).tickSize(-w).tickFormat(d3.format(','))).attr('font-size', null).attr('font-family', null)
       .call((a) => { a.select('.domain').remove(); a.selectAll('.tick line').attr('stroke', 'var(--cds-chart-grid)'); a.selectAll('.tick text').attr('dx', -4); }); });
     for (const [b, lab] of bands) {
       g.append('line').attr('x1', 0).attr('x2', w).attr('y1', y(b)).attr('y2', y(b)).attr('stroke', 'var(--cds-chart-reference)').attr('stroke-dasharray', '4 3');
@@ -411,7 +413,7 @@ window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrai
     }
     g.append('path').datum(hrs.filter((r) => num(r.freezing_level_m) !== null))
       .attr('fill', 'none').attr('stroke', dash.colors[3] || 'currentColor').attr('stroke-width', 2)
-      .attr('d', d3.line().x((r) => x(r.t)).y((r) => y(Math.min(flMax, num(r.freezing_level_m)))));
+      .attr('d', d3.line().x((r) => x(r.t)).y((r) => y(Math.max(y.domain()[0], Math.min(flMax, num(r.freezing_level_m))))));
     // precipitation panel
     const pMax = Math.max(2, d3.max(hrs, (r) => num(r.precip_mm)) || 0);
     const yp = d3.scaleLinear([0, pMax], [hP, 0]).nice();
@@ -449,7 +451,7 @@ window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrai
         cross.attr('x1', x(r.t)).attr('x2', x(r.t)).attr('hidden', null);
         const ph = (k) => (num(r[`snow_${k}_cm`]) || 0) >= 0.05 || (num(r[`rain_${k}_mm`]) || 0) >= 0.05
           ? ((num(r[`rain_${k}_mm`]) || 0) > (num(r[`snow_${k}_cm`]) || 0) ? `rain ${f1(num(r[`rain_${k}_mm`]))} mm` : `snow ${f1(num(r[`snow_${k}_cm`]))} cm`) : 'dry';
-        tipLines(tip, fmt(r.t) + ' (Pacific)', [
+        tipLines(tip, fmt(r.t) + ` (${el.dataset.tz || 'Pacific'})`, [
           { text: `Freezing level ${f0(num(r.freezing_level_m))} m${r.freezing_flag === 'warm layer aloft' ? ', warm layer aloft' : ''}` },
           { text: `Alpine ${f1(num(r.t_alp_c))} °C, ${ph('alp')}` },
           { text: `Treeline ${f1(num(r.t_tl_c))} °C, ${ph('tl')}` },
@@ -740,7 +742,7 @@ dash.draw('mtn-rows', (tb) => {
       if (sub) { const s = document.createElement('span'); s.className = 'sw-mtn-t'; s.textContent = sub; td.append(s); }
       tr.append(td);
     };
-    add(wk(pd(r.time)), r.model && r.model.startsWith('HRDPS') ? '' : 'coarser model');
+    add(wk(pd(r.time)), r.model && /^(HRDPS|ICON-D2|HRRR)/.test(r.model) ? '' : 'coarser model');
     for (const k of ['alp', 'tl', 'btl']) {
       const sn = num(r[`snow_${k}_cm`]) || 0, rn = num(r[`rain_${k}_mm`]) || 0;
       const main = sn >= 1 && rn >= 1 ? `${fs(sn)} cm + ${fs(Math.round(rn))} mm rain` : sn >= 1 ? `${fs(sn)} cm snow` : rn >= 1 ? `${fs(Math.round(rn))} mm rain` : 'dry';

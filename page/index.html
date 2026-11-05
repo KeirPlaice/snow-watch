@@ -471,7 +471,7 @@ details.sw-how[open] > summary{display:none}
       </div>
       <h3 class="sw-h3">Next 72 hours</h3>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 2,500 m, every 6 hours, with arrows showing where it blows to.</p></details>
-      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1900,2500"></div>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1900,2500" data-tz="Pacific"></div>
       <h3 class="sw-h3">Day by day</h3>
       <div class="sw-tablebox">
         <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
@@ -644,7 +644,7 @@ details.sw-how[open] > summary{display:none}
       </div>
       <h3 class="sw-h3">Next 72 hours</h3>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 2,500 m, every 6 hours, with arrows showing where it blows to.</p></details>
-      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1800,2200"></div>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1800,2200" data-tz="Pacific"></div>
       <h3 class="sw-h3">Day by day</h3>
       <div class="sw-tablebox">
         <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
@@ -812,7 +812,7 @@ details.sw-how[open] > summary{display:none}
       </div>
       <h3 class="sw-h3">Next 72 hours</h3>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 2,500 m, every 6 hours, with arrows showing where it blows to.</p></details>
-      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1800,2200"></div>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1800,2200" data-tz="Pacific"></div>
       <h3 class="sw-h3">Day by day</h3>
       <div class="sw-tablebox">
         <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
@@ -1022,7 +1022,7 @@ details.sw-how[open] > summary{display:none}
       </div>
       <h3 class="sw-h3">Next 72 hours</h3>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 2,500 m, every 6 hours, with arrows showing where it blows to.</p></details>
-      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1800,2200"></div>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1800,2200" data-tz="Pacific"></div>
       <h3 class="sw-h3">Day by day</h3>
       <div class="sw-tablebox">
         <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
@@ -1299,27 +1299,34 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
-    <div class="sw-card sw-wide" id="innsbruck-outlook">
-      <h2 class="sw-h">Next 7 days</h2>
-      <p class="sw-note">Open-Meteo model forecast for the Sellrain and Stubai mountains at 2,300 m. Times in Central European time.</p>
-      <div class="sw-kpis">
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="zone=Innsbruck">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="zone=Innsbruck">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+    <div class="sw-card sw-wide" id="innsbruck-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for the Axamer Lizum and Kalkkögel: the 2 km ICON-D2 for about the first two days, then the 7 km ICON-EU and the 13 km global run, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the Axamer Lizum and Kalkkögel, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the Axamer Lizum and Kalkkögel; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 2,700 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 2,000 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
       </div>
-      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 3,000 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1500,2000,2700" data-tz="Central European"></div>
+      <h3 class="sw-h3">Day by day</h3>
       <div class="sw-tablebox">
-        <table class="sw-table" data-source="outlook" data-row-key="point,date">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
           <thead><tr>
-            <th data-field="date">Day</th>
-            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
-            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
-            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
-            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
-            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
+            <th>Day</th>
+            <th>Alpine 2,700 m</th>
+            <th>Treeline 2,000 m</th>
+            <th>Below treeline 1,500 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
           </tr></thead>
-          <tbody data-draw="outlook-rows"></tbody>
+          <tbody data-draw="mtn-rows"></tbody>
         </table>
       </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
     </div>
 
     <div class="sw-card sw-wide" id="innsbruck-history">
@@ -1420,50 +1427,34 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
-    <div class="sw-card sw-wide" id="rmnp-outlook" data-point="Bear Lake">
-      <h2 class="sw-h">Next 7 days · Bear Lake</h2>
-      <p class="sw-note">Open-Meteo model forecast for Bear Lake at 2,900 m. Times in Mountain time.</p>
-      <div class="sw-kpis">
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Bear Lake">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Bear Lake">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+    <div class="sw-card sw-wide" id="rmnp-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">NOAA's weather models for Bear Lake and the Divide above it: the 3 km HRRR and RRFS runs for about the first two days, then the 13 km GFS, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over Bear Lake and the Divide above it, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Bear Lake and the Divide above it; the alpine often gets more, and wind redistributes it. Times in Mountain time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 3,900 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 3,400 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
       </div>
-      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 3,600 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="2900,3400,3900" data-tz="Mountain"></div>
+      <h3 class="sw-h3">Day by day</h3>
       <div class="sw-tablebox">
-        <table class="sw-table" data-source="outlook" data-row-key="point,date">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
           <thead><tr>
-            <th data-field="date">Day</th>
-            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
-            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
-            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
-            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
-            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
+            <th>Day</th>
+            <th>Alpine 3,900 m</th>
+            <th>Treeline 3,400 m</th>
+            <th>Below treeline 2,900 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
           </tr></thead>
-          <tbody data-draw="outlook-rows"></tbody>
+          <tbody data-draw="mtn-rows"></tbody>
         </table>
       </div>
-    </div>
-
-    <div class="sw-card sw-wide" id="rmnp-outlook-2" data-point="Milner Pass">
-      <h2 class="sw-h">Next 7 days · Milner Pass</h2>
-      <p class="sw-note">Open-Meteo model forecast for Milner Pass on Trail Ridge Road, 3,280 m. Times in Mountain time.</p>
-      <div class="sw-kpis">
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Milner Pass">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Milner Pass">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
-      </div>
-      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
-      <div class="sw-tablebox">
-        <table class="sw-table" data-source="outlook" data-row-key="point,date">
-          <thead><tr>
-            <th data-field="date">Day</th>
-            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
-            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
-            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
-            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
-            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
-          </tr></thead>
-          <tbody data-draw="outlook-rows"></tbody>
-        </table>
-      </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
     </div>
 
     <div class="sw-card sw-wide" id="rmnp-history">
@@ -1589,73 +1580,34 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
-    <div class="sw-card sw-wide" id="chamonix-outlook" data-point="Plan de l'Aiguille (Chamonix)">
-      <h2 class="sw-h">Next 7 days · Plan de l'Aiguille (Chamonix)</h2>
-      <p class="sw-note">Open-Meteo model forecast for the Plan de l'Aiguille above Chamonix, 2,300 m. Times in Central European time.</p>
-      <div class="sw-kpis">
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Plan de l'Aiguille (Chamonix)">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Plan de l'Aiguille (Chamonix)">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+    <div class="sw-card sw-wide" id="chamonix-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for the Chamonix valley under the Aiguille du Midi: the 2 km ICON-D2 for about the first two days, then the 7 km ICON-EU and the 13 km global run, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the Chamonix valley under the Aiguille du Midi, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the Chamonix valley under the Aiguille du Midi; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 3,500 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 2,400 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
       </div>
-      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 3,000 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1500,2400,3500" data-tz="Central European"></div>
+      <h3 class="sw-h3">Day by day</h3>
       <div class="sw-tablebox">
-        <table class="sw-table" data-source="outlook" data-row-key="point,date">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
           <thead><tr>
-            <th data-field="date">Day</th>
-            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
-            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
-            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
-            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
-            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
+            <th>Day</th>
+            <th>Alpine 3,500 m</th>
+            <th>Treeline 2,400 m</th>
+            <th>Below treeline 1,500 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
           </tr></thead>
-          <tbody data-draw="outlook-rows"></tbody>
+          <tbody data-draw="mtn-rows"></tbody>
         </table>
       </div>
-    </div>
-
-    <div class="sw-card sw-wide" id="chamonix-outlook-2" data-point="Pavillon (Courmayeur)">
-      <h2 class="sw-h">Next 7 days · Pavillon (Courmayeur)</h2>
-      <p class="sw-note">Open-Meteo model forecast for the Pavillon du Mont Fréty above Courmayeur, 2,200 m. Times in Central European time.</p>
-      <div class="sw-kpis">
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Pavillon (Courmayeur)">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Pavillon (Courmayeur)">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
-      </div>
-      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
-      <div class="sw-tablebox">
-        <table class="sw-table" data-source="outlook" data-row-key="point,date">
-          <thead><tr>
-            <th data-field="date">Day</th>
-            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
-            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
-            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
-            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
-            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
-          </tr></thead>
-          <tbody data-draw="outlook-rows"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="sw-card sw-wide" id="chamonix-outlook-3" data-point="Val Ferret / Champex">
-      <h2 class="sw-h">Next 7 days · Val Ferret / Champex</h2>
-      <p class="sw-note">Open-Meteo model forecast for the Swiss Val Ferret above Champex, 2,200 m. Times in Central European time.</p>
-      <div class="sw-kpis">
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Val Ferret / Champex">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Val Ferret / Champex">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
-      </div>
-      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
-      <div class="sw-tablebox">
-        <table class="sw-table" data-source="outlook" data-row-key="point,date">
-          <thead><tr>
-            <th data-field="date">Day</th>
-            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
-            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
-            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
-            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
-            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
-          </tr></thead>
-          <tbody data-draw="outlook-rows"></tbody>
-        </table>
-      </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
     </div>
 
     <div class="sw-card sw-wide" id="chamonix-history">

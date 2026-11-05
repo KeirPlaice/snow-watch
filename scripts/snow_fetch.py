@@ -541,24 +541,37 @@ def _snow_share(t):
     return 1.0 if t <= 0 else 0.0 if t >= 2 else 1 - t / 2
 
 
+def _gem_label(i):
+    return "HRDPS 2.5 km" if i < 48 else "RDPS 10 km" if i < 84 else "GDPS 15 km"
+
+
+# model, pressure levels (hPa), ridge-wind level and per-hour model label for each zone; GEM (Canada) unless listed
+MTN_MODEL = {}
+GEM_CFG = {"model": "gem_seamless", "levels": LEVELS, "ridge": RIDGE_HPA, "label": _gem_label}
+
+
 def mountain_forecast(zone):
     lat, lon, tzname, bands = MTN_BANDS[zone]
-    hv = ",".join(f"{v}_{p}hPa" for p in LEVELS for v in ("temperature", "geopotential_height"))
+    cfg = MTN_MODEL.get(zone, GEM_CFG)
+    levels, ridge = cfg["levels"], cfg["ridge"]
+    hv = ",".join(f"{v}_{p}hPa" for p in levels for v in ("temperature", "geopotential_height"))
     d = get("https://api.open-meteo.com/v1/forecast", {
-        "latitude": lat, "longitude": lon, "timezone": tzname, "forecast_days": 7, "models": "gem_seamless",
-        "hourly": f"precipitation,{hv},wind_speed_{RIDGE_HPA}hPa,wind_direction_{RIDGE_HPA}hPa"})
+        "latitude": lat, "longitude": lon, "timezone": tzname, "forecast_days": 7, "models": cfg["model"],
+        "hourly": f"precipitation,{hv},wind_speed_{ridge}hPa,wind_direction_{ridge}hPa"})
     h = d["hourly"]
     hours, days = [], {}
     for i, t in enumerate(h["time"]):
-        lv = [(h[f"geopotential_height_{p}hPa"][i], h[f"temperature_{p}hPa"][i]) for p in LEVELS]
-        if any(z is None or tt is None for z, tt in lv):
+        # a level can be missing in one of the blended runs (the 2 km ICON-D2 has fewer levels): use those present
+        lv = [(h[f"geopotential_height_{p}hPa"][i], h[f"temperature_{p}hPa"][i]) for p in levels]
+        lv = [(z, tt) for z, tt in lv if z is not None and tt is not None]
+        if len(lv) < 3:
             continue
         lv.sort()
         zs, ts = [z for z, _ in lv], [tt for _, tt in lv]
         fl, flag = _freezing_level(zs, ts)
         pr = h["precipitation"][i] or 0.0
-        ws, wd = h[f"wind_speed_{RIDGE_HPA}hPa"][i], h[f"wind_direction_{RIDGE_HPA}hPa"][i]
-        row = {"zone": zone, "kind": "hour", "time": t, "model": "HRDPS 2.5 km" if i < 48 else "RDPS 10 km" if i < 84 else "GDPS 15 km",
+        ws, wd = h[f"wind_speed_{ridge}hPa"][i], h[f"wind_direction_{ridge}hPa"][i]
+        row = {"zone": zone, "kind": "hour", "time": t, "model": cfg["label"](i),
                "precip_mm": round(pr, 1), "freezing_level_m": fl, "freezing_flag": flag,
                "ridge_kmh": None if ws is None else round(ws), "ridge_from_deg": wd}
         for key, _, elev in bands:
@@ -1060,6 +1073,20 @@ CHX_BOUNDS = (6.72, 45.74, 7.18, 46.06)
 # EAWS micro-regions covering part of the map: id -> name, share of the map, outline (lon, lat)
 CHX_REGIONS = json.loads(r"""{"FR-06":{"name":"Haute-Tarentaise","share":0.012,"rings":[[[6.723,45.695],[6.739,45.75],[6.801,45.781],[6.806,45.767],[6.806,45.748],[6.817,45.74],[6.809,45.725],[6.828,45.705],[6.841,45.7],[6.847,45.69],[6.729,45.69],[6.723,45.695]]]},"FR-01":{"name":"Chablais","share":0.105,"rings":[[[6.894,46.11],[6.884,46.095],[6.891,46.085],[6.889,46.078],[6.891,46.074],[6.881,46.069],[6.873,46.056],[6.873,46.052],[6.878,46.045],[6.809,45.941],[6.729,45.935],[6.691,45.907],[6.67,45.914],[6.67,46.065],[6.676,46.084],[6.688,46.099],[6.701,46.106],[6.72,46.11],[6.894,46.11]]]},"FR-03":{"name":"Mont-Blanc","share":0.348,"rings":[[[6.878,46.046],[6.89,46.043],[6.895,46.048],[6.909,46.051],[6.923,46.064],[6.933,46.066],[6.937,46.064],[6.936,46.055],[6.943,46.051],[6.95,46.052],[6.963,46.031],[6.98,46.02],[6.986,46.005],[7.009,45.998],[7.013,45.988],[7.022,45.98],[7.022,45.977],[7.011,45.973],[7.01,45.969],[7.019,45.96],[7.037,45.955],[7.036,45.938],[7.045,45.922],[7.019,45.915],[7.004,45.899],[7.007,45.888],[6.999,45.873],[6.99,45.868],[6.975,45.868],[6.953,45.861],[6.942,45.849],[6.923,45.847],[6.915,45.842],[6.874,45.845],[6.864,45.833],[6.85,45.839],[6.818,45.836],[6.808,45.819],[6.812,45.806],[6.812,45.796],[6.805,45.793],[6.801,45.781],[6.739,45.75],[6.67,45.788],[6.67,45.914],[6.691,45.907],[6.729,45.935],[6.809,45.941],[6.878,46.046]]]},"CH-4111":{"name":"Emosson","share":0.018,"rings":[[[7.065,46.089],[7.019,46.045],[6.995,46.03],[6.976,46.022],[6.968,46.031],[6.961,46.032],[6.948,46.051],[6.943,46.05],[6.935,46.055],[6.934,46.064],[6.92,46.061],[6.91,46.052],[6.89,46.043],[6.87,46.048],[6.877,46.063],[6.891,46.075],[6.885,46.094],[6.896,46.11],[7.067,46.11],[7.065,46.089]]]},"CH-4112":{"name":"Génépi","share":0.046,"rings":[[[7.1,46.031],[7.103,46.022],[7.099,46.019],[7.043,45.986],[7.022,45.981],[7.014,45.987],[7.013,45.999],[6.997,45.999],[6.984,46.004],[6.984,46.016],[6.976,46.022],[6.995,46.03],[7.019,46.045],[7.065,46.089],[7.07,46.085],[7.082,46.086],[7.118,46.093],[7.123,46.096],[7.141,46.092],[7.158,46.082],[7.1,46.031]]]},"CH-4113":{"name":"Val d'Entremont-Val Ferret","share":0.149,"rings":[[[7.23,46.011],[7.23,45.89],[7.217,45.887],[7.203,45.876],[7.2,45.87],[7.201,45.863],[7.193,45.859],[7.176,45.863],[7.164,45.871],[7.163,45.876],[7.155,45.877],[7.14,45.873],[7.12,45.86],[7.105,45.859],[7.098,45.863],[7.092,45.875],[7.08,45.886],[7.076,45.893],[7.065,45.9],[7.064,45.911],[7.048,45.921],[7.036,45.938],[7.038,45.954],[7.018,45.959],[7.01,45.968],[7.01,45.971],[7.022,45.981],[7.043,45.986],[7.099,46.019],[7.103,46.022],[7.1,46.031],[7.158,46.082],[7.183,46.06],[7.192,46.038],[7.23,46.011]]]},"IT-23-AO-01":{"name":"Saint-Pierre and Saint-Nicholas","share":0.012,"rings":[[[7.225,45.721],[7.217,45.721],[7.215,45.718],[7.18,45.717],[7.158,45.712],[7.116,45.721],[7.107,45.726],[7.106,45.735],[7.108,45.745],[7.121,45.756],[7.23,45.797],[7.23,45.735],[7.225,45.721]]]},"IT-23-AO-17":{"name":"La Salle Morgex","share":0.063,"rings":[[[7.049,45.748],[7.024,45.759],[6.986,45.765],[6.968,45.781],[7.058,45.817],[7.091,45.821],[7.11,45.803],[7.141,45.799],[7.157,45.793],[7.173,45.78],[7.188,45.781],[7.121,45.756],[7.108,45.745],[7.107,45.726],[7.09,45.739],[7.075,45.74],[7.062,45.753],[7.046,45.755],[7.049,45.748]]]},"IT-23-AO-15":{"name":"La Thuile Valley","share":0.038,"rings":[[[6.841,45.7],[6.828,45.705],[6.809,45.725],[6.817,45.74],[6.855,45.76],[6.901,45.764],[6.961,45.783],[6.968,45.782],[6.986,45.765],[7.024,45.759],[7.045,45.752],[7.057,45.738],[7.066,45.732],[7.089,45.721],[7.108,45.716],[7.106,45.71],[7.097,45.7],[7.083,45.691],[7.075,45.69],[6.847,45.69],[6.841,45.7]]]},"IT-23-AO-14":{"name":"Ferret Valley","share":0.085,"rings":[[[6.946,45.834],[6.935,45.847],[6.942,45.849],[6.953,45.861],[6.975,45.868],[6.99,45.868],[6.999,45.873],[7.007,45.888],[7.004,45.899],[7.019,45.915],[7.041,45.923],[7.062,45.912],[7.065,45.9],[7.076,45.895],[7.081,45.885],[7.094,45.877],[7.093,45.872],[7.102,45.859],[7.092,45.834],[7.091,45.821],[7.058,45.817],[6.968,45.782],[6.967,45.802],[6.961,45.809],[6.968,45.825],[6.964,45.829],[6.946,45.834]]]},"IT-23-AO-18":{"name":"Gran San Bernardo Ollomont","share":0.041,"rings":[[[7.188,45.781],[7.173,45.78],[7.157,45.793],[7.141,45.799],[7.11,45.803],[7.091,45.821],[7.092,45.834],[7.102,45.859],[7.118,45.86],[7.136,45.873],[7.154,45.879],[7.163,45.877],[7.163,45.871],[7.173,45.864],[7.191,45.859],[7.2,45.863],[7.2,45.874],[7.215,45.884],[7.218,45.889],[7.23,45.891],[7.23,45.797],[7.188,45.781]]]},"IT-23-AO-22":{"name":"Veny Valley","share":0.081,"rings":[[[6.935,45.847],[6.946,45.834],[6.964,45.829],[6.968,45.825],[6.961,45.809],[6.967,45.802],[6.968,45.782],[6.957,45.783],[6.901,45.764],[6.855,45.76],[6.817,45.74],[6.806,45.748],[6.806,45.767],[6.801,45.781],[6.805,45.793],[6.812,45.796],[6.812,45.806],[6.808,45.819],[6.818,45.836],[6.85,45.839],[6.864,45.833],[6.874,45.845],[6.915,45.842],[6.923,45.847],[6.935,45.847]]]}}""")
 CHX_FEEDS = ("FR", "CH", "IT-23")  # one EAWS file per service and day
+
+# forecast by elevation outside Canada: DWD's ICON (2 km ICON-D2 over the Alps for about two days, then the 7 km
+# ICON-EU and the 13 km global run) and NOAA's GFS blended with its 3 km runs for Colorado
+_icon_label = lambda i: "ICON-D2 2 km" if i < 48 else "ICON-EU 7 km" if i < 120 else "ICON 13 km"
+_noaa_label = lambda i: "HRRR/RRFS 3 km" if i < 48 else "GFS 13 km"
+MTN_BANDS[IBK] = (47.19, 11.30, "Europe/Vienna",  # Axamer Lizum / Kalkkögel
+                  [("btl", "Below treeline", 1500), ("tl", "Treeline", 2000), ("alp", "Alpine", 2700)])
+MTN_BANDS[CHX] = (45.92, 6.88, "Europe/Paris",  # the Chamonix valley under the Aiguille du Midi
+                  [("btl", "Below treeline", 1500), ("tl", "Treeline", 2400), ("alp", "Alpine", 3500)])
+MTN_BANDS[RMNP] = (40.31, -105.68, "America/Denver",  # Bear Lake and the Divide above it
+                   [("btl", "Below treeline", 2900), ("tl", "Treeline", 3400), ("alp", "Alpine", 3900)])
+MTN_MODEL[IBK] = {"model": "icon_seamless", "levels": (950, 900, 850, 800, 750, 700, 650, 600), "ridge": 700, "label": _icon_label}
+MTN_MODEL[CHX] = {"model": "icon_seamless", "levels": (850, 800, 750, 700, 650, 600, 550, 500), "ridge": 700, "label": _icon_label}
+MTN_MODEL[RMNP] = {"model": "gfs_seamless", "levels": (750, 700, 650, 600, 550, 500), "ridge": 650, "label": _noaa_label}
 CHX_SERVICE = {  # region prefix -> (forecaster, bulletin page, language of its text in the feed)
     "FR": ("Météo-France", "https://meteofrance.com/meteo-montagne", "fr"),
     "CH": ("SLF", "https://www.slf.ch/en/", "en"),
