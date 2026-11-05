@@ -1838,10 +1838,11 @@ dash.draw('history', (el) => {
       const wm = w && w.from_deg !== null ? { mask: C.windMask(m.row, m.t, w.from_deg, (window.swAlpine || {})[zone] || 0), active: window.swWindActive(w), from: w.from_dir } : null;
       st.res = C.analyse(st.route, m.row, m.t, [], watch, { paths, wind: wm, glaciers });
       const f = row.cell_m / det.cell_m;
-      st.boxT = (b) => [(m.fc0 + b[0]) / f, (m.fr0 + b[1]) / f, (m.fc0 + b[2]) / f, (m.fr0 + b[3]) / f];
+      st.boxT = (b) => [(m.fc0 + b[0] * m.step) / f, (m.fr0 + b[1] * m.step) / f, (m.fc0 + b[2] * m.step) / f, (m.fr0 + b[3] * m.step) / f];
       st.res.fineShare = 1;
+      st.mosaicCell = m.row.cell_m;
     } else { st.res = C.analyse(st.route, row, t, fine, watch, { paths, wind, glaciers }); st.boxT = null; }
-    if (st.res && det) st.res.fineCell = det.cell_m;
+    if (st.res && det) st.res.fineCell = coarse ? st.mosaicCell || det.cell_m : det.cell_m;
     st.condKey = null;
     applyConditions(zone, st);
     st.busy = false;
@@ -1950,27 +1951,50 @@ dash.draw('history', (el) => {
     const fr0 = Math.max(0, Math.floor((row.y0 - (y1 + BUF)) / det.cell_m)), fr1 = Math.min(Hf - 1, Math.ceil((row.y0 - (y0 - BUF)) / det.cell_m));
     return { fc0, fc1, fr0, fr1 };
   };
+  // every detail block within pad metres of the route line (points joined and filled in every 200 m, so a long
+  // straight leg still pulls in the blocks it crosses), as "row,col" keys
+  const routeBlockKeys = (row, det, route, pad) => {
+    const z = C.zoneOfCrs(row.crs), keys = new Set();
+    const Wf = row.width * (row.cell_m / det.cell_m), Hf = row.height * (row.cell_m / det.cell_m);
+    const nbr = Math.ceil(Hf / det.block), nbc = Math.ceil(Wf / det.block);
+    const add = (x, y) => {
+      const c0 = Math.floor((x - pad - row.x0) / det.cell_m / det.block), c1 = Math.floor((x + pad - row.x0) / det.cell_m / det.block);
+      const r0 = Math.floor((row.y0 - (y + pad)) / det.cell_m / det.block), r1 = Math.floor((row.y0 - (y - pad)) / det.cell_m / det.block);
+      for (let br = Math.max(0, r0); br <= Math.min(nbr - 1, r1); br++) for (let bc = Math.max(0, c0); bc <= Math.min(nbc - 1, c1); bc++) keys.add(`${br},${bc}`);
+    };
+    let prev = null;
+    for (const p of route.points) {
+      const [x, y] = C.utm(p.lat, p.lon, z);
+      if (prev) {
+        const n = Math.ceil(Math.hypot(x - prev[0], y - prev[1]) / 200);
+        for (let k = 1; k < n; k++) add(prev[0] + (x - prev[0]) * k / n, prev[1] + (y - prev[1]) * k / n);
+      }
+      add(x, y); prev = [x, y];
+    }
+    return keys;
+  };
+  const MOSAIC_MAX = 16e6; // cells; past this a 2 m mosaic is thinned to 4 m (or coarser) so a long route doesn't run a phone out of memory
   const mosaic = (zone, row, det, route) => {
     const b = routeBox(row, det, route);
     if (b.fc1 < b.fc0 || b.fr1 < b.fr0) return null;
-    const need = new Set();
-    for (let br = Math.floor(b.fr0 / det.block); br <= Math.floor(b.fr1 / det.block); br++)
-      for (let bc = Math.floor(b.fc0 / det.block); bc <= Math.floor(b.fc1 / det.block); bc++) need.add(`${det.prefix}_${br}_${bc}`);
+    // only blocks within the search distance of the route are needed; the rest of the box stays empty (flat, never a start zone)
+    const need = [...routeBlockKeys(row, det, route, BUF)].map((k) => `${det.prefix}_${k.replace(',', '_')}`);
     const have = (window.swFine || {})[zone] || {};
     for (const id of need) if (!have[id] || !have[id].d) return null;
-    const w = b.fc1 - b.fc0 + 1, h = b.fr1 - b.fr0 + 1, n = w * h;
-    const elev = new Uint16Array(n), slope = new Uint8Array(n), aspect = new Uint8Array(n);
+    const s = Math.max(1, Math.ceil(Math.sqrt(((b.fc1 - b.fc0 + 1) * (b.fr1 - b.fr0 + 1)) / MOSAIC_MAX)));
+    const w = Math.floor((b.fc1 - b.fc0) / s) + 1, h = Math.floor((b.fr1 - b.fr0) / s) + 1, n = w * h;
+    const elev = new Uint16Array(n), slope = new Uint8Array(n), aspect = new Uint8Array(n).fill(255);
     for (const id of need) {
       const bk = have[id], m = bk.meta, d = bk.d;
       const r0 = Math.max(b.fr0, m.row0), r1 = Math.min(b.fr1, m.row0 + m.height - 1);
       const c0 = Math.max(b.fc0, m.col0), c1 = Math.min(b.fc1, m.col0 + m.width - 1);
-      for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) {
-        const j = (r - m.row0) * m.width + (c - m.col0), i = (r - b.fr0) * w + (c - b.fc0);
+      for (let r = r0 + ((s - ((r0 - b.fr0) % s)) % s); r <= r1; r += s) for (let c = c0 + ((s - ((c0 - b.fc0) % s)) % s); c <= c1; c += s) {
+        const j = (r - m.row0) * m.width + (c - m.col0), i = ((r - b.fr0) / s) * w + (c - b.fc0) / s;
         elev[i] = Math.round(d.elev[j]); slope[i] = d.slope[j]; aspect[i] = d.asp2[j];
       }
     }
-    return { row: { zone, crs: row.crs, cell_m: det.cell_m, width: w, height: h, x0: row.x0 + b.fc0 * det.cell_m, y0: row.y0 - b.fr0 * det.cell_m },
-      t: { elev, slope, aspect }, fc0: b.fc0, fr0: b.fr0 };
+    return { row: { zone, crs: row.crs, cell_m: det.cell_m * s, width: w, height: h, x0: row.x0 + b.fc0 * det.cell_m, y0: row.y0 - b.fr0 * det.cell_m },
+      t: { elev, slope, aspect }, fc0: b.fc0, fr0: b.fr0, step: s };
   };
   window.swRouteRefresh = refresh;
 
@@ -2179,16 +2203,8 @@ dash.draw('history', (el) => {
     const st = byZone[zone], card = cardOf(zone);
     const row = terrainRows().find((r) => r.zone === zone);
     if (!st || !card || !row || !row.detail) return;
-    const det = JSON.parse(row.detail), z = C.zoneOfCrs(row.crs);
-    const hit = new Set();
-    const pad = row.cell_m > det.cell_m * 2 ? BUF : 0;
-    for (const p of st.route.points) {
-      const [x, y] = C.utm(p.lat, p.lon, z);
-      for (const [dx, dy] of [[0, 0], [-pad, -pad], [pad, -pad], [-pad, pad], [pad, pad]]) {
-        const fc = (x + dx - row.x0) / det.cell_m, fr = (row.y0 - (y + dy)) / det.cell_m;
-        hit.add(`${Math.floor(fr / det.block)},${Math.floor(fc / det.block)}`);
-      }
-    }
+    const det = JSON.parse(row.detail);
+    const hit = routeBlockKeys(row, det, st.route, row.cell_m > det.cell_m * 2 ? BUF : 0);
     for (const mk of card.querySelectorAll('[data-rc]')) if (hit.has(mk.dataset.rc)) mk.hidden = false;
   };
 
