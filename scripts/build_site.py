@@ -12,7 +12,8 @@ from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DAILY = ["stations_daily", "danger_history", "bulletins", "problems", "outlook", "wind_summary",
-         "wind_rose", "avalanche_reports", "regional_forecasts", "snow_grid"]
+         "wind_rose", "avalanche_reports", "regional_forecasts", "snow_grid", "mountain_forecast"]
+OPTIONAL = ["snow_grid", "mountain_forecast"]
 
 HEAD = """<!doctype html>
 <html lang="en">
@@ -100,6 +101,10 @@ def main():
                 continue
             shutil.copy(os.path.join(src, f), os.path.join(dd, f))
             files[ident] = h(os.path.join(dd, f))
+    for d in OPTIONAL:  # model files that can be missing on a day the model service is down: ship an empty list
+        if d not in files:
+            open(os.path.join(dd, d + ".json"), "w").write("[]")
+            files[d] = h(os.path.join(dd, d + ".json"))
     missing = [d for d in DAILY if d not in files]
     if missing:
         raise SystemExit(f"missing daily files: {missing}")
