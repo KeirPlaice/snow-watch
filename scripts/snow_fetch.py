@@ -896,7 +896,7 @@ GRID = {  # zone: (west, south, east, north, columns, rows, time zone)
     ROSS: (-117.9388, 49.0563, -117.7927, 49.2562, 3, 5, "America/Vancouver"),
     WW: (-117.2077, 49.3998, -117.0880, 49.4754, 3, 3, "America/Vancouver"),
     KP: (-117.1162, 49.0148, -116.8720, 49.1710, 4, 4, "America/Vancouver"),
-    VALLTER: (2.20, 42.38, 2.34, 42.46, 4, 3, "Europe/Madrid"),
+    VALLTER: (2.07, 42.34, 2.34, 42.46, 6, 4, "Europe/Madrid"),  # Núria and Puigmal to Vallter
     IBK: (10.98, 46.95, 11.72, 47.34, 8, 5, "Europe/Vienna"),
     "Rocky Mountain NP": (-105.95, 40.16, -105.48, 40.55, 6, 6, "America/Denver"),
     "Chamonix": (6.74, 45.76, 7.16, 46.04, 6, 5, "Europe/Paris"),
@@ -1477,6 +1477,7 @@ def main():
 
     ol = outlook(ROGERS, 51.30, -117.52, 1900, "America/Vancouver", "Rogers Pass") + \
          outlook(VALLTER, 42.42, 2.25, 2400, "Europe/Madrid", "Vallter") + \
+         outlook(VALLTER, 42.385, 2.135, 2400, "Europe/Madrid", "Núria / Puigmal") + \
          outlook(IBK, 47.15, 11.25, 2300, "Europe/Vienna", "Sellrain–Stubai") + \
          outlook(ROSS, 49.2044, -117.8966, 1575, "America/Vancouver", "Strawberry Pass") + \
          outlook(WW, 49.4433, -117.1450, 1700, "America/Vancouver", "Whitewater") + \

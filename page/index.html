@@ -1061,7 +1061,7 @@ details.sw-how[open] > summary{display:none}
     <div class="sw-grid sw-grid-top">
       <div class="sw-card" id="vallter-danger">
         <h2 class="sw-h">Avalanche danger</h2>
-        <p class="sw-note">Danger above and below the bulletin's elevation threshold for the Ter-Freser zone.</p>
+        <p class="sw-note">Danger above and below the bulletin's elevation threshold for the Ter-Freser zone, which covers Núria and Puigmal too.</p>
         <div class="sw-danger" data-draw="danger" data-source="danger_now"></div>
         <dl class="sw-meta">
           <dt>Issued</dt><dd data-draw="cell" data-source="bulletins" data-field="issued" data-where="zone=Vallter / Ulldeter">—</dd>
@@ -1077,7 +1077,7 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
-    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;vallter&quot;, &quot;contour&quot;: 50, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 13 by 11 km around Vallter 2000: Bastiments, Gra de Fajol and the Ulldeter cirque. Zoom in and it sharpens to 5 m detail.&quot;, &quot;map_caveat&quot;: &quot;Avalanche paths from the ICGC's Map of Avalanche Zones of Catalonia (1:25,000, surveyed 1996–2006): outlines show the largest avalanche that terrain, vegetation and records point to; no outline is not proof of no avalanches, and there is none for the French side. Slopes from the ICGC 5 m bare-earth terrain model on the Catalan side; across the border in France, where the ICGC model stops, the 30 m Copernicus model fills in, so that side stays softer. Names from the ICGC, with GeoNames filling in the French side. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-paths\&quot; checked&gt; Mapped avalanche paths&lt;/label&gt;\n&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-doc\&quot;&gt; Documented avalanches&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_paths documented_avalanches&quot;, &quot;terrain_src&quot;: &quot;terrain&quot;, &quot;blocks&quot;: [&quot;t5_vallter&quot;, 3, 3]}"></div>
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;vallter&quot;, &quot;contour&quot;: 50, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 23 by 15 km from Puigmal to Vallter 2000: Puigmal and the Err-Puigmal slopes, the Núria valley, Noufonts and Finestrelles, Coma de Vaca and the Freser gorge, Bastiments, Gra de Fajol and the Ulldeter cirque, with the French Eyne and Carançà valleys to the north. Zoom in and it sharpens to 5 m detail.&quot;, &quot;map_caveat&quot;: &quot;Avalanche paths from the ICGC's Map of Avalanche Zones of Catalonia (1:25,000, surveyed 1996–2006): outlines show the largest avalanche that terrain, vegetation and records point to; no outline is not proof of no avalanches, and there is none for the French side. Slopes at 5 m from lidar-based bare-earth terrain models: the ICGC's on the Catalan side and IGN's LiDAR HD in France (Eyne, Err and Carançà), blended over about 50 m where they meet. Names from the ICGC. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-paths\&quot; checked&gt; Mapped avalanche paths&lt;/label&gt;\n&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-doc\&quot;&gt; Documented avalanches&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_paths documented_avalanches&quot;, &quot;terrain_src&quot;: &quot;terrain&quot;, &quot;blocks&quot;: [&quot;t5_vallter&quot;, 4, 5]}"></div>
 
     <div class="sw-avzone" data-zone="Vallter / Ulldeter" id="avalanches-vallter">
       <h2 class="sw-section">Recent avalanches</h2>
@@ -1135,12 +1135,35 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
-    <div class="sw-card sw-wide" id="vallter-outlook">
-      <h2 class="sw-h">Next 7 days</h2>
+    <div class="sw-card sw-wide" id="vallter-outlook" data-point="Vallter">
+      <h2 class="sw-h">Next 7 days · Vallter</h2>
       <p class="sw-note">Open-Meteo model forecast above Vallter at 2,400 m. Times in Central European time.</p>
       <div class="sw-kpis">
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="zone=Vallter / Ulldeter">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="zone=Vallter / Ulldeter">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Vallter">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Vallter">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+      </div>
+      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
+      <div class="sw-tablebox">
+        <table class="sw-table" data-source="outlook" data-row-key="point,date">
+          <thead><tr>
+            <th data-field="date">Day</th>
+            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
+            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
+            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
+            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
+          </tr></thead>
+          <tbody data-draw="outlook-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="vallter-outlook-2" data-point="Núria / Puigmal">
+      <h2 class="sw-h">Next 7 days · Núria / Puigmal</h2>
+      <p class="sw-note">Open-Meteo model forecast for the slopes between Núria and Puigmal at 2,400 m. Times in Central European time.</p>
+      <div class="sw-kpis">
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Núria / Puigmal">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Núria / Puigmal">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
       </div>
       <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
       <div class="sw-tablebox">
