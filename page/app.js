@@ -1,5 +1,157 @@
 // Snow & Avalanche Watch: page helpers, calcs, draws, route check core, slope map, route check UI
 
+// slope-map cards: each page section carries a slot with its settings; the card is built here, before the draws run
+const MAPCARD_T = (p) => `
+    <div class="sw-card sw-wide sw-mapcard" id="${p.zid}-map" data-pfx="${p.zid}">
+      <h2 class="sw-h">Slope map</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">${p.map_note} Grid north is up. Contour lines (optional) are every ${p.contour} m, with an extra interval when zoomed in. Drag to move around; ctrl- or ⌘-scroll, pinch or the buttons to zoom (plain scrolling zooms once the map is expanded). Hover for elevation, slope and aspect.</p></details>
+      <div class="sw-map-ctrl">
+        <div class="sw-seg" role="group" aria-label="Map view">
+          <button type="button" class="sw-mode" data-mode="slope" aria-pressed="true">Slope angle</button>
+          <button type="button" class="sw-mode" data-mode="watch" aria-pressed="false">Terrain to watch</button>
+          <button type="button" class="sw-mode" data-mode="wind" aria-pressed="false">Wind loading</button>
+        </div>
+        <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
+        ${p.paths_toggle}
+        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
+          <option value="off">none</option>
+          <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
+          <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
+        </select></label>
+        </div></details>
+        <div class="sw-zoombar">
+          <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
+          <button type="button" class="sw-zbtn sw-zout" aria-label="Zoom out">−</button>
+          <button type="button" class="sw-zbtn sw-zreset">Reset view</button>
+          <button type="button" class="sw-zbtn sw-expand">⤢ Expand</button>
+          <button type="button" class="sw-zbtn sw-collapse" hidden>✕ Close</button>
+        </div>
+      </div>
+      <div class="sw-search">
+        <input type="search" class="sw-search-in" placeholder="Search peaks, passes, places, stations, or lat, lon" aria-label="Search the maps" autocomplete="off" spellcheck="false">
+        <ul class="sw-search-list" role="listbox" hidden></ul>
+      </div>
+      <div class="sw-watch" hidden>
+        <div class="sw-watch-row">
+          <span class="sw-watch-lab">Aspects</span>
+          <span class="sw-aspects">
+            <label><input type="checkbox" class="sw-asp" value="N" checked>N</label>
+            <label><input type="checkbox" class="sw-asp" value="NE" checked>NE</label>
+            <label><input type="checkbox" class="sw-asp" value="E" checked>E</label>
+            <label><input type="checkbox" class="sw-asp" value="SE" checked>SE</label>
+            <label><input type="checkbox" class="sw-asp" value="S" checked>S</label>
+            <label><input type="checkbox" class="sw-asp" value="SW" checked>SW</label>
+            <label><input type="checkbox" class="sw-asp" value="W" checked>W</label>
+            <label><input type="checkbox" class="sw-asp" value="NW" checked>NW</label>
+          </span>
+        </div>
+        <div class="sw-watch-row">
+          <label class="sw-watch-lab" for="${p.zid}-emin">Elevation</label>
+          <span><input id="${p.zid}-emin" class="sw-emin" type="number" step="50" min="0" max="5000" placeholder="lowest" aria-label="Lowest elevation in metres"> to <input class="sw-emax" type="number" step="50" min="0" max="5000" placeholder="highest" aria-label="Highest elevation in metres"> m</span>
+          <label class="sw-watch-lab" for="${p.zid}-smin">Slopes from</label>
+          <select id="${p.zid}-smin" class="sw-smin">
+            <option value="25">25°</option><option value="30" selected>30°</option><option value="35">35°</option><option value="40">40°</option>
+          </select>
+        </div>
+        <div class="sw-watch-row">
+          <button type="button" class="sw-match">Match current bulletin</button>
+          <button type="button" class="sw-reset-watch">Reset</button>
+        </div>
+        <p class="sw-note sw-match-note" data-draw="match-note" data-source="problems danger_now">—</p>
+      </div>
+      <div class="sw-map dash-skeleton" data-draw="map" data-source="${p.terrain_src} wind_summary snow_grid${p.paths_src}"></div>
+      <div class="sw-fc-legend" hidden></div>
+      <ul class="sw-legend sw-leg-slope">
+        <li><i class="sw-sw" style="background:var(--sw-s27)"></i>27–29°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s30)"></i>30–34°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s35)"></i>35–39°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s40)"></i>40–44°</li>
+        <li><i class="sw-sw" style="background:var(--sw-s45)"></i>45° and steeper</li>
+        <li><span class="sw-mk-peak">▲</span>Summit</li>
+        <li><span class="sw-mk-col">◆</span>Col or pass</li>
+        <li><span class="sw-mk-stn">●</span>Weather station</li>
+        ${p.park_legend}
+        <li class="sw-leg-glac" hidden><i class="sw-sw" style="background:rgba(150,205,255,.8);border-color:#145FAA"></i>Glacier or permanent snowfield</li>
+      </ul>
+      <ul class="sw-legend sw-leg-wind" hidden>
+        <li><i class="sw-sw" style="background:var(--sw-wind)"></i>Likely wind-loaded (lee of recent winds)</li>
+        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
+      </ul>
+      <p class="sw-note sw-wind-note" data-draw="wind-note" data-source="wind_summary" hidden>—</p>
+      <ul class="sw-legend sw-leg-watch" hidden>
+        <li><i class="sw-sw" style="background:var(--sw-watch)"></i>Matches your filter</li>
+        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
+      </ul>
+      <span class="sw-blockmarks">${p.block_marks}</span>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note sw-map-caveat">${p.map_caveat}</p></details>
+      <div class="sw-route-bar">
+        <label class="sw-zbtn sw-upload">Check a GPX route<input type="file" class="sw-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
+        <button type="button" class="sw-zbtn sw-route-clear" hidden>Remove route</button>
+        <span class="sw-timing" hidden>
+          <label class="sw-paths-tog">Start <input type="datetime-local" class="sw-start" step="900" aria-label="Start date and time, local time at the map"></label>
+          <label class="sw-paths-tog">Pace <select class="sw-pace"><option value="0.8">relaxed</option><option value="1" selected>steady</option><option value="1.25">fast</option></select></label>
+        </span>
+        <span class="sw-watchgpx" hidden><button type="button" class="sw-zbtn sw-watchgpx-btn">Download hazard-marked route for watch</button></span>
+        <span class="sw-route-msg" data-draw="route-msg" data-source="${p.terrain_src}">—</span>
+        <span class="sw-route-hint">Your file stays in this browser; nothing is uploaded or saved.</span>
+        <span class="sw-route-msg sw-watchgpx-note" aria-live="polite"></span>
+      </div>
+      <div class="sw-route" hidden>
+        <h3 class="sw-h3">Route check</h3>
+        <div class="sw-brief">
+          <p class="sw-brief-verdict" data-draw="route-verdict" data-source="danger_now problems regional_forecasts">—</p>
+          <div class="sw-brief-lab">Route profile</div>
+          <div class="sw-chart sw-chart-short" data-draw="route-profile" data-source="${p.terrain_src}"></div>
+          <div class="sw-brief-lab">Hazard sections</div>
+          <div class="sw-hz-filter" role="group" aria-label="Show hazards">
+            <span>Show:</span>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="all"> All</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="underfoot" checked> ▼ On the slope</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="overhead"> ▲ From above</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="other" checked> Glaciers and cliffs</label>
+            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="highOnly"> High-consequence only</label>
+          </div>
+          <div class="sw-tablebox sw-route-box">
+            <table class="sw-table sw-route-table">
+              <thead><tr><th>#</th><th>Km</th><th class="sw-num">Elevation (m)</th><th>Level</th><th>What's there</th></tr></thead>
+              <tbody data-draw="route-rows" data-source="${p.terrain_src} danger_now problems regional_forecasts outlook"></tbody>
+            </table>
+          </div>
+          <details class="sw-how"><summary>How this works</summary><p class="sw-note">Select a section to zoom the map to it. Most avalanche accidents are triggered by the victim or someone in their group, so the slope underfoot always counts. A slope above counts in full only when today’s data gives it a reason to come down on you: considerable or higher danger at its elevation, a persistent slab problem with the start zone within 300 m (these can be triggered from a distance), a wet-snow problem, 20 cm or more of new snow forecast, a wind-loaded start zone, or warm sun on it when you pass. Otherwise it is shown as exposure. Other parties above you can still trigger it, so cross one at a time and don’t stop underneath. Each Show box matches a group in this table (a section on a slope you could trigger counts as “On the slope” even when there is also a slope above). The Show options apply to this table, the map, the profile, Previous / Next on the map and the watch file.</p></details>
+          <div class="sw-brief-lab">Conditions</div>
+          <ul class="sw-brief-list" data-draw="route-conditions" data-source="danger_now problems stations_daily outlook wind_summary avalanche_reports"></ul>
+          <p class="sw-note">Generated from the route's terrain, today's bulletin and the station and forecast data on this dashboard. A guide to where to focus, not a go/no-go decision.</p>
+          <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Download hazard-marked route for watch” saves your route as a .gpx with a waypoint at the start of each section the Show options above let through (the same ones as in the table and on the map), named like “HIGH 3 slope above”, “CARE 5 …” or “EXPOSED 7 …”; section numbers match the table above. Import it into your watch’s app as a route and navigate it, and the watch alerts you as you approach each waypoint.</p></details>
+        </div>
+        <p class="sw-route-sum" data-draw="route-summary" data-source="${p.terrain_src} wind_summary${p.paths_src}">—</p>
+        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Timing uses your start time (local time at the map) and pace to estimate when you reach each section (Munter method: an hour per 4 km plus 400 m climbed at a steady pace, faster downhill), then checks where the sun is and the day's forecast warmth. It ignores shade cast by ridges, so a slope may get sun later than shown.</p></details>
+        <ul class="sw-legend">
+          <li><span class="sw-expo sw-expo-underfoot">▼ On the slope</span> the slope you're on can avalanche: solid line</li>
+          <li><span class="sw-expo sw-expo-overhead">▲ Slope above</span> a slope above can run onto you: dashed line</li>
+          <li><span class="sw-dedge"><i style="background:#4DB848"></i><i style="background:#FFE600"></i><i style="background:#F7941E"></i><i style="background:#E8222A"></i><i style="background:#231F20"></i></span>Outer edge: today's danger rating at that elevation (when a rating is in force)</li>
+          <li><i class="sw-sw" style="background:var(--sw-r2)"></i>High consequence</li>
+          <li><i class="sw-sw" style="background:var(--sw-r1)"></i>Take care</li>
+          <li><i class="sw-sw" style="background:#8A7CC2"></i>Exposure: under a slope above that today’s conditions don’t raise</li>
+          <li><i class="sw-sw" style="background:#fff"></i>No terrain flags</li>
+        </ul>
+        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Every 10 m of the route is checked against the terrain model for: the slope underfoot (30° and up is avalanche terrain, 35° and up is steep); slopes of 30–60° above the route that face it, within 1 km and at least 30 m higher, steep enough to reach it (an angle of 22° or more up from the route to the start zone, the "alpha angle" used to screen avalanche runouts; 28° or more from a 35°+ slope counts as high); and cliffs or very steep drops within 40 m below. "Today" marks sections whose terrain matches the Terrain to watch filter, when that view is on. This reads the terrain only. It knows nothing about the snowpack, and can miss small features or flag paths that are sheltered in reality: a screening tool for planning, not a substitute for the bulletin, training and judgement on the day.</p></details>
+      </div>
+    </div>
+`;
+document.querySelectorAll('.sw-mapslot').forEach((el) => {
+  const p = JSON.parse(el.dataset.p);
+  const esc = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  p.map_note = esc(p.map_note); p.map_caveat = esc(p.map_caveat);
+  const b = p.blocks;
+  p.block_marks = '';
+  if (b) for (let r = 0; r < b[1]; r++) for (let c = 0; c < b[2]; c++) p.block_marks += `<i hidden data-rc="${r},${c}" data-source="${b[0]}_${r}_${c}"></i>`;
+  el.insertAdjacentHTML('afterend', MAPCARD_T(p));
+  el.remove();
+});
+
+;
+
 // station tiles: the page carries only each tile's station and last row; the cells are built here, before the draws run
 document.querySelectorAll('.sw-tile[data-st]').forEach((el) => {
   const st = el.dataset.st, [lab, field, unit] = (el.dataset.last || 'Max gust|gust_max_kmh|km/h').split('|');
@@ -21,7 +173,7 @@ document.querySelectorAll('.sw-tile[data-st]').forEach((el) => {
 ;
 
 // terrain rows live in two datasets: Rossland on its own (the main file is near its size limit)
-window.swTerrainData = (zone) => dash.data(zone === 'Rossland' ? 'terrain_rossland' : zone === 'Rocky Mountain NP' ? 'terrain_rmnp' : zone === 'Chamonix' ? 'terrain_chx' : 'terrain');
+window.swTerrainData = (zone) => dash.data(['Rossland', 'Whitewater', 'Kootenay Pass'].includes(zone) ? 'terrain_rossland' : zone === 'Rocky Mountain NP' ? 'terrain_rmnp' : zone === 'Chamonix' ? 'terrain_chx' : 'terrain');
 window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrain_rmnp', 'terrain_chx'].map((id) => { const d = dash.data(id); return d.status === 'ok' ? d.data : []; }));
 (() => {
   const parse = d3.utcParse('%Y-%m-%d');
@@ -236,7 +388,8 @@ window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrai
     const pt = d3.utcParse('%Y-%m-%dT%H:%M');
     const hrs = rows.map((r) => ({ ...r, t: pt(r.time) })).filter((r) => r.t);
     if (!hrs.length) return;
-    const bands = [[1300, 'BTL'], [1900, 'TL'], [2500, 'ALP']];
+    const bv = (el.dataset.bands || '1300,1900,2500').split(',').map(Number);
+    const bands = [[bv[0], 'BTL'], [bv[1], 'TL'], [bv[2], 'ALP']];
     const flMax = Math.max(3200, d3.max(hrs, (r) => num(r.freezing_level_m)) || 0);
     const y0 = d3.scaleLinear([0, flMax], [1, 0]).nice();
     const ylabW = d3.max(y0.ticks(4), (t) => measure(svg, d3.format(',')(t))) || 20;
@@ -336,7 +489,7 @@ dash.calc('danger_now', {
   description: 'Each zone’s ratings for today in that zone (or the latest earlier day if today isn’t rated yet).',
   inputs: ['danger_history'],
   fn: (danger_history) => {
-    const tz = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', 'Vallter / Ulldeter': 'Europe/Madrid', Innsbruck: 'Europe/Vienna', 'Rocky Mountain NP': 'America/Denver', Chamonix: 'Europe/Paris' };
+    const tz = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', Whitewater: 'America/Vancouver', 'Kootenay Pass': 'America/Vancouver', 'Vallter / Ulldeter': 'Europe/Madrid', Innsbruck: 'Europe/Vienna', 'Rocky Mountain NP': 'America/Denver', Chamonix: 'Europe/Paris' };
     const today = (z) => new Intl.DateTimeFormat('en-CA', { timeZone: tz[z] || 'UTC' }).format(new Date());
     const pick = {};
     for (const r of danger_history) {
@@ -1025,7 +1178,7 @@ dash.draw('history', (el) => {
   };
   window.swMapSettings = settings;
   // contour lines from the overview grid: smoothed 3x3, marching squares, map-edge runs dropped, lightly thinned
-  const TOPO = { 'Rogers Pass': { step: 50, minor: 100, index: 500 }, 'Vallter / Ulldeter': { step: 25, minor: 50, index: 250 }, Innsbruck: { step: 50, minor: 100, index: 500 }, Rossland: { step: 50, minor: 100, index: 500 }, 'Rocky Mountain NP': { step: 50, minor: 100, index: 500 }, Chamonix: { step: 50, minor: 100, index: 500 } };
+  const TOPO = { 'Rogers Pass': { step: 50, minor: 100, index: 500 }, 'Vallter / Ulldeter': { step: 25, minor: 50, index: 250 }, Innsbruck: { step: 50, minor: 100, index: 500 }, Rossland: { step: 25, minor: 50, index: 250 }, Whitewater: { step: 25, minor: 50, index: 250 }, 'Kootenay Pass': { step: 25, minor: 50, index: 250 }, 'Rocky Mountain NP': { step: 50, minor: 100, index: 500 }, Chamonix: { step: 50, minor: 100, index: 500 } };
   const topoCache = {};
   window.swContours = (row, t) => {
     if (topoCache[row.zone]) return topoCache[row.zone];
@@ -1067,7 +1220,7 @@ dash.draw('history', (el) => {
     });
     return (topoCache[row.zone] = out);
   };
-  const ALPINE = { 'Rogers Pass': 1900, 'Vallter / Ulldeter': 2100, Innsbruck: 2000, Rossland: 1900, 'Rocky Mountain NP': 3400, Chamonix: 2200 }; // roughly the treeline; wind loading is mapped above it
+  const ALPINE = { 'Rogers Pass': 1900, 'Vallter / Ulldeter': 2100, Innsbruck: 2000, Rossland: 1900, Whitewater: 1900, 'Kootenay Pass': 1900, 'Rocky Mountain NP': 3400, Chamonix: 2200 }; // roughly the treeline; wind loading is mapped above it
   window.swAlpine = ALPINE;
   const maskCache = {}, pathCache = {};
   window.swWindMaskFor = (row, t, w) => {
@@ -1639,7 +1792,7 @@ dash.draw('history', (el) => {
     let txt = parts.length ? 'Current problems: ' + parts.join('; ') + '.' : '';
     const top = rated.sort((a, b) => b.level - a.level)[0];
     if (top) txt += ` Highest rating: ${top.rating} (${top.band_label}).`;
-    if (zone === 'Rogers Pass' || zone === 'Rossland') txt += ' Avalanche Canada names bands, not heights, so set the elevation range yourself.';
+    if (['Rogers Pass', 'Rossland', 'Whitewater', 'Kootenay Pass'].includes(zone)) txt += ' Avalanche Canada names bands, not heights, so set the elevation range yourself.';
     if (zone === 'Rocky Mountain NP') txt += ' The CAIC names bands (above, near and below treeline), not heights, so set the elevation range yourself; treeline here is roughly 3,300–3,500 m.';
     el.textContent = txt.trim();
   });
@@ -2273,7 +2426,7 @@ ${trk.join('\n')}
   const RATING = ['no rating', 'low', 'moderate', 'considerable', 'high', 'very high'];
 
   // ---- timing: when you reach each part of the route, where the sun is then, and whether it's warm ----
-  const ZONE_TZ = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', 'Rocky Mountain NP': 'America/Denver', 'Vallter / Ulldeter': 'Europe/Madrid', Innsbruck: 'Europe/Vienna', Chamonix: 'Europe/Paris' };
+  const ZONE_TZ = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', Whitewater: 'America/Vancouver', 'Kootenay Pass': 'America/Vancouver', 'Rocky Mountain NP': 'America/Denver', 'Vallter / Ulldeter': 'Europe/Madrid', Innsbruck: 'Europe/Vienna', Chamonix: 'Europe/Paris' };
   const RAD = Math.PI / 180;
   const tzOffMin = (tz, ms) => {
     const p = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).formatToParts(new Date(ms));
@@ -2365,7 +2518,7 @@ ${trk.join('\n')}
   // ---- today's rating at a given elevation ----
   // Avalanche Canada rates alpine / treeline / below treeline without heights; these are the rough
   // heights of those bands here (treeline wanders by aspect and valley, so it's approximate).
-  const BANDS_M = { 'Rogers Pass': [1800, 2100], Rossland: [1700, 2000], 'Rocky Mountain NP': [3300, 3500] };
+  const BANDS_M = { 'Rogers Pass': [1800, 2100], Rossland: [1700, 2000], Whitewater: [1700, 2000], 'Kootenay Pass': [1700, 2000], 'Rocky Mountain NP': [3300, 3500] };
   const DCOL = ['#9A9A9A', '#4DB848', '#FFE600', '#F7941E', '#E8222A', '#231F20'];
   const bandRater = (zone, rated) => {
     const by = (b) => rated.find((x) => x.band === b);
@@ -2515,7 +2668,7 @@ ${trk.join('\n')}
     // field reports near the route (Rogers Pass)
     const reps = (ok('avalanche_reports') || []).filter((x) => x.zone === zone && x.id && (x.avalanches > 0 || x.signs || x.kind === 'incident'));
     if (reps.length) {
-      const zn = Number(String(st.res.zoneCrs || '').slice(-2)) || (zone === 'Rogers Pass' || zone === 'Rossland' ? 11 : zone === 'Rocky Mountain NP' ? 13 : zone === 'Chamonix' ? 32 : 31);
+      const zn = Number(String(st.res.zoneCrs || '').slice(-2)) || (['Rogers Pass', 'Rossland', 'Whitewater', 'Kootenay Pass'].includes(zone) ? 11 : zone === 'Rocky Mountain NP' ? 13 : zone === 'Chamonix' ? 32 : 31);
       const near = reps.map((x) => {
         const [ex, ny] = window.swRouteCore.utm(x.lat, x.lon, zn);
         let best = Infinity;
@@ -2892,7 +3045,7 @@ ${trk.join('\n')}
     let ends = '';
     const until = w.until ? new Date(w.until.replace('Z', ':00Z')) : null;
     if (until && !isNaN(until) && Date.now() - until > 3 * 3600e3) {
-      const tzs = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver' };
+      const tzs = { 'Rogers Pass': 'America/Vancouver', Rossland: 'America/Vancouver', Whitewater: 'America/Vancouver', 'Kootenay Pass': 'America/Vancouver' };
       const z = zoneOf(el).split(' · ')[0];
       ends = ` Readings end ${new Intl.DateTimeFormat('en-US', { timeZone: tzs[z] || 'UTC', weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(until)}${tzs[z] ? ' Pacific time' : ' UTC'}.`;
     }
@@ -3057,7 +3210,7 @@ ${trk.join('\n')}
     if (!all) { el.textContent = '—'; return; }
     const zone = zoneOfEl(el), ref = refOf(el);
     const rows = all.filter((r) => r.zone === zone);
-    if (!rows.length) { el.textContent = zone === 'Rogers Pass' || zone === 'Rossland' ? 'No field reports in the last 30 days.' : 'No reports in the last 30 days. Both feeds are mostly filed in winter.'; return; }
+    if (!rows.length) { el.textContent = ['Rogers Pass', 'Rossland', 'Whitewater', 'Kootenay Pass'].includes(zone) ? 'No field reports in the last 30 days.' : 'No reports in the last 30 days. Both feeds are mostly filed in winter.'; return; }
     const av = rows.filter((r) => r.avalanches > 0);
     const latest = av[0];
     const big = d3.greatest(av.filter((r) => r.max_size), (r) => r.max_size);

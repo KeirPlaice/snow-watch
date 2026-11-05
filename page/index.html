@@ -266,9 +266,9 @@ details.sw-how[open] > summary{display:none}
 <div class="sw-page">
   <header class="sw-head">
     <h1>Snow &amp; Avalanche Watch</h1>
-    <p>Avalanche danger, snowpack and the week ahead for Rogers Pass, Rossland to Kootenay Pass, the hills above Vallter, the mountains around Innsbruck, Rocky Mountain National Park and the Mont Blanc massif around Chamonix. Refreshed every morning.</p>
+    <p>Avalanche danger, snowpack and the week ahead for Rogers Pass, the Rossland Range, Whitewater, Kootenay Pass, the hills above Vallter, the mountains around Innsbruck, Rocky Mountain National Park and the Mont Blanc massif around Chamonix. Refreshed every morning.</p>
   </header>
-  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="rossland" aria-selected="false">Rossland & Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="vallter" aria-selected="false">Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="innsbruck" aria-selected="false">Innsbruck</button><button class="sw-tab" role="tab" data-tab="rmnp" aria-selected="false">Rocky Mountain NP</button><button class="sw-tab" role="tab" data-tab="chamonix" aria-selected="false">Chamonix</button></nav>
+  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="rossland" aria-selected="false">Rossland Range</button><button class="sw-tab" role="tab" data-tab="whitewater" aria-selected="false">Whitewater</button><button class="sw-tab" role="tab" data-tab="kpass" aria-selected="false">Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="vallter" aria-selected="false">Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="innsbruck" aria-selected="false">Innsbruck</button><button class="sw-tab" role="tab" data-tab="rmnp" aria-selected="false">Rocky Mountain NP</button><button class="sw-tab" role="tab" data-tab="chamonix" aria-selected="false">Chamonix</button></nav>
 
   <section class="sw-zone" id="rogers" data-zone="Rogers Pass" data-temp="Fidelity" data-wind="MacDonald West Shoulder">
     <p class="sw-sub">Glacier National Park, Selkirk Mountains, BC · forecast by Parks Canada via Avalanche Canada</p>
@@ -295,143 +295,7 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
-    <div class="sw-card sw-wide sw-mapcard" id="rogers-map" data-pfx="rogers">
-      <h2 class="sw-h">Slope map</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">About 120 by 80 km: all of Glacier National Park (green outline), Mount Revelstoke, Revelstoke south past Mount Cartier and Mount Mackenzie, and west over Eagle Pass to the Gorge near Malakwa. Zoom in and it sharpens to 30 m. Grid north is up. Contour lines (optional) are every 100 m, with an extra interval when zoomed in. Drag to move around; ctrl- or ⌘-scroll, pinch or the buttons to zoom (plain scrolling zooms once the map is expanded). Hover for elevation, slope and aspect.</p></details>
-      <div class="sw-map-ctrl">
-        <div class="sw-seg" role="group" aria-label="Map view">
-          <button type="button" class="sw-mode" data-mode="slope" aria-pressed="true">Slope angle</button>
-          <button type="button" class="sw-mode" data-mode="watch" aria-pressed="false">Terrain to watch</button>
-          <button type="button" class="sw-mode" data-mode="wind" aria-pressed="false">Wind loading</button>
-        </div>
-        <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
-        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
-          <option value="off">none</option>
-          <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
-          <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
-        </select></label>
-        </div></details>
-        <div class="sw-zoombar">
-          <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
-          <button type="button" class="sw-zbtn sw-zout" aria-label="Zoom out">−</button>
-          <button type="button" class="sw-zbtn sw-zreset">Reset view</button>
-          <button type="button" class="sw-zbtn sw-expand">⤢ Expand</button>
-          <button type="button" class="sw-zbtn sw-collapse" hidden>✕ Close</button>
-        </div>
-      </div>
-      <div class="sw-search">
-        <input type="search" class="sw-search-in" placeholder="Search peaks, passes, places, stations, or lat, lon" aria-label="Search the maps" autocomplete="off" spellcheck="false">
-        <ul class="sw-search-list" role="listbox" hidden></ul>
-      </div>
-      <div class="sw-watch" hidden>
-        <div class="sw-watch-row">
-          <span class="sw-watch-lab">Aspects</span>
-          <span class="sw-aspects">
-            <label><input type="checkbox" class="sw-asp" value="N" checked>N</label>
-            <label><input type="checkbox" class="sw-asp" value="NE" checked>NE</label>
-            <label><input type="checkbox" class="sw-asp" value="E" checked>E</label>
-            <label><input type="checkbox" class="sw-asp" value="SE" checked>SE</label>
-            <label><input type="checkbox" class="sw-asp" value="S" checked>S</label>
-            <label><input type="checkbox" class="sw-asp" value="SW" checked>SW</label>
-            <label><input type="checkbox" class="sw-asp" value="W" checked>W</label>
-            <label><input type="checkbox" class="sw-asp" value="NW" checked>NW</label>
-          </span>
-        </div>
-        <div class="sw-watch-row">
-          <label class="sw-watch-lab" for="rogers-emin">Elevation</label>
-          <span><input id="rogers-emin" class="sw-emin" type="number" step="50" min="0" max="5000" placeholder="lowest" aria-label="Lowest elevation in metres"> to <input class="sw-emax" type="number" step="50" min="0" max="5000" placeholder="highest" aria-label="Highest elevation in metres"> m</span>
-          <label class="sw-watch-lab" for="rogers-smin">Slopes from</label>
-          <select id="rogers-smin" class="sw-smin">
-            <option value="25">25°</option><option value="30" selected>30°</option><option value="35">35°</option><option value="40">40°</option>
-          </select>
-        </div>
-        <div class="sw-watch-row">
-          <button type="button" class="sw-match">Match current bulletin</button>
-          <button type="button" class="sw-reset-watch">Reset</button>
-        </div>
-        <p class="sw-note sw-match-note" data-draw="match-note" data-source="problems danger_now">—</p>
-      </div>
-      <div class="sw-map dash-skeleton" data-draw="map" data-source="terrain wind_summary snow_grid avalanche_reports glaciers"></div>
-      <div class="sw-fc-legend" hidden></div>
-      <ul class="sw-legend sw-leg-slope">
-        <li><i class="sw-sw" style="background:var(--sw-s27)"></i>27–29°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30)"></i>30–34°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s35)"></i>35–39°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s40)"></i>40–44°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s45)"></i>45° and steeper</li>
-        <li><span class="sw-mk-peak">▲</span>Summit</li>
-        <li><span class="sw-mk-col">◆</span>Col or pass</li>
-        <li><span class="sw-mk-stn">●</span>Weather station</li>
-        <li><span class="sw-mk-park">┅</span>National park boundary</li>
-        <li class="sw-leg-glac" hidden><i class="sw-sw" style="background:rgba(150,205,255,.8);border-color:#145FAA"></i>Glacier or permanent snowfield</li>
-      </ul>
-      <ul class="sw-legend sw-leg-wind" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-wind)"></i>Likely wind-loaded (lee of recent winds)</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <p class="sw-note sw-wind-note" data-draw="wind-note" data-source="wind_summary" hidden>—</p>
-      <ul class="sw-legend sw-leg-watch" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-watch)"></i>Matches your filter</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <span class="sw-blockmarks"><i hidden data-rc="0,0" data-source="t30_rogers_0_0"></i><i hidden data-rc="0,1" data-source="t30_rogers_0_1"></i><i hidden data-rc="0,2" data-source="t30_rogers_0_2"></i><i hidden data-rc="0,3" data-source="t30_rogers_0_3"></i><i hidden data-rc="0,4" data-source="t30_rogers_0_4"></i><i hidden data-rc="1,0" data-source="t30_rogers_1_0"></i><i hidden data-rc="1,1" data-source="t30_rogers_1_1"></i><i hidden data-rc="1,2" data-source="t30_rogers_1_2"></i><i hidden data-rc="1,3" data-source="t30_rogers_1_3"></i><i hidden data-rc="1,4" data-source="t30_rogers_1_4"></i><i hidden data-rc="2,0" data-source="t30_rogers_2_0"></i><i hidden data-rc="2,1" data-source="t30_rogers_2_1"></i><i hidden data-rc="2,2" data-source="t30_rogers_2_2"></i><i hidden data-rc="2,3" data-source="t30_rogers_2_3"></i><i hidden data-rc="2,4" data-source="t30_rogers_2_4"></i></span>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note sw-map-caveat">Slopes from NRCan's 30 m bare-earth terrain model (MRDEM: the Copernicus surface model with the tree canopy removed), the finest open terrain data for most of this area. Public lidar covers under 2% of the map, in a few valley strips near Revelstoke and at the south-east edge, and is blended in there; none has been published for Glacier National Park. Zoomed out, the map shows a 90 m summary that keeps each 90 m cell's average 30 m steepness; the route check always uses 30 m. Parks Canada doesn't publish its avalanche path atlas as open data, so mapped paths aren't shown for Rogers Pass. Glacier outlines are from the BC Freshwater Atlas (provincial mapping that is decades old in places); the glaciers have shrunk since, so expect less ice than shown, especially at the snouts. At 30 m it smooths short steep rolls and gully walls, so real angles can be steeper; the canopy removal is modelled, so some forest edges and cut blocks can still show as false steep patches. Names from the Canadian Geographical Names Database; summit heights are left off the labels because the 30 m model clips peaks by tens of metres (hover still shows the model height). A planning aid, not a substitute for measuring slopes on the ground.</p></details>
-      <div class="sw-route-bar">
-        <label class="sw-zbtn sw-upload">Check a GPX route<input type="file" class="sw-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
-        <button type="button" class="sw-zbtn sw-route-clear" hidden>Remove route</button>
-        <span class="sw-timing" hidden>
-          <label class="sw-paths-tog">Start <input type="datetime-local" class="sw-start" step="900" aria-label="Start date and time, local time at the map"></label>
-          <label class="sw-paths-tog">Pace <select class="sw-pace"><option value="0.8">relaxed</option><option value="1" selected>steady</option><option value="1.25">fast</option></select></label>
-        </span>
-        <span class="sw-watchgpx" hidden><button type="button" class="sw-zbtn sw-watchgpx-btn">Download hazard-marked route for watch</button></span>
-        <span class="sw-route-msg" data-draw="route-msg" data-source="terrain">—</span>
-        <span class="sw-route-hint">Your file stays in this browser; nothing is uploaded or saved.</span>
-        <span class="sw-route-msg sw-watchgpx-note" aria-live="polite"></span>
-      </div>
-      <div class="sw-route" hidden>
-        <h3 class="sw-h3">Route check</h3>
-        <div class="sw-brief">
-          <p class="sw-brief-verdict" data-draw="route-verdict" data-source="danger_now problems regional_forecasts">—</p>
-          <div class="sw-brief-lab">Route profile</div>
-          <div class="sw-chart sw-chart-short" data-draw="route-profile" data-source="terrain"></div>
-          <div class="sw-brief-lab">Hazard sections</div>
-          <div class="sw-hz-filter" role="group" aria-label="Show hazards">
-            <span>Show:</span>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="all"> All</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="underfoot" checked> ▼ On the slope</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="overhead"> ▲ From above</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="other" checked> Glaciers and cliffs</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="highOnly"> High-consequence only</label>
-          </div>
-          <div class="sw-tablebox sw-route-box">
-            <table class="sw-table sw-route-table">
-              <thead><tr><th>#</th><th>Km</th><th class="sw-num">Elevation (m)</th><th>Level</th><th>What's there</th></tr></thead>
-              <tbody data-draw="route-rows" data-source="terrain danger_now problems regional_forecasts outlook"></tbody>
-            </table>
-          </div>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">Select a section to zoom the map to it. Most avalanche accidents are triggered by the victim or someone in their group, so the slope underfoot always counts. A slope above counts in full only when today’s data gives it a reason to come down on you: considerable or higher danger at its elevation, a persistent slab problem with the start zone within 300 m (these can be triggered from a distance), a wet-snow problem, 20 cm or more of new snow forecast, a wind-loaded start zone, or warm sun on it when you pass. Otherwise it is shown as exposure. Other parties above you can still trigger it, so cross one at a time and don’t stop underneath. Each Show box matches a group in this table (a section on a slope you could trigger counts as “On the slope” even when there is also a slope above). The Show options apply to this table, the map, the profile, Previous / Next on the map and the watch file.</p></details>
-          <div class="sw-brief-lab">Conditions</div>
-          <ul class="sw-brief-list" data-draw="route-conditions" data-source="danger_now problems stations_daily outlook wind_summary avalanche_reports"></ul>
-          <p class="sw-note">Generated from the route's terrain, today's bulletin and the station and forecast data on this dashboard. A guide to where to focus, not a go/no-go decision.</p>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Download hazard-marked route for watch” saves your route as a .gpx with a waypoint at the start of each section the Show options above let through (the same ones as in the table and on the map), named like “HIGH 3 slope above”, “CARE 5 …” or “EXPOSED 7 …”; section numbers match the table above. Import it into your watch’s app as a route and navigate it, and the watch alerts you as you approach each waypoint.</p></details>
-        </div>
-        <p class="sw-route-sum" data-draw="route-summary" data-source="terrain wind_summary avalanche_reports glaciers">—</p>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Timing uses your start time (local time at the map) and pace to estimate when you reach each section (Munter method: an hour per 4 km plus 400 m climbed at a steady pace, faster downhill), then checks where the sun is and the day's forecast warmth. It ignores shade cast by ridges, so a slope may get sun later than shown.</p></details>
-        <ul class="sw-legend">
-          <li><span class="sw-expo sw-expo-underfoot">▼ On the slope</span> the slope you're on can avalanche: solid line</li>
-          <li><span class="sw-expo sw-expo-overhead">▲ Slope above</span> a slope above can run onto you: dashed line</li>
-          <li><span class="sw-dedge"><i style="background:#4DB848"></i><i style="background:#FFE600"></i><i style="background:#F7941E"></i><i style="background:#E8222A"></i><i style="background:#231F20"></i></span>Outer edge: today's danger rating at that elevation (when a rating is in force)</li>
-          <li><i class="sw-sw" style="background:var(--sw-r2)"></i>High consequence</li>
-          <li><i class="sw-sw" style="background:var(--sw-r1)"></i>Take care</li>
-          <li><i class="sw-sw" style="background:#8A7CC2"></i>Exposure: under a slope above that today’s conditions don’t raise</li>
-          <li><i class="sw-sw" style="background:#fff"></i>No terrain flags</li>
-        </ul>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Every 10 m of the route is checked against the terrain model for: the slope underfoot (30° and up is avalanche terrain, 35° and up is steep); slopes of 30–60° above the route that face it, within 1 km and at least 30 m higher, steep enough to reach it (an angle of 22° or more up from the route to the start zone, the "alpha angle" used to screen avalanche runouts; 28° or more from a 35°+ slope counts as high); and cliffs or very steep drops within 40 m below. "Today" marks sections whose terrain matches the Terrain to watch filter, when that view is on. This reads the terrain only. It knows nothing about the snowpack, and can miss small features or flag paths that are sheltered in reality: a screening tool for planning, not a substitute for the bulletin, training and judgement on the day.</p></details>
-      </div>
-    </div>
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;rogers&quot;, &quot;contour&quot;: 100, &quot;park_legend&quot;: &quot;&lt;li&gt;&lt;span class=\&quot;sw-mk-park\&quot;&gt;┅&lt;/span&gt;National park boundary&lt;/li&gt;&quot;, &quot;map_note&quot;: &quot;About 120 by 80 km: all of Glacier National Park (green outline), Mount Revelstoke, Revelstoke south past Mount Cartier and Mount Mackenzie, and west over Eagle Pass to the Gorge near Malakwa. Zoom in and it sharpens to 30 m.&quot;, &quot;map_caveat&quot;: &quot;Slopes from NRCan's 30 m bare-earth terrain model (MRDEM: the Copernicus surface model with the tree canopy removed), the finest open terrain data for most of this area. Public lidar covers under 2% of the map, in a few valley strips near Revelstoke and at the south-east edge, and is blended in there; none has been published for Glacier National Park. Zoomed out, the map shows a 90 m summary that keeps each 90 m cell's average 30 m steepness; the route check always uses 30 m. Parks Canada doesn't publish its avalanche path atlas as open data, so mapped paths aren't shown for Rogers Pass. Glacier outlines are from the BC Freshwater Atlas (provincial mapping that is decades old in places); the glaciers have shrunk since, so expect less ice than shown, especially at the snouts. At 30 m it smooths short steep rolls and gully walls, so real angles can be steeper; the canopy removal is modelled, so some forest edges and cut blocks can still show as false steep patches. Names from the Canadian Geographical Names Database; summit heights are left off the labels because the 30 m model clips peaks by tens of metres (hover still shows the model height). A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain&quot;, &quot;blocks&quot;: [&quot;t30_rogers&quot;, 3, 5]}"></div>
 
     <div class="sw-avzone" data-zone="Rogers Pass" data-ref="the pass" id="avalanches-rogers">
       <h2 class="sw-section">Recent avalanches</h2>
@@ -598,7 +462,7 @@ details.sw-how[open] > summary{display:none}
 
     <div class="sw-card sw-wide" id="rogers-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Canada's GEM weather model (Environment and Climate Change Canada) for the pass: the 2.5 km HRDPS for about the first two days, then the coarser 10 km and 15 km runs, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the pass, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the pass area; the alpine often gets more, and wind redistributes it. Times in Pacific time.</p></details>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Canada's GEM weather model (Environment and Climate Change Canada) for the pass: the 2.5 km HRDPS for about the first two days, then the coarser 10 km and 15 km runs, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the pass, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the pass; the alpine often gets more, and wind redistributes it. Times in Pacific time.</p></details>
       <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
         <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 2,500 m</div></div>
         <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 1,900 m</div></div>
@@ -607,7 +471,7 @@ details.sw-how[open] > summary{display:none}
       </div>
       <h3 class="sw-h3">Next 72 hours</h3>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 2,500 m, every 6 hours, with arrows showing where it blows to.</p></details>
-      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast"></div>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1900,2500"></div>
       <h3 class="sw-h3">Day by day</h3>
       <div class="sw-tablebox">
         <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
@@ -640,8 +504,8 @@ details.sw-how[open] > summary{display:none}
       </ul>
     </div>
   </section>
-  <section class="sw-zone" id="rossland" data-zone="Rossland" data-temp="Southridge" data-wind="Stagleap" hidden>
-    <p class="sw-sub">Rossland Range, Nelson, Kokanee Glacier and Kootenay Pass, West Kootenay, BC · forecast by Avalanche Canada</p>
+  <section class="sw-zone" id="rossland" data-zone="Rossland" data-temp="Strawberry Pass" data-wind="Strawberry Pass" hidden>
+    <p class="sw-sub">Red Mountain, Granite, Old Glory and Mt. Lepsoe north to Nancy Greene Pass, West Kootenay, BC · forecast by Avalanche Canada</p>
 
     <div class="sw-grid sw-grid-top">
       <div class="sw-card" id="rossland-danger">
@@ -653,7 +517,7 @@ details.sw-how[open] > summary{display:none}
           <dt>Valid until</dt><dd data-draw="cell" data-source="bulletins" data-field="valid_until" data-where="zone=Rossland">—</dd>
         </dl>
         <h3 class="sw-h3">Forecasts across the map</h3>
-        <p class="sw-note">This card is the forecast covering Red Mountain. Whitewater, Kokanee and Kootenay Pass can fall under other Avalanche Canada regions; each is listed here, and the route check uses whichever covers most of your route.</p>
+        <p class="sw-note">This card is the forecast covering Red Mountain; the route check uses whichever forecast covers most of your route.</p>
         <ul class="sw-regional" data-draw="regional" data-source="regional_forecasts"></ul>
       </div>
       <div class="sw-card" id="rossland-bulletin">
@@ -665,147 +529,11 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
-    <div class="sw-card sw-wide sw-mapcard" id="rossland-map" data-pfx="rossland">
-      <h2 class="sw-h">Slope map</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">About 85 by 90 km: the Rossland Range from Old Glory to Red Mountain, Strawberry, Paulson and Bonanza passes, Nelson, Whitewater and Ymir, Kokanee Glacier Park, and east over Salmo to Kootenay Pass and Stagleap. Zoom in and it sharpens to 10 m, from lidar over about half the map. Grid north is up. Contour lines (optional) are every 100 m, with an extra interval when zoomed in. Drag to move around; ctrl- or ⌘-scroll, pinch or the buttons to zoom (plain scrolling zooms once the map is expanded). Hover for elevation, slope and aspect.</p></details>
-      <div class="sw-map-ctrl">
-        <div class="sw-seg" role="group" aria-label="Map view">
-          <button type="button" class="sw-mode" data-mode="slope" aria-pressed="true">Slope angle</button>
-          <button type="button" class="sw-mode" data-mode="watch" aria-pressed="false">Terrain to watch</button>
-          <button type="button" class="sw-mode" data-mode="wind" aria-pressed="false">Wind loading</button>
-        </div>
-        <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
-        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
-          <option value="off">none</option>
-          <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
-          <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
-        </select></label>
-        </div></details>
-        <div class="sw-zoombar">
-          <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
-          <button type="button" class="sw-zbtn sw-zout" aria-label="Zoom out">−</button>
-          <button type="button" class="sw-zbtn sw-zreset">Reset view</button>
-          <button type="button" class="sw-zbtn sw-expand">⤢ Expand</button>
-          <button type="button" class="sw-zbtn sw-collapse" hidden>✕ Close</button>
-        </div>
-      </div>
-      <div class="sw-search">
-        <input type="search" class="sw-search-in" placeholder="Search peaks, passes, places, stations, or lat, lon" aria-label="Search the maps" autocomplete="off" spellcheck="false">
-        <ul class="sw-search-list" role="listbox" hidden></ul>
-      </div>
-      <div class="sw-watch" hidden>
-        <div class="sw-watch-row">
-          <span class="sw-watch-lab">Aspects</span>
-          <span class="sw-aspects">
-            <label><input type="checkbox" class="sw-asp" value="N" checked>N</label>
-            <label><input type="checkbox" class="sw-asp" value="NE" checked>NE</label>
-            <label><input type="checkbox" class="sw-asp" value="E" checked>E</label>
-            <label><input type="checkbox" class="sw-asp" value="SE" checked>SE</label>
-            <label><input type="checkbox" class="sw-asp" value="S" checked>S</label>
-            <label><input type="checkbox" class="sw-asp" value="SW" checked>SW</label>
-            <label><input type="checkbox" class="sw-asp" value="W" checked>W</label>
-            <label><input type="checkbox" class="sw-asp" value="NW" checked>NW</label>
-          </span>
-        </div>
-        <div class="sw-watch-row">
-          <label class="sw-watch-lab" for="rossland-emin">Elevation</label>
-          <span><input id="rossland-emin" class="sw-emin" type="number" step="50" min="0" max="5000" placeholder="lowest" aria-label="Lowest elevation in metres"> to <input class="sw-emax" type="number" step="50" min="0" max="5000" placeholder="highest" aria-label="Highest elevation in metres"> m</span>
-          <label class="sw-watch-lab" for="rossland-smin">Slopes from</label>
-          <select id="rossland-smin" class="sw-smin">
-            <option value="25">25°</option><option value="30" selected>30°</option><option value="35">35°</option><option value="40">40°</option>
-          </select>
-        </div>
-        <div class="sw-watch-row">
-          <button type="button" class="sw-match">Match current bulletin</button>
-          <button type="button" class="sw-reset-watch">Reset</button>
-        </div>
-        <p class="sw-note sw-match-note" data-draw="match-note" data-source="problems danger_now">—</p>
-      </div>
-      <div class="sw-map dash-skeleton" data-draw="map" data-source="terrain_rossland wind_summary snow_grid avalanche_reports glaciers"></div>
-      <div class="sw-fc-legend" hidden></div>
-      <ul class="sw-legend sw-leg-slope">
-        <li><i class="sw-sw" style="background:var(--sw-s27)"></i>27–29°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30)"></i>30–34°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s35)"></i>35–39°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s40)"></i>40–44°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s45)"></i>45° and steeper</li>
-        <li><span class="sw-mk-peak">▲</span>Summit</li>
-        <li><span class="sw-mk-col">◆</span>Col or pass</li>
-        <li><span class="sw-mk-stn">●</span>Weather station</li>
-        <li><span class="sw-mk-park">┅</span>Provincial park boundary</li>
-        <li class="sw-leg-glac" hidden><i class="sw-sw" style="background:rgba(150,205,255,.8);border-color:#145FAA"></i>Glacier or permanent snowfield</li>
-      </ul>
-      <ul class="sw-legend sw-leg-wind" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-wind)"></i>Likely wind-loaded (lee of recent winds)</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <p class="sw-note sw-wind-note" data-draw="wind-note" data-source="wind_summary" hidden>—</p>
-      <ul class="sw-legend sw-leg-watch" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-watch)"></i>Matches your filter</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <span class="sw-blockmarks"><i hidden data-rc="0,0" data-source="t10_ross_0_0"></i><i hidden data-rc="0,1" data-source="t10_ross_0_1"></i><i hidden data-rc="0,2" data-source="t10_ross_0_2"></i><i hidden data-rc="0,3" data-source="t10_ross_0_3"></i><i hidden data-rc="0,4" data-source="t10_ross_0_4"></i><i hidden data-rc="0,5" data-source="t10_ross_0_5"></i><i hidden data-rc="0,6" data-source="t10_ross_0_6"></i><i hidden data-rc="0,7" data-source="t10_ross_0_7"></i><i hidden data-rc="0,8" data-source="t10_ross_0_8"></i><i hidden data-rc="1,0" data-source="t10_ross_1_0"></i><i hidden data-rc="1,1" data-source="t10_ross_1_1"></i><i hidden data-rc="1,2" data-source="t10_ross_1_2"></i><i hidden data-rc="1,3" data-source="t10_ross_1_3"></i><i hidden data-rc="1,4" data-source="t10_ross_1_4"></i><i hidden data-rc="1,5" data-source="t10_ross_1_5"></i><i hidden data-rc="1,6" data-source="t10_ross_1_6"></i><i hidden data-rc="1,7" data-source="t10_ross_1_7"></i><i hidden data-rc="1,8" data-source="t10_ross_1_8"></i><i hidden data-rc="2,0" data-source="t10_ross_2_0"></i><i hidden data-rc="2,1" data-source="t10_ross_2_1"></i><i hidden data-rc="2,2" data-source="t10_ross_2_2"></i><i hidden data-rc="2,3" data-source="t10_ross_2_3"></i><i hidden data-rc="2,4" data-source="t10_ross_2_4"></i><i hidden data-rc="2,5" data-source="t10_ross_2_5"></i><i hidden data-rc="2,6" data-source="t10_ross_2_6"></i><i hidden data-rc="2,7" data-source="t10_ross_2_7"></i><i hidden data-rc="2,8" data-source="t10_ross_2_8"></i><i hidden data-rc="3,0" data-source="t10_ross_3_0"></i><i hidden data-rc="3,1" data-source="t10_ross_3_1"></i><i hidden data-rc="3,2" data-source="t10_ross_3_2"></i><i hidden data-rc="3,3" data-source="t10_ross_3_3"></i><i hidden data-rc="3,4" data-source="t10_ross_3_4"></i><i hidden data-rc="3,5" data-source="t10_ross_3_5"></i><i hidden data-rc="3,6" data-source="t10_ross_3_6"></i><i hidden data-rc="3,7" data-source="t10_ross_3_7"></i><i hidden data-rc="3,8" data-source="t10_ross_3_8"></i><i hidden data-rc="4,0" data-source="t10_ross_4_0"></i><i hidden data-rc="4,1" data-source="t10_ross_4_1"></i><i hidden data-rc="4,2" data-source="t10_ross_4_2"></i><i hidden data-rc="4,3" data-source="t10_ross_4_3"></i><i hidden data-rc="4,4" data-source="t10_ross_4_4"></i><i hidden data-rc="4,5" data-source="t10_ross_4_5"></i><i hidden data-rc="4,6" data-source="t10_ross_4_6"></i><i hidden data-rc="4,7" data-source="t10_ross_4_7"></i><i hidden data-rc="4,8" data-source="t10_ross_4_8"></i><i hidden data-rc="5,0" data-source="t10_ross_5_0"></i><i hidden data-rc="5,1" data-source="t10_ross_5_1"></i><i hidden data-rc="5,2" data-source="t10_ross_5_2"></i><i hidden data-rc="5,3" data-source="t10_ross_5_3"></i><i hidden data-rc="5,4" data-source="t10_ross_5_4"></i><i hidden data-rc="5,5" data-source="t10_ross_5_5"></i><i hidden data-rc="5,6" data-source="t10_ross_5_6"></i><i hidden data-rc="5,7" data-source="t10_ross_5_7"></i><i hidden data-rc="5,8" data-source="t10_ross_5_8"></i><i hidden data-rc="6,0" data-source="t10_ross_6_0"></i><i hidden data-rc="6,1" data-source="t10_ross_6_1"></i><i hidden data-rc="6,2" data-source="t10_ross_6_2"></i><i hidden data-rc="6,3" data-source="t10_ross_6_3"></i><i hidden data-rc="6,4" data-source="t10_ross_6_4"></i><i hidden data-rc="6,5" data-source="t10_ross_6_5"></i><i hidden data-rc="6,6" data-source="t10_ross_6_6"></i><i hidden data-rc="6,7" data-source="t10_ross_6_7"></i><i hidden data-rc="6,8" data-source="t10_ross_6_8"></i><i hidden data-rc="7,0" data-source="t10_ross_7_0"></i><i hidden data-rc="7,1" data-source="t10_ross_7_1"></i><i hidden data-rc="7,2" data-source="t10_ross_7_2"></i><i hidden data-rc="7,3" data-source="t10_ross_7_3"></i><i hidden data-rc="7,4" data-source="t10_ross_7_4"></i><i hidden data-rc="7,5" data-source="t10_ross_7_5"></i><i hidden data-rc="7,6" data-source="t10_ross_7_6"></i><i hidden data-rc="7,7" data-source="t10_ross_7_7"></i><i hidden data-rc="7,8" data-source="t10_ross_7_8"></i><i hidden data-rc="8,0" data-source="t10_ross_8_0"></i><i hidden data-rc="8,1" data-source="t10_ross_8_1"></i><i hidden data-rc="8,2" data-source="t10_ross_8_2"></i><i hidden data-rc="8,3" data-source="t10_ross_8_3"></i><i hidden data-rc="8,4" data-source="t10_ross_8_4"></i><i hidden data-rc="8,5" data-source="t10_ross_8_5"></i><i hidden data-rc="8,6" data-source="t10_ross_8_6"></i><i hidden data-rc="8,7" data-source="t10_ross_8_7"></i><i hidden data-rc="8,8" data-source="t10_ross_8_8"></i></span>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note sw-map-caveat">Slopes at 10 m. About half the map is lidar: the BC government's LidarBC surveys (2017–2025) and NRCan's HRDEM, covering the Rossland Range and Red Mountain, Nelson and Whitewater, and Kootenay Pass. The rest (mostly the far west and north) is the 30 m Copernicus GLO-30 surface model, which reads softer and can show forest edges and cut blocks as false steep patches; the two are blended over about 100 m. Faint straight lines can show where lidar surveys from different years meet. Zoomed out, the map shows a 90 m summary of the 10 m steepness; the route check uses 10 m. Glacier outlines (Kokanee, Woodbury) are from the BC Freshwater Atlas, decades-old provincial mapping, so today's ice is smaller. The weather stations are the highway avalanche program's: Stagleap and Southridge are on ridges, the others on passes. Names and provincial park outlines from the Canadian Geographical Names Database; peaks are pinned to the earlier 30 m model's summits, and none are named south of the US border. A planning aid, not a substitute for measuring slopes on the ground.</p></details>
-      <div class="sw-route-bar">
-        <label class="sw-zbtn sw-upload">Check a GPX route<input type="file" class="sw-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
-        <button type="button" class="sw-zbtn sw-route-clear" hidden>Remove route</button>
-        <span class="sw-timing" hidden>
-          <label class="sw-paths-tog">Start <input type="datetime-local" class="sw-start" step="900" aria-label="Start date and time, local time at the map"></label>
-          <label class="sw-paths-tog">Pace <select class="sw-pace"><option value="0.8">relaxed</option><option value="1" selected>steady</option><option value="1.25">fast</option></select></label>
-        </span>
-        <span class="sw-watchgpx" hidden><button type="button" class="sw-zbtn sw-watchgpx-btn">Download hazard-marked route for watch</button></span>
-        <span class="sw-route-msg" data-draw="route-msg" data-source="terrain_rossland">—</span>
-        <span class="sw-route-hint">Your file stays in this browser; nothing is uploaded or saved.</span>
-        <span class="sw-route-msg sw-watchgpx-note" aria-live="polite"></span>
-      </div>
-      <div class="sw-route" hidden>
-        <h3 class="sw-h3">Route check</h3>
-        <div class="sw-brief">
-          <p class="sw-brief-verdict" data-draw="route-verdict" data-source="danger_now problems regional_forecasts">—</p>
-          <div class="sw-brief-lab">Route profile</div>
-          <div class="sw-chart sw-chart-short" data-draw="route-profile" data-source="terrain_rossland"></div>
-          <div class="sw-brief-lab">Hazard sections</div>
-          <div class="sw-hz-filter" role="group" aria-label="Show hazards">
-            <span>Show:</span>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="all"> All</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="underfoot" checked> ▼ On the slope</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="overhead"> ▲ From above</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="other" checked> Glaciers and cliffs</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="highOnly"> High-consequence only</label>
-          </div>
-          <div class="sw-tablebox sw-route-box">
-            <table class="sw-table sw-route-table">
-              <thead><tr><th>#</th><th>Km</th><th class="sw-num">Elevation (m)</th><th>Level</th><th>What's there</th></tr></thead>
-              <tbody data-draw="route-rows" data-source="terrain_rossland danger_now problems regional_forecasts outlook"></tbody>
-            </table>
-          </div>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">Select a section to zoom the map to it. Most avalanche accidents are triggered by the victim or someone in their group, so the slope underfoot always counts. A slope above counts in full only when today’s data gives it a reason to come down on you: considerable or higher danger at its elevation, a persistent slab problem with the start zone within 300 m (these can be triggered from a distance), a wet-snow problem, 20 cm or more of new snow forecast, a wind-loaded start zone, or warm sun on it when you pass. Otherwise it is shown as exposure. Other parties above you can still trigger it, so cross one at a time and don’t stop underneath. Each Show box matches a group in this table (a section on a slope you could trigger counts as “On the slope” even when there is also a slope above). The Show options apply to this table, the map, the profile, Previous / Next on the map and the watch file.</p></details>
-          <div class="sw-brief-lab">Conditions</div>
-          <ul class="sw-brief-list" data-draw="route-conditions" data-source="danger_now problems stations_daily outlook wind_summary avalanche_reports"></ul>
-          <p class="sw-note">Generated from the route's terrain, today's bulletin and the station and forecast data on this dashboard. A guide to where to focus, not a go/no-go decision.</p>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Download hazard-marked route for watch” saves your route as a .gpx with a waypoint at the start of each section the Show options above let through (the same ones as in the table and on the map), named like “HIGH 3 slope above”, “CARE 5 …” or “EXPOSED 7 …”; section numbers match the table above. Import it into your watch’s app as a route and navigate it, and the watch alerts you as you approach each waypoint.</p></details>
-        </div>
-        <p class="sw-route-sum" data-draw="route-summary" data-source="terrain_rossland wind_summary avalanche_reports glaciers">—</p>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Timing uses your start time (local time at the map) and pace to estimate when you reach each section (Munter method: an hour per 4 km plus 400 m climbed at a steady pace, faster downhill), then checks where the sun is and the day's forecast warmth. It ignores shade cast by ridges, so a slope may get sun later than shown.</p></details>
-        <ul class="sw-legend">
-          <li><span class="sw-expo sw-expo-underfoot">▼ On the slope</span> the slope you're on can avalanche: solid line</li>
-          <li><span class="sw-expo sw-expo-overhead">▲ Slope above</span> a slope above can run onto you: dashed line</li>
-          <li><span class="sw-dedge"><i style="background:#4DB848"></i><i style="background:#FFE600"></i><i style="background:#F7941E"></i><i style="background:#E8222A"></i><i style="background:#231F20"></i></span>Outer edge: today's danger rating at that elevation (when a rating is in force)</li>
-          <li><i class="sw-sw" style="background:var(--sw-r2)"></i>High consequence</li>
-          <li><i class="sw-sw" style="background:var(--sw-r1)"></i>Take care</li>
-          <li><i class="sw-sw" style="background:#8A7CC2"></i>Exposure: under a slope above that today’s conditions don’t raise</li>
-          <li><i class="sw-sw" style="background:#fff"></i>No terrain flags</li>
-        </ul>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Every 10 m of the route is checked against the terrain model for: the slope underfoot (30° and up is avalanche terrain, 35° and up is steep); slopes of 30–60° above the route that face it, within 1 km and at least 30 m higher, steep enough to reach it (an angle of 22° or more up from the route to the start zone, the "alpha angle" used to screen avalanche runouts; 28° or more from a 35°+ slope counts as high); and cliffs or very steep drops within 40 m below. "Today" marks sections whose terrain matches the Terrain to watch filter, when that view is on. This reads the terrain only. It knows nothing about the snowpack, and can miss small features or flag paths that are sheltered in reality: a screening tool for planning, not a substitute for the bulletin, training and judgement on the day.</p></details>
-      </div>
-    </div>
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;rossland&quot;, &quot;contour&quot;: 50, &quot;park_legend&quot;: &quot;&lt;li&gt;&lt;span class=\&quot;sw-mk-park\&quot;&gt;┅&lt;/span&gt;Provincial park boundary&lt;/li&gt;&quot;, &quot;map_note&quot;: &quot;About 11 by 22 km: the Rossland Range from Red Mountain and Granite Mountain north past Old Glory, Mt. Lepsoe and Strawberry Pass to Nancy Greene Pass. Zoom in and it sharpens to 2 m.&quot;, &quot;map_caveat&quot;: &quot;Slopes at 2 m from lidar: the BC government's LidarBC surveys (1 m, 2017–2022) and NRCan's HRDEM, both bare earth, so forest doesn't show as false steep ground. About 80% of the map is lidar; the gap is the west side of Old Glory and the slopes down to Big Sheep Creek, where NRCan's 30 m bare-earth model fills in and reads much softer; the two are blended over about 100 m. Faint straight lines can show where surveys from different years meet. Zoomed out, the map shows a 30 m summary of the 2 m steepness; the route check uses 2 m. At this detail the map picks up road cuts, cat tracks and logging-road banks as short steep strips. The weather stations are the highway avalanche program's, via Avalanche Canada. Names and provincial park outlines from the Canadian Geographical Names Database; peaks are pinned to the summits of the earlier 30 m model, so a label can sit a little off the top. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_rossland&quot;, &quot;blocks&quot;: [&quot;t2_ross&quot;, 12, 6]}"></div>
 
     <div class="sw-avzone" data-zone="Rossland" data-ref="Rossland" id="avalanches-rossland">
       <h2 class="sw-section">Recent avalanches</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Avalanche Canada Mountain Information Network reports across the map and around it, from Rossland to Kokanee and Kootenay Pass, last 30 days. Anyone can file one. Reports are a sample, not a full record: most avalanches are never reported, so few reports doesn't mean few avalanches.</p></details>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Avalanche Canada Mountain Information Network reports on and around the map, from Rossland to Nancy Greene, last 30 days. Anyone can file one. Reports are a sample, not a full record: most avalanches are never reported, so few reports doesn't mean few avalanches.</p></details>
       <p class="sw-av-sum" data-draw="av-sum" data-source="avalanche_reports">—</p>
       <div class="sw-av-ctrl">
         <label for="rossland-av-range">Show reports</label>
@@ -813,7 +541,7 @@ details.sw-how[open] > summary{display:none}
           <option value="10">within 10 km of Rossland</option>
           <option value="25">within 25 km</option>
           <option value="50">within 50 km</option>
-          <option value="all" selected>all, across the map</option>
+          <option value="all" selected>all, on and around the map</option>
         </select>
         <label class="sw-paths-tog"><input type="checkbox" class="sw-av-only"> Only reports with avalanches or warning signs</label>
       </div>
@@ -859,42 +587,21 @@ details.sw-how[open] > summary{display:none}
     <div class="sw-tiles">
       <div class="sw-tile" data-st="Strawberry Pass" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Strawberry Pass</div></div>
       <div class="sw-tile" data-st="Paulson Summit" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Paulson Summit</div></div>
-      <div class="sw-tile" data-st="Southridge" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Southridge</div></div>
-      <div class="sw-tile" data-st="Kootenay Pass" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Kootenay Pass</div></div>
-      <div class="sw-tile" data-st="Stagleap" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Stagleap</div></div>
     </div>
 
-    <div class="sw-card sw-wide" id="rossland-windcard" data-zone="Rossland · Strawberry Pass">
-      <h2 class="sw-h">Wind, last 72 hours · Strawberry Pass</h2>
-      <p class="sw-note">At the Highway 3B station above Rossland, 1,575 m. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
+    <div class="sw-card sw-wide" id="rossland-windcard">
+      <h2 class="sw-h">Wind, last 72 hours</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">At Strawberry Pass, the highway avalanche-program station on Highway 3B, 1,575 m. It sits on a pass, so ridges blow harder; it records no gusts. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
       <div class="sw-windgrid">
         <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
         <div>
           <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
           <dl class="sw-tile-dl sw-wind-dl">
-            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Rossland · Strawberry Pass">—</span> h</dd>
-            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Rossland · Strawberry Pass">—</span> h</dd>
-            <dt>Strongest hourly wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_wind_kmh" data-where="zone=Rossland · Strawberry Pass">—</span> km/h</dd>
-            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Rossland · Strawberry Pass">—</span></dd>
-            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Rossland · Strawberry Pass">—</span></dd>
-          </dl>
-        </div>
-      </div>
-    </div>
-
-    <div class="sw-card sw-wide" id="rossland-windcard-2" data-zone="Rossland · Kootenay Pass">
-      <h2 class="sw-h">Wind, last 72 hours · Kootenay Pass</h2>
-      <p class="sw-note">At the Highway 3 summit station, 1,780 m. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
-      <div class="sw-windgrid">
-        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
-        <div>
-          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
-          <dl class="sw-tile-dl sw-wind-dl">
-            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Rossland · Kootenay Pass">—</span> h</dd>
-            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Rossland · Kootenay Pass">—</span> h</dd>
-            <dt>Strongest hourly wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_wind_kmh" data-where="zone=Rossland · Kootenay Pass">—</span> km/h</dd>
-            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Rossland · Kootenay Pass">—</span></dd>
-            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Rossland · Kootenay Pass">—</span></dd>
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Rossland">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Rossland">—</span> h</dd>
+            <dt>Strongest hourly wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_wind_kmh" data-where="zone=Rossland">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Rossland">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Rossland">—</span></dd>
           </dl>
         </div>
       </div>
@@ -910,74 +617,431 @@ details.sw-how[open] > summary{display:none}
     <div class="sw-grid">
       <div class="sw-card" id="rossland-temp" data-temp="Strawberry Pass">
         <h2 class="sw-h">Temperature, daily low to high · Strawberry Pass</h2>
-        <p class="sw-note">Highway 3B above Rossland, at 1,575 m. The dashed line is 0 °C.</p>
+        <p class="sw-note">Highway 3B summit above Rossland, at 1,575 m. The dashed line is 0 °C.</p>
         <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
       </div>
-      <div class="sw-card" id="rossland-temp-2" data-temp="Kootenay Pass">
+      <div class="sw-card" id="rossland-temp-2" data-temp="Paulson Summit">
+        <h2 class="sw-h">Temperature, daily low to high · Paulson Summit</h2>
+        <p class="sw-note">Highway 3 summit west of the range, at 1,535 m. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="rossland-wind" data-wind="Strawberry Pass" data-wfield="wind_max_kmh">
+        <h2 class="sw-h">Strongest hourly wind each day</h2>
+        <p class="sw-note">Highway 3B summit above Rossland, at 1,575 m. These highway stations don't record gusts, so this is the strongest hourly average; passes are sheltered, so ridges blow harder. In km/h.</p>
+        <div class="sw-chart dash-skeleton" data-draw="wind" data-source="stations_daily"></div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="rossland-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Canada's GEM weather model (Environment and Climate Change Canada) for the Rossland Range: the 2.5 km HRDPS for about the first two days, then the coarser 10 km and 15 km runs, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the Rossland Range, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the Rossland Range; the alpine often gets more, and wind redistributes it. Times in Pacific time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 2,200 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 1,800 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
+      </div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 2,500 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1800,2200"></div>
+      <h3 class="sw-h3">Day by day</h3>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
+          <thead><tr>
+            <th>Day</th>
+            <th>Alpine 2,200 m</th>
+            <th>Treeline 1,800 m</th>
+            <th>Below treeline 1,300 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
+          </tr></thead>
+          <tbody data-draw="mtn-rows"></tbody>
+        </table>
+      </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
+    </div>
+
+    <div class="sw-card sw-wide" id="rossland-history">
+      <h2 class="sw-h">Danger through the season</h2>
+      <p class="sw-note">Each square is one day's rating for that elevation band. This builds up day by day from the daily refresh.</p>
+      <div class="sw-chart sw-chart-strip dash-skeleton" data-draw="history" data-source="danger_history"></div>
+      <ul class="sw-legend">
+        <li><i class="sw-sw" style="background:var(--sw-d0)"></i>No rating yet</li>
+        <li><i class="sw-sw" style="background:var(--sw-d1)"></i>1 Low</li>
+        <li><i class="sw-sw" style="background:var(--sw-d2)"></i>2 Moderate</li>
+        <li><i class="sw-sw" style="background:var(--sw-d3)"></i>3 Considerable</li>
+        <li><i class="sw-sw" style="background:var(--sw-d4)"></i>4 High</li>
+        <li><i class="sw-sw" style="background:var(--sw-d5)"></i>5 Extreme / Very high</li>
+      </ul>
+    </div>
+  </section>
+  <section class="sw-zone" id="whitewater" data-zone="Whitewater" data-temp="Southridge" data-wind="Southridge" hidden>
+    <p class="sw-sub">Whitewater, Ymir Mountain and White Queen, south-east of Nelson, BC · forecast by Avalanche Canada</p>
+
+    <div class="sw-grid sw-grid-top">
+      <div class="sw-card" id="whitewater-danger">
+        <h2 class="sw-h">Avalanche danger</h2>
+        <p class="sw-note">Danger by elevation band from the Avalanche Canada forecast covering Whitewater.</p>
+        <div class="sw-danger" data-draw="danger" data-source="danger_now"></div>
+        <dl class="sw-meta">
+          <dt>Issued</dt><dd data-draw="cell" data-source="bulletins" data-field="issued" data-where="zone=Whitewater">—</dd>
+          <dt>Valid until</dt><dd data-draw="cell" data-source="bulletins" data-field="valid_until" data-where="zone=Whitewater">—</dd>
+        </dl>
+        <h3 class="sw-h3">Forecasts across the map</h3>
+        <p class="sw-note">This card is the forecast covering Whitewater; the route check uses whichever forecast covers most of your route.</p>
+        <ul class="sw-regional" data-draw="regional" data-source="regional_forecasts"></ul>
+      </div>
+      <div class="sw-card" id="whitewater-bulletin">
+        <h2 class="sw-h">What the forecasters say</h2>
+        <p class="sw-note">The current bulletin's headline and snowpack notes.</p>
+        <div class="sw-bulletin" data-draw="bulletin" data-source="bulletins"></div>
+        <h3 class="sw-h3">Avalanche problems</h3>
+        <div class="sw-problems" data-draw="problems" data-source="problems"></div>
+      </div>
+    </div>
+
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;whitewater&quot;, &quot;contour&quot;: 50, &quot;park_legend&quot;: &quot;&lt;li&gt;&lt;span class=\&quot;sw-mk-park\&quot;&gt;┅&lt;/span&gt;Provincial park boundary&lt;/li&gt;&quot;, &quot;map_note&quot;: &quot;About 9 by 8 km: Whitewater's bowls, Ymir Mountain, White Queen and the ridges above the Whitewater road. Zoom in and it sharpens to 2 m.&quot;, &quot;map_caveat&quot;: &quot;Slopes at 2 m from lidar: the BC government's LidarBC surveys (1 m, 2017–2022) and NRCan's HRDEM, both bare earth, so forest doesn't show as false steep ground. About 94% of the map is lidar; NRCan's 30 m bare-earth model fills the rest and reads softer. Faint straight lines can show where surveys from different years meet. Zoomed out, the map shows a 16 m summary of the 2 m steepness; the route check uses 2 m. At this detail the map picks up road cuts, cat tracks and logging-road banks as short steep strips. The weather stations are the highway avalanche program's, via Avalanche Canada. Names and provincial park outlines from the Canadian Geographical Names Database; peaks are pinned to the summits of the earlier 30 m model, so a label can sit a little off the top. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_rossland&quot;, &quot;blocks&quot;: [&quot;t2_ww&quot;, 5, 5]}"></div>
+
+    <div class="sw-avzone" data-zone="Whitewater" data-ref="Whitewater" id="avalanches-whitewater">
+      <h2 class="sw-section">Recent avalanches</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Avalanche Canada Mountain Information Network reports on and around the map, from Nelson to Ymir, last 30 days. Anyone can file one. Reports are a sample, not a full record: most avalanches are never reported, so few reports doesn't mean few avalanches.</p></details>
+      <p class="sw-av-sum" data-draw="av-sum" data-source="avalanche_reports">—</p>
+      <div class="sw-av-ctrl">
+        <label for="whitewater-av-range">Show reports</label>
+        <select id="whitewater-av-range" class="sw-av-range">
+          <option value="10">within 10 km of Whitewater</option>
+          <option value="25">within 25 km</option>
+          <option value="50">within 50 km</option>
+          <option value="all" selected>all, on and around the map</option>
+        </select>
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-av-only"> Only reports with avalanches or warning signs</label>
+      </div>
+      <div class="sw-kpis sw-av-kpis">
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="av_kpis" data-field="avalanche_reports" data-where="zone=Whitewater">—</span></div><div class="sw-tile-lab">reports of avalanches</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="av_kpis" data-field="largest" data-where="zone=Whitewater">—</span></div><div class="sw-tile-lab">largest size reported</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="av_kpis" data-field="sign_reports" data-where="zone=Whitewater">—</span></div><div class="sw-tile-lab">reports of warning signs</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="av_kpis" data-field="incidents" data-where="zone=Whitewater">—</span></div><div class="sw-tile-lab">people caught</div></div>
+      </div>
+      <div class="sw-card sw-wide">
+        <h3 class="sw-h">Reports by day</h3>
+        <p class="sw-note">Each bar is a day's reports, coloured by the most serious thing seen: an avalanche, warning signs (whumpfing, cracking, recent slides), or a general conditions report. Dated by the day of the outing.</p>
+        <div class="sw-chart sw-chart-short" data-draw="av-chart" data-source="avalanche_reports"></div>
+        <ul class="sw-legend">
+          <li><i class="sw-sw" style="background:var(--sw-av)"></i>Avalanche seen</li>
+          <li><i class="sw-sw" style="background:var(--sw-r1)"></i>Warning signs</li>
+          <li><i class="sw-sw" style="background:var(--cds-chart-muted)"></i>Conditions report</li>
+          <li><i class="sw-sw" style="background:#231F20"></i>Someone caught</li>
+        </ul>
+      </div>
+      <div class="sw-card sw-wide">
+        <h3 class="sw-h">The reports</h3>
+        <p class="sw-note">Select "Map" to jump to a report on the slope map above; reports beyond the map area have no map link.</p>
+        <div class="sw-tablebox sw-av-box">
+          <table class="sw-table sw-av-table" data-source="avalanche_reports" data-row-key="id">
+            <thead><tr>
+              <th data-field="date">Date</th>
+              <th data-field="title">Report</th>
+              <th data-field="dist_km" class="sw-num">From Whitewater (km)</th>
+              <th>What</th>
+              <th class="sw-hide-narrow">Details</th>
+              <th>Map</th>
+            </tr></thead>
+            <tbody data-draw="av-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <h2 class="sw-section">On the ground, latest day</h2>
+    <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
+    <div class="sw-tiles">
+      <div class="sw-tile" data-st="Southridge" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Southridge</div></div>
+      <div class="sw-tile" data-st="Hall Creek" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Hall Creek</div></div>
+    </div>
+
+    <div class="sw-card sw-wide" id="whitewater-windcard">
+      <h2 class="sw-h">Wind, last 72 hours</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">At Southridge, the highway avalanche-program ridge station south of Whitewater, 1,990 m; it records no gusts. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Whitewater">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Whitewater">—</span> h</dd>
+            <dt>Strongest hourly wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_wind_kmh" data-where="zone=Whitewater">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Whitewater">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Whitewater">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="whitewater-depth">
+      <h2 class="sw-h">Snow depth this season</h2>
+      <p class="sw-note">Daily median snow height at each station since 1 October, in cm. Wind-scoured ridge sensors can read low.</p>
+      <div class="sw-chart dash-skeleton" data-draw="depth" data-source="stations_daily"></div>
+    </div>
+
+    <div class="sw-grid">
+      <div class="sw-card" id="whitewater-temp" data-temp="Southridge">
+        <h2 class="sw-h">Temperature, daily low to high</h2>
+        <p class="sw-note">Southridge is the highway avalanche-program station on the ridge south of Whitewater, at 1,990 m. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="whitewater-wind" data-wind="Southridge" data-wfield="wind_max_kmh">
+        <h2 class="sw-h">Strongest hourly wind each day</h2>
+        <p class="sw-note">Southridge, the ridge station south of Whitewater, at 1,990 m. These highway stations don't record gusts, so this is the strongest hourly average; passes are sheltered, so ridges blow harder. In km/h.</p>
+        <div class="sw-chart dash-skeleton" data-draw="wind" data-source="stations_daily"></div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="whitewater-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Canada's GEM weather model (Environment and Climate Change Canada) for Whitewater: the 2.5 km HRDPS for about the first two days, then the coarser 10 km and 15 km runs, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over Whitewater, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Whitewater; the alpine often gets more, and wind redistributes it. Times in Pacific time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 2,200 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 1,800 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
+      </div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 2,500 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1800,2200"></div>
+      <h3 class="sw-h3">Day by day</h3>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
+          <thead><tr>
+            <th>Day</th>
+            <th>Alpine 2,200 m</th>
+            <th>Treeline 1,800 m</th>
+            <th>Below treeline 1,300 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
+          </tr></thead>
+          <tbody data-draw="mtn-rows"></tbody>
+        </table>
+      </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
+    </div>
+
+    <div class="sw-card sw-wide" id="whitewater-history">
+      <h2 class="sw-h">Danger through the season</h2>
+      <p class="sw-note">Each square is one day's rating for that elevation band. This builds up day by day from the daily refresh.</p>
+      <div class="sw-chart sw-chart-strip dash-skeleton" data-draw="history" data-source="danger_history"></div>
+      <ul class="sw-legend">
+        <li><i class="sw-sw" style="background:var(--sw-d0)"></i>No rating yet</li>
+        <li><i class="sw-sw" style="background:var(--sw-d1)"></i>1 Low</li>
+        <li><i class="sw-sw" style="background:var(--sw-d2)"></i>2 Moderate</li>
+        <li><i class="sw-sw" style="background:var(--sw-d3)"></i>3 Considerable</li>
+        <li><i class="sw-sw" style="background:var(--sw-d4)"></i>4 High</li>
+        <li><i class="sw-sw" style="background:var(--sw-d5)"></i>5 Extreme / Very high</li>
+      </ul>
+    </div>
+  </section>
+  <section class="sw-zone" id="kpass" data-zone="Kootenay Pass" data-temp="Stagleap" data-wind="Stagleap" hidden>
+    <p class="sw-sub">Kootenay Pass, Stagleap Provincial Park and Ripple Mountain on Highway 3, BC · forecast by Avalanche Canada</p>
+
+    <div class="sw-grid sw-grid-top">
+      <div class="sw-card" id="kpass-danger">
+        <h2 class="sw-h">Avalanche danger</h2>
+        <p class="sw-note">Danger by elevation band from the Avalanche Canada forecast covering Kootenay Pass.</p>
+        <div class="sw-danger" data-draw="danger" data-source="danger_now"></div>
+        <dl class="sw-meta">
+          <dt>Issued</dt><dd data-draw="cell" data-source="bulletins" data-field="issued" data-where="zone=Kootenay Pass">—</dd>
+          <dt>Valid until</dt><dd data-draw="cell" data-source="bulletins" data-field="valid_until" data-where="zone=Kootenay Pass">—</dd>
+        </dl>
+        <h3 class="sw-h3">Forecasts across the map</h3>
+        <p class="sw-note">This card is the forecast covering Kootenay Pass; the route check uses whichever forecast covers most of your route.</p>
+        <ul class="sw-regional" data-draw="regional" data-source="regional_forecasts"></ul>
+      </div>
+      <div class="sw-card" id="kpass-bulletin">
+        <h2 class="sw-h">What the forecasters say</h2>
+        <p class="sw-note">The current bulletin's headline and snowpack notes.</p>
+        <div class="sw-bulletin" data-draw="bulletin" data-source="bulletins"></div>
+        <h3 class="sw-h3">Avalanche problems</h3>
+        <div class="sw-problems" data-draw="problems" data-source="problems"></div>
+      </div>
+    </div>
+
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;kpass&quot;, &quot;contour&quot;: 50, &quot;park_legend&quot;: &quot;&lt;li&gt;&lt;span class=\&quot;sw-mk-park\&quot;&gt;┅&lt;/span&gt;Provincial park boundary&lt;/li&gt;&quot;, &quot;map_note&quot;: &quot;About 18 by 17 km: Kootenay Pass and Stagleap Provincial Park, Ripple Mountain, Mount Waldie, John Bull Mountain and the Crowsnest Highway. Zoom in and it sharpens to 2 m.&quot;, &quot;map_caveat&quot;: &quot;Slopes at 2 m from lidar: the BC government's LidarBC surveys (1 m, 2017–2022) and NRCan's HRDEM, both bare earth, so forest doesn't show as false steep ground. About 70% of the map is lidar, including the pass, Cornice Ridge, Lightning Strike, Ripple Mountain and Crags Ridge; the ridge west of the pass with the Stagleap station, Mount Waldie and Yellowstone Peak have no public lidar, so there NRCan's 30 m bare-earth model fills in and reads much softer; the two are blended over about 100 m. Faint straight lines can show where surveys from different years meet. Zoomed out, the map shows a 30 m summary of the 2 m steepness; the route check uses 2 m. At this detail the map picks up road cuts, cat tracks and logging-road banks as short steep strips. The weather stations are the highway avalanche program's, via Avalanche Canada. Names and provincial park outlines from the Canadian Geographical Names Database; peaks are pinned to the summits of the earlier 30 m model, so a label can sit a little off the top. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_rossland&quot;, &quot;blocks&quot;: [&quot;t2_kp&quot;, 9, 9]}"></div>
+
+    <div class="sw-avzone" data-zone="Kootenay Pass" data-ref="the pass" id="avalanches-kpass">
+      <h2 class="sw-section">Recent avalanches</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Avalanche Canada Mountain Information Network reports on and around the map, from Salmo to Kootenay Pass, last 30 days. Anyone can file one. Reports are a sample, not a full record: most avalanches are never reported, so few reports doesn't mean few avalanches.</p></details>
+      <p class="sw-av-sum" data-draw="av-sum" data-source="avalanche_reports">—</p>
+      <div class="sw-av-ctrl">
+        <label for="kpass-av-range">Show reports</label>
+        <select id="kpass-av-range" class="sw-av-range">
+          <option value="10">within 10 km of the pass</option>
+          <option value="25">within 25 km</option>
+          <option value="50">within 50 km</option>
+          <option value="all" selected>all, on and around the map</option>
+        </select>
+        <label class="sw-paths-tog"><input type="checkbox" class="sw-av-only"> Only reports with avalanches or warning signs</label>
+      </div>
+      <div class="sw-kpis sw-av-kpis">
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="av_kpis" data-field="avalanche_reports" data-where="zone=Kootenay Pass">—</span></div><div class="sw-tile-lab">reports of avalanches</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="av_kpis" data-field="largest" data-where="zone=Kootenay Pass">—</span></div><div class="sw-tile-lab">largest size reported</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="av_kpis" data-field="sign_reports" data-where="zone=Kootenay Pass">—</span></div><div class="sw-tile-lab">reports of warning signs</div></div>
+        <div><div class="sw-kpi"><span data-draw="cell" data-source="av_kpis" data-field="incidents" data-where="zone=Kootenay Pass">—</span></div><div class="sw-tile-lab">people caught</div></div>
+      </div>
+      <div class="sw-card sw-wide">
+        <h3 class="sw-h">Reports by day</h3>
+        <p class="sw-note">Each bar is a day's reports, coloured by the most serious thing seen: an avalanche, warning signs (whumpfing, cracking, recent slides), or a general conditions report. Dated by the day of the outing.</p>
+        <div class="sw-chart sw-chart-short" data-draw="av-chart" data-source="avalanche_reports"></div>
+        <ul class="sw-legend">
+          <li><i class="sw-sw" style="background:var(--sw-av)"></i>Avalanche seen</li>
+          <li><i class="sw-sw" style="background:var(--sw-r1)"></i>Warning signs</li>
+          <li><i class="sw-sw" style="background:var(--cds-chart-muted)"></i>Conditions report</li>
+          <li><i class="sw-sw" style="background:#231F20"></i>Someone caught</li>
+        </ul>
+      </div>
+      <div class="sw-card sw-wide">
+        <h3 class="sw-h">The reports</h3>
+        <p class="sw-note">Select "Map" to jump to a report on the slope map above; reports beyond the map area have no map link.</p>
+        <div class="sw-tablebox sw-av-box">
+          <table class="sw-table sw-av-table" data-source="avalanche_reports" data-row-key="id">
+            <thead><tr>
+              <th data-field="date">Date</th>
+              <th data-field="title">Report</th>
+              <th data-field="dist_km" class="sw-num">From pass (km)</th>
+              <th>What</th>
+              <th class="sw-hide-narrow">Details</th>
+              <th>Map</th>
+            </tr></thead>
+            <tbody data-draw="av-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <h2 class="sw-section">On the ground, latest day</h2>
+    <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
+    <div class="sw-tiles">
+      <div class="sw-tile" data-st="Kootenay Pass" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Kootenay Pass</div></div>
+      <div class="sw-tile" data-st="Stagleap" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Stagleap</div></div>
+      <div class="sw-tile" data-st="Crags Ridge" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Crags Ridge</div></div>
+    </div>
+
+    <div class="sw-card sw-wide" id="kpass-windcard">
+      <h2 class="sw-h">Wind, last 72 hours · Stagleap</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">At Stagleap, the highway avalanche-program ridge station above the pass, 2,140 m; it records no gusts. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Kootenay Pass">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Kootenay Pass">—</span> h</dd>
+            <dt>Strongest hourly wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_wind_kmh" data-where="zone=Kootenay Pass">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Kootenay Pass">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Kootenay Pass">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="kpass-windcard-2" data-zone="Kootenay Pass · Crags Ridge">
+      <h2 class="sw-h">Wind, last 72 hours · Crags Ridge</h2>
+      <p class="sw-note">At Crags Ridge, the ridge station east of the pass, 2,054 m. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Kootenay Pass · Crags Ridge">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Kootenay Pass · Crags Ridge">—</span> h</dd>
+            <dt>Strongest hourly wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_wind_kmh" data-where="zone=Kootenay Pass · Crags Ridge">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Kootenay Pass · Crags Ridge">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Kootenay Pass · Crags Ridge">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="kpass-windcard-3" data-zone="Kootenay Pass · Kootenay Pass">
+      <h2 class="sw-h">Wind, last 72 hours · Kootenay Pass</h2>
+      <p class="sw-note">At the Highway 3 summit station, 1,780 m. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Kootenay Pass · Kootenay Pass">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Kootenay Pass · Kootenay Pass">—</span> h</dd>
+            <dt>Strongest hourly wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_wind_kmh" data-where="zone=Kootenay Pass · Kootenay Pass">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Kootenay Pass · Kootenay Pass">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Kootenay Pass · Kootenay Pass">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="kpass-depth">
+      <h2 class="sw-h">Snow depth this season</h2>
+      <p class="sw-note">Daily median snow height at each station since 1 October, in cm. Wind-scoured ridge sensors can read low.</p>
+      <div class="sw-chart dash-skeleton" data-draw="depth" data-source="stations_daily"></div>
+    </div>
+
+    <div class="sw-grid">
+      <div class="sw-card" id="kpass-temp" data-temp="Stagleap">
+        <h2 class="sw-h">Temperature, daily low to high · Stagleap</h2>
+        <p class="sw-note">The ridge station above the pass, at 2,140 m. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="kpass-temp-2" data-temp="Kootenay Pass">
         <h2 class="sw-h">Temperature, daily low to high · Kootenay Pass</h2>
         <p class="sw-note">Highway 3 summit, at 1,780 m. The dashed line is 0 °C.</p>
         <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
       </div>
-      <div class="sw-card" id="rossland-wind" data-wind="Strawberry Pass" data-wfield="wind_max_kmh">
-        <h2 class="sw-h">Strongest hourly wind each day · Strawberry Pass</h2>
-        <p class="sw-note">Highway 3B above Rossland, at 1,575 m. These highway stations don't record gusts, so this is the strongest hourly average; passes are sheltered, so ridges blow harder. In km/h.</p>
-        <div class="sw-chart dash-skeleton" data-draw="wind" data-source="stations_daily"></div>
-      </div>
-      <div class="sw-card" id="rossland-wind-2" data-wind="Kootenay Pass" data-wfield="wind_max_kmh">
-        <h2 class="sw-h">Strongest hourly wind each day · Kootenay Pass</h2>
-        <p class="sw-note">Highway 3 summit, at 1,780 m. These highway stations don't record gusts, so this is the strongest hourly average; passes are sheltered, so ridges blow harder. In km/h.</p>
+      <div class="sw-card" id="kpass-wind" data-wind="Stagleap" data-wfield="wind_max_kmh">
+        <h2 class="sw-h">Strongest hourly wind each day</h2>
+        <p class="sw-note">Stagleap, the ridge station above the pass, at 2,140 m. These highway stations don't record gusts, so this is the strongest hourly average; passes are sheltered, so ridges blow harder. In km/h.</p>
         <div class="sw-chart dash-skeleton" data-draw="wind" data-source="stations_daily"></div>
       </div>
     </div>
 
 
-    <div class="sw-card sw-wide" id="rossland-outlook" data-point="Strawberry Pass">
-      <h2 class="sw-h">Next 7 days · Strawberry Pass</h2>
-      <p class="sw-note">Open-Meteo model forecast for Strawberry Pass, above Rossland, at 1,575 m. Times in Pacific time.</p>
-      <div class="sw-kpis">
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Strawberry Pass">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Strawberry Pass">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
+    <div class="sw-card sw-wide" id="kpass-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Canada's GEM weather model (Environment and Climate Change Canada) for Stagleap above Kootenay Pass: the 2.5 km HRDPS for about the first two days, then the coarser 10 km and 15 km runs, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over Stagleap above Kootenay Pass, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Stagleap above Kootenay Pass; the alpine often gets more, and wind redistributes it. Times in Pacific time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 2,200 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 1,800 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
       </div>
-      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 2,500 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1300,1800,2200"></div>
+      <h3 class="sw-h3">Day by day</h3>
       <div class="sw-tablebox">
-        <table class="sw-table" data-source="outlook" data-row-key="point,date">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
           <thead><tr>
-            <th data-field="date">Day</th>
-            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
-            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
-            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
-            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
-            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
+            <th>Day</th>
+            <th>Alpine 2,200 m</th>
+            <th>Treeline 1,800 m</th>
+            <th>Below treeline 1,300 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
           </tr></thead>
-          <tbody data-draw="outlook-rows"></tbody>
+          <tbody data-draw="mtn-rows"></tbody>
         </table>
       </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
     </div>
 
-    <div class="sw-card sw-wide" id="rossland-outlook-2" data-point="Kootenay Pass">
-      <h2 class="sw-h">Next 7 days · Kootenay Pass</h2>
-      <p class="sw-note">Open-Meteo model forecast for Kootenay Pass at 1,780 m. Times in Pacific time.</p>
-      <div class="sw-kpis">
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="snow_7d_cm" data-where="point=Kootenay Pass">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">new snow forecast, 7 days</div></div>
-        <div><div class="sw-kpi"><span data-draw="cell" data-source="outlook_totals" data-field="gust_max_kmh" data-where="point=Kootenay Pass">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest forecast gust</div></div>
-      </div>
-      <div class="sw-chart sw-chart-short dash-skeleton" data-draw="outlook" data-source="outlook"></div>
-      <div class="sw-tablebox">
-        <table class="sw-table" data-source="outlook" data-row-key="point,date">
-          <thead><tr>
-            <th data-field="date">Day</th>
-            <th data-field="snowfall_cm" class="sw-num">Snow (cm)</th>
-            <th data-field="temp_min_c" class="sw-num">Low (°C)</th>
-            <th data-field="temp_max_c" class="sw-num">High (°C)</th>
-            <th data-field="freezing_level_max_m" class="sw-num sw-hide-narrow">Freezing level (m)</th>
-            <th data-field="gust_max_kmh" class="sw-num">Gusts (km/h)</th>
-          </tr></thead>
-          <tbody data-draw="outlook-rows"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="sw-card sw-wide" id="rossland-history">
+    <div class="sw-card sw-wide" id="kpass-history">
       <h2 class="sw-h">Danger through the season</h2>
       <p class="sw-note">Each square is one day's rating for that elevation band. This builds up day by day from the daily refresh.</p>
       <div class="sw-chart sw-chart-strip dash-skeleton" data-draw="history" data-source="danger_history"></div>
@@ -1013,143 +1077,7 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
-    <div class="sw-card sw-wide sw-mapcard" id="vallter-map" data-pfx="vallter">
-      <h2 class="sw-h">Slope map</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">About 13 by 11 km around Vallter 2000: Bastiments, Gra de Fajol and the Ulldeter cirque. Zoom in and it sharpens to 5 m detail. Grid north is up. Contour lines (optional) are every 50 m, with an extra interval when zoomed in. Drag to move around; ctrl- or ⌘-scroll, pinch or the buttons to zoom (plain scrolling zooms once the map is expanded). Hover for elevation, slope and aspect.</p></details>
-      <div class="sw-map-ctrl">
-        <div class="sw-seg" role="group" aria-label="Map view">
-          <button type="button" class="sw-mode" data-mode="slope" aria-pressed="true">Slope angle</button>
-          <button type="button" class="sw-mode" data-mode="watch" aria-pressed="false">Terrain to watch</button>
-          <button type="button" class="sw-mode" data-mode="wind" aria-pressed="false">Wind loading</button>
-        </div>
-        <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-paths" checked> Mapped avalanche paths</label>
-<label class="sw-paths-tog"><input type="checkbox" class="sw-doc"> Documented avalanches</label>
-        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
-          <option value="off">none</option>
-          <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
-          <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
-        </select></label>
-        </div></details>
-        <div class="sw-zoombar">
-          <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
-          <button type="button" class="sw-zbtn sw-zout" aria-label="Zoom out">−</button>
-          <button type="button" class="sw-zbtn sw-zreset">Reset view</button>
-          <button type="button" class="sw-zbtn sw-expand">⤢ Expand</button>
-          <button type="button" class="sw-zbtn sw-collapse" hidden>✕ Close</button>
-        </div>
-      </div>
-      <div class="sw-search">
-        <input type="search" class="sw-search-in" placeholder="Search peaks, passes, places, stations, or lat, lon" aria-label="Search the maps" autocomplete="off" spellcheck="false">
-        <ul class="sw-search-list" role="listbox" hidden></ul>
-      </div>
-      <div class="sw-watch" hidden>
-        <div class="sw-watch-row">
-          <span class="sw-watch-lab">Aspects</span>
-          <span class="sw-aspects">
-            <label><input type="checkbox" class="sw-asp" value="N" checked>N</label>
-            <label><input type="checkbox" class="sw-asp" value="NE" checked>NE</label>
-            <label><input type="checkbox" class="sw-asp" value="E" checked>E</label>
-            <label><input type="checkbox" class="sw-asp" value="SE" checked>SE</label>
-            <label><input type="checkbox" class="sw-asp" value="S" checked>S</label>
-            <label><input type="checkbox" class="sw-asp" value="SW" checked>SW</label>
-            <label><input type="checkbox" class="sw-asp" value="W" checked>W</label>
-            <label><input type="checkbox" class="sw-asp" value="NW" checked>NW</label>
-          </span>
-        </div>
-        <div class="sw-watch-row">
-          <label class="sw-watch-lab" for="vallter-emin">Elevation</label>
-          <span><input id="vallter-emin" class="sw-emin" type="number" step="50" min="0" max="5000" placeholder="lowest" aria-label="Lowest elevation in metres"> to <input class="sw-emax" type="number" step="50" min="0" max="5000" placeholder="highest" aria-label="Highest elevation in metres"> m</span>
-          <label class="sw-watch-lab" for="vallter-smin">Slopes from</label>
-          <select id="vallter-smin" class="sw-smin">
-            <option value="25">25°</option><option value="30" selected>30°</option><option value="35">35°</option><option value="40">40°</option>
-          </select>
-        </div>
-        <div class="sw-watch-row">
-          <button type="button" class="sw-match">Match current bulletin</button>
-          <button type="button" class="sw-reset-watch">Reset</button>
-        </div>
-        <p class="sw-note sw-match-note" data-draw="match-note" data-source="problems danger_now">—</p>
-      </div>
-      <div class="sw-map dash-skeleton" data-draw="map" data-source="terrain wind_summary snow_grid avalanche_paths documented_avalanches"></div>
-      <div class="sw-fc-legend" hidden></div>
-      <ul class="sw-legend sw-leg-slope">
-        <li><i class="sw-sw" style="background:var(--sw-s27)"></i>27–29°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30)"></i>30–34°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s35)"></i>35–39°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s40)"></i>40–44°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s45)"></i>45° and steeper</li>
-        <li><span class="sw-mk-peak">▲</span>Summit</li>
-        <li><span class="sw-mk-col">◆</span>Col or pass</li>
-        <li><span class="sw-mk-stn">●</span>Weather station</li>
-        
-        <li class="sw-leg-glac" hidden><i class="sw-sw" style="background:rgba(150,205,255,.8);border-color:#145FAA"></i>Glacier or permanent snowfield</li>
-      </ul>
-      <ul class="sw-legend sw-leg-wind" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-wind)"></i>Likely wind-loaded (lee of recent winds)</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <p class="sw-note sw-wind-note" data-draw="wind-note" data-source="wind_summary" hidden>—</p>
-      <ul class="sw-legend sw-leg-watch" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-watch)"></i>Matches your filter</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <span class="sw-blockmarks"><i hidden data-rc="0,0" data-source="t5_vallter_0_0"></i><i hidden data-rc="0,1" data-source="t5_vallter_0_1"></i><i hidden data-rc="0,2" data-source="t5_vallter_0_2"></i><i hidden data-rc="1,0" data-source="t5_vallter_1_0"></i><i hidden data-rc="1,1" data-source="t5_vallter_1_1"></i><i hidden data-rc="1,2" data-source="t5_vallter_1_2"></i><i hidden data-rc="2,0" data-source="t5_vallter_2_0"></i><i hidden data-rc="2,1" data-source="t5_vallter_2_1"></i><i hidden data-rc="2,2" data-source="t5_vallter_2_2"></i></span>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note sw-map-caveat">Avalanche paths from the ICGC's Map of Avalanche Zones of Catalonia (1:25,000, surveyed 1996–2006): outlines show the largest avalanche that terrain, vegetation and records point to; no outline is not proof of no avalanches, and there is none for the French side. Slopes from the ICGC 5 m bare-earth terrain model on the Catalan side; across the border in France, where the ICGC model stops, the 30 m Copernicus model fills in, so that side stays softer. Names from the ICGC, with GeoNames filling in the French side. A planning aid, not a substitute for measuring slopes on the ground.</p></details>
-      <div class="sw-route-bar">
-        <label class="sw-zbtn sw-upload">Check a GPX route<input type="file" class="sw-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
-        <button type="button" class="sw-zbtn sw-route-clear" hidden>Remove route</button>
-        <span class="sw-timing" hidden>
-          <label class="sw-paths-tog">Start <input type="datetime-local" class="sw-start" step="900" aria-label="Start date and time, local time at the map"></label>
-          <label class="sw-paths-tog">Pace <select class="sw-pace"><option value="0.8">relaxed</option><option value="1" selected>steady</option><option value="1.25">fast</option></select></label>
-        </span>
-        <span class="sw-watchgpx" hidden><button type="button" class="sw-zbtn sw-watchgpx-btn">Download hazard-marked route for watch</button></span>
-        <span class="sw-route-msg" data-draw="route-msg" data-source="terrain">—</span>
-        <span class="sw-route-hint">Your file stays in this browser; nothing is uploaded or saved.</span>
-        <span class="sw-route-msg sw-watchgpx-note" aria-live="polite"></span>
-      </div>
-      <div class="sw-route" hidden>
-        <h3 class="sw-h3">Route check</h3>
-        <div class="sw-brief">
-          <p class="sw-brief-verdict" data-draw="route-verdict" data-source="danger_now problems regional_forecasts">—</p>
-          <div class="sw-brief-lab">Route profile</div>
-          <div class="sw-chart sw-chart-short" data-draw="route-profile" data-source="terrain"></div>
-          <div class="sw-brief-lab">Hazard sections</div>
-          <div class="sw-hz-filter" role="group" aria-label="Show hazards">
-            <span>Show:</span>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="all"> All</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="underfoot" checked> ▼ On the slope</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="overhead"> ▲ From above</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="other" checked> Glaciers and cliffs</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="highOnly"> High-consequence only</label>
-          </div>
-          <div class="sw-tablebox sw-route-box">
-            <table class="sw-table sw-route-table">
-              <thead><tr><th>#</th><th>Km</th><th class="sw-num">Elevation (m)</th><th>Level</th><th>What's there</th></tr></thead>
-              <tbody data-draw="route-rows" data-source="terrain danger_now problems regional_forecasts outlook"></tbody>
-            </table>
-          </div>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">Select a section to zoom the map to it. Most avalanche accidents are triggered by the victim or someone in their group, so the slope underfoot always counts. A slope above counts in full only when today’s data gives it a reason to come down on you: considerable or higher danger at its elevation, a persistent slab problem with the start zone within 300 m (these can be triggered from a distance), a wet-snow problem, 20 cm or more of new snow forecast, a wind-loaded start zone, or warm sun on it when you pass. Otherwise it is shown as exposure. Other parties above you can still trigger it, so cross one at a time and don’t stop underneath. Each Show box matches a group in this table (a section on a slope you could trigger counts as “On the slope” even when there is also a slope above). The Show options apply to this table, the map, the profile, Previous / Next on the map and the watch file.</p></details>
-          <div class="sw-brief-lab">Conditions</div>
-          <ul class="sw-brief-list" data-draw="route-conditions" data-source="danger_now problems stations_daily outlook wind_summary avalanche_reports"></ul>
-          <p class="sw-note">Generated from the route's terrain, today's bulletin and the station and forecast data on this dashboard. A guide to where to focus, not a go/no-go decision.</p>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Download hazard-marked route for watch” saves your route as a .gpx with a waypoint at the start of each section the Show options above let through (the same ones as in the table and on the map), named like “HIGH 3 slope above”, “CARE 5 …” or “EXPOSED 7 …”; section numbers match the table above. Import it into your watch’s app as a route and navigate it, and the watch alerts you as you approach each waypoint.</p></details>
-        </div>
-        <p class="sw-route-sum" data-draw="route-summary" data-source="terrain wind_summary avalanche_paths documented_avalanches">—</p>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Timing uses your start time (local time at the map) and pace to estimate when you reach each section (Munter method: an hour per 4 km plus 400 m climbed at a steady pace, faster downhill), then checks where the sun is and the day's forecast warmth. It ignores shade cast by ridges, so a slope may get sun later than shown.</p></details>
-        <ul class="sw-legend">
-          <li><span class="sw-expo sw-expo-underfoot">▼ On the slope</span> the slope you're on can avalanche: solid line</li>
-          <li><span class="sw-expo sw-expo-overhead">▲ Slope above</span> a slope above can run onto you: dashed line</li>
-          <li><span class="sw-dedge"><i style="background:#4DB848"></i><i style="background:#FFE600"></i><i style="background:#F7941E"></i><i style="background:#E8222A"></i><i style="background:#231F20"></i></span>Outer edge: today's danger rating at that elevation (when a rating is in force)</li>
-          <li><i class="sw-sw" style="background:var(--sw-r2)"></i>High consequence</li>
-          <li><i class="sw-sw" style="background:var(--sw-r1)"></i>Take care</li>
-          <li><i class="sw-sw" style="background:#8A7CC2"></i>Exposure: under a slope above that today’s conditions don’t raise</li>
-          <li><i class="sw-sw" style="background:#fff"></i>No terrain flags</li>
-        </ul>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Every 10 m of the route is checked against the terrain model for: the slope underfoot (30° and up is avalanche terrain, 35° and up is steep); slopes of 30–60° above the route that face it, within 1 km and at least 30 m higher, steep enough to reach it (an angle of 22° or more up from the route to the start zone, the "alpha angle" used to screen avalanche runouts; 28° or more from a 35°+ slope counts as high); and cliffs or very steep drops within 40 m below. "Today" marks sections whose terrain matches the Terrain to watch filter, when that view is on. This reads the terrain only. It knows nothing about the snowpack, and can miss small features or flag paths that are sheltered in reality: a screening tool for planning, not a substitute for the bulletin, training and judgement on the day.</p></details>
-      </div>
-    </div>
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;vallter&quot;, &quot;contour&quot;: 50, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 13 by 11 km around Vallter 2000: Bastiments, Gra de Fajol and the Ulldeter cirque. Zoom in and it sharpens to 5 m detail.&quot;, &quot;map_caveat&quot;: &quot;Avalanche paths from the ICGC's Map of Avalanche Zones of Catalonia (1:25,000, surveyed 1996–2006): outlines show the largest avalanche that terrain, vegetation and records point to; no outline is not proof of no avalanches, and there is none for the French side. Slopes from the ICGC 5 m bare-earth terrain model on the Catalan side; across the border in France, where the ICGC model stops, the 30 m Copernicus model fills in, so that side stays softer. Names from the ICGC, with GeoNames filling in the French side. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-paths\&quot; checked&gt; Mapped avalanche paths&lt;/label&gt;\n&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-doc\&quot;&gt; Documented avalanches&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_paths documented_avalanches&quot;, &quot;terrain_src&quot;: &quot;terrain&quot;, &quot;blocks&quot;: [&quot;t5_vallter&quot;, 3, 3]}"></div>
 
     <div class="sw-avzone" data-zone="Vallter / Ulldeter" id="avalanches-vallter">
       <h2 class="sw-section">Recent avalanches</h2>
@@ -1269,143 +1197,7 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
-    <div class="sw-card sw-wide sw-mapcard" id="innsbruck-map" data-pfx="innsbruck">
-      <h2 class="sw-h">Slope map</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">About 60 by 45 km around Innsbruck: the Nordkette, Patscherkofel and the Tuxer Alps to the Olperer, the Wipptal to the Brenner, Sellrain and Kühtai, the Kalkkögel, and the Stubai Alps to the main ridge and its glaciers. Zoom in and it sharpens to 5 m lidar. Grid north is up. Contour lines (optional) are every 100 m, with an extra interval when zoomed in. Drag to move around; ctrl- or ⌘-scroll, pinch or the buttons to zoom (plain scrolling zooms once the map is expanded). Hover for elevation, slope and aspect.</p></details>
-      <div class="sw-map-ctrl">
-        <div class="sw-seg" role="group" aria-label="Map view">
-          <button type="button" class="sw-mode" data-mode="slope" aria-pressed="true">Slope angle</button>
-          <button type="button" class="sw-mode" data-mode="watch" aria-pressed="false">Terrain to watch</button>
-          <button type="button" class="sw-mode" data-mode="wind" aria-pressed="false">Wind loading</button>
-        </div>
-        <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
-        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
-          <option value="off">none</option>
-          <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
-          <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
-        </select></label>
-        </div></details>
-        <div class="sw-zoombar">
-          <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
-          <button type="button" class="sw-zbtn sw-zout" aria-label="Zoom out">−</button>
-          <button type="button" class="sw-zbtn sw-zreset">Reset view</button>
-          <button type="button" class="sw-zbtn sw-expand">⤢ Expand</button>
-          <button type="button" class="sw-zbtn sw-collapse" hidden>✕ Close</button>
-        </div>
-      </div>
-      <div class="sw-search">
-        <input type="search" class="sw-search-in" placeholder="Search peaks, passes, places, stations, or lat, lon" aria-label="Search the maps" autocomplete="off" spellcheck="false">
-        <ul class="sw-search-list" role="listbox" hidden></ul>
-      </div>
-      <div class="sw-watch" hidden>
-        <div class="sw-watch-row">
-          <span class="sw-watch-lab">Aspects</span>
-          <span class="sw-aspects">
-            <label><input type="checkbox" class="sw-asp" value="N" checked>N</label>
-            <label><input type="checkbox" class="sw-asp" value="NE" checked>NE</label>
-            <label><input type="checkbox" class="sw-asp" value="E" checked>E</label>
-            <label><input type="checkbox" class="sw-asp" value="SE" checked>SE</label>
-            <label><input type="checkbox" class="sw-asp" value="S" checked>S</label>
-            <label><input type="checkbox" class="sw-asp" value="SW" checked>SW</label>
-            <label><input type="checkbox" class="sw-asp" value="W" checked>W</label>
-            <label><input type="checkbox" class="sw-asp" value="NW" checked>NW</label>
-          </span>
-        </div>
-        <div class="sw-watch-row">
-          <label class="sw-watch-lab" for="innsbruck-emin">Elevation</label>
-          <span><input id="innsbruck-emin" class="sw-emin" type="number" step="50" min="0" max="5000" placeholder="lowest" aria-label="Lowest elevation in metres"> to <input class="sw-emax" type="number" step="50" min="0" max="5000" placeholder="highest" aria-label="Highest elevation in metres"> m</span>
-          <label class="sw-watch-lab" for="innsbruck-smin">Slopes from</label>
-          <select id="innsbruck-smin" class="sw-smin">
-            <option value="25">25°</option><option value="30" selected>30°</option><option value="35">35°</option><option value="40">40°</option>
-          </select>
-        </div>
-        <div class="sw-watch-row">
-          <button type="button" class="sw-match">Match current bulletin</button>
-          <button type="button" class="sw-reset-watch">Reset</button>
-        </div>
-        <p class="sw-note sw-match-note" data-draw="match-note" data-source="problems danger_now">—</p>
-      </div>
-      <div class="sw-map dash-skeleton" data-draw="map" data-source="terrain wind_summary snow_grid avalanche_reports glaciers"></div>
-      <div class="sw-fc-legend" hidden></div>
-      <ul class="sw-legend sw-leg-slope">
-        <li><i class="sw-sw" style="background:var(--sw-s27)"></i>27–29°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30)"></i>30–34°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s35)"></i>35–39°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s40)"></i>40–44°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s45)"></i>45° and steeper</li>
-        <li><span class="sw-mk-peak">▲</span>Summit</li>
-        <li><span class="sw-mk-col">◆</span>Col or pass</li>
-        <li><span class="sw-mk-stn">●</span>Weather station</li>
-        
-        <li class="sw-leg-glac" hidden><i class="sw-sw" style="background:rgba(150,205,255,.8);border-color:#145FAA"></i>Glacier or permanent snowfield</li>
-      </ul>
-      <ul class="sw-legend sw-leg-wind" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-wind)"></i>Likely wind-loaded (lee of recent winds)</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <p class="sw-note sw-wind-note" data-draw="wind-note" data-source="wind_summary" hidden>—</p>
-      <ul class="sw-legend sw-leg-watch" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-watch)"></i>Matches your filter</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <span class="sw-blockmarks"><i hidden data-rc="0,0" data-source="t5_ibk_0_0"></i><i hidden data-rc="0,1" data-source="t5_ibk_0_1"></i><i hidden data-rc="0,2" data-source="t5_ibk_0_2"></i><i hidden data-rc="0,3" data-source="t5_ibk_0_3"></i><i hidden data-rc="0,4" data-source="t5_ibk_0_4"></i><i hidden data-rc="0,5" data-source="t5_ibk_0_5"></i><i hidden data-rc="0,6" data-source="t5_ibk_0_6"></i><i hidden data-rc="0,7" data-source="t5_ibk_0_7"></i><i hidden data-rc="0,8" data-source="t5_ibk_0_8"></i><i hidden data-rc="0,9" data-source="t5_ibk_0_9"></i><i hidden data-rc="0,10" data-source="t5_ibk_0_10"></i><i hidden data-rc="0,11" data-source="t5_ibk_0_11"></i><i hidden data-rc="1,0" data-source="t5_ibk_1_0"></i><i hidden data-rc="1,1" data-source="t5_ibk_1_1"></i><i hidden data-rc="1,2" data-source="t5_ibk_1_2"></i><i hidden data-rc="1,3" data-source="t5_ibk_1_3"></i><i hidden data-rc="1,4" data-source="t5_ibk_1_4"></i><i hidden data-rc="1,5" data-source="t5_ibk_1_5"></i><i hidden data-rc="1,6" data-source="t5_ibk_1_6"></i><i hidden data-rc="1,7" data-source="t5_ibk_1_7"></i><i hidden data-rc="1,8" data-source="t5_ibk_1_8"></i><i hidden data-rc="1,9" data-source="t5_ibk_1_9"></i><i hidden data-rc="1,10" data-source="t5_ibk_1_10"></i><i hidden data-rc="1,11" data-source="t5_ibk_1_11"></i><i hidden data-rc="2,0" data-source="t5_ibk_2_0"></i><i hidden data-rc="2,1" data-source="t5_ibk_2_1"></i><i hidden data-rc="2,2" data-source="t5_ibk_2_2"></i><i hidden data-rc="2,3" data-source="t5_ibk_2_3"></i><i hidden data-rc="2,4" data-source="t5_ibk_2_4"></i><i hidden data-rc="2,5" data-source="t5_ibk_2_5"></i><i hidden data-rc="2,6" data-source="t5_ibk_2_6"></i><i hidden data-rc="2,7" data-source="t5_ibk_2_7"></i><i hidden data-rc="2,8" data-source="t5_ibk_2_8"></i><i hidden data-rc="2,9" data-source="t5_ibk_2_9"></i><i hidden data-rc="2,10" data-source="t5_ibk_2_10"></i><i hidden data-rc="2,11" data-source="t5_ibk_2_11"></i><i hidden data-rc="3,0" data-source="t5_ibk_3_0"></i><i hidden data-rc="3,1" data-source="t5_ibk_3_1"></i><i hidden data-rc="3,2" data-source="t5_ibk_3_2"></i><i hidden data-rc="3,3" data-source="t5_ibk_3_3"></i><i hidden data-rc="3,4" data-source="t5_ibk_3_4"></i><i hidden data-rc="3,5" data-source="t5_ibk_3_5"></i><i hidden data-rc="3,6" data-source="t5_ibk_3_6"></i><i hidden data-rc="3,7" data-source="t5_ibk_3_7"></i><i hidden data-rc="3,8" data-source="t5_ibk_3_8"></i><i hidden data-rc="3,9" data-source="t5_ibk_3_9"></i><i hidden data-rc="3,10" data-source="t5_ibk_3_10"></i><i hidden data-rc="3,11" data-source="t5_ibk_3_11"></i><i hidden data-rc="4,0" data-source="t5_ibk_4_0"></i><i hidden data-rc="4,1" data-source="t5_ibk_4_1"></i><i hidden data-rc="4,2" data-source="t5_ibk_4_2"></i><i hidden data-rc="4,3" data-source="t5_ibk_4_3"></i><i hidden data-rc="4,4" data-source="t5_ibk_4_4"></i><i hidden data-rc="4,5" data-source="t5_ibk_4_5"></i><i hidden data-rc="4,6" data-source="t5_ibk_4_6"></i><i hidden data-rc="4,7" data-source="t5_ibk_4_7"></i><i hidden data-rc="4,8" data-source="t5_ibk_4_8"></i><i hidden data-rc="4,9" data-source="t5_ibk_4_9"></i><i hidden data-rc="4,10" data-source="t5_ibk_4_10"></i><i hidden data-rc="4,11" data-source="t5_ibk_4_11"></i><i hidden data-rc="5,0" data-source="t5_ibk_5_0"></i><i hidden data-rc="5,1" data-source="t5_ibk_5_1"></i><i hidden data-rc="5,2" data-source="t5_ibk_5_2"></i><i hidden data-rc="5,3" data-source="t5_ibk_5_3"></i><i hidden data-rc="5,4" data-source="t5_ibk_5_4"></i><i hidden data-rc="5,5" data-source="t5_ibk_5_5"></i><i hidden data-rc="5,6" data-source="t5_ibk_5_6"></i><i hidden data-rc="5,7" data-source="t5_ibk_5_7"></i><i hidden data-rc="5,8" data-source="t5_ibk_5_8"></i><i hidden data-rc="5,9" data-source="t5_ibk_5_9"></i><i hidden data-rc="5,10" data-source="t5_ibk_5_10"></i><i hidden data-rc="5,11" data-source="t5_ibk_5_11"></i><i hidden data-rc="6,0" data-source="t5_ibk_6_0"></i><i hidden data-rc="6,1" data-source="t5_ibk_6_1"></i><i hidden data-rc="6,2" data-source="t5_ibk_6_2"></i><i hidden data-rc="6,3" data-source="t5_ibk_6_3"></i><i hidden data-rc="6,4" data-source="t5_ibk_6_4"></i><i hidden data-rc="6,5" data-source="t5_ibk_6_5"></i><i hidden data-rc="6,6" data-source="t5_ibk_6_6"></i><i hidden data-rc="6,7" data-source="t5_ibk_6_7"></i><i hidden data-rc="6,8" data-source="t5_ibk_6_8"></i><i hidden data-rc="6,9" data-source="t5_ibk_6_9"></i><i hidden data-rc="6,10" data-source="t5_ibk_6_10"></i><i hidden data-rc="6,11" data-source="t5_ibk_6_11"></i><i hidden data-rc="7,0" data-source="t5_ibk_7_0"></i><i hidden data-rc="7,1" data-source="t5_ibk_7_1"></i><i hidden data-rc="7,2" data-source="t5_ibk_7_2"></i><i hidden data-rc="7,3" data-source="t5_ibk_7_3"></i><i hidden data-rc="7,4" data-source="t5_ibk_7_4"></i><i hidden data-rc="7,5" data-source="t5_ibk_7_5"></i><i hidden data-rc="7,6" data-source="t5_ibk_7_6"></i><i hidden data-rc="7,7" data-source="t5_ibk_7_7"></i><i hidden data-rc="7,8" data-source="t5_ibk_7_8"></i><i hidden data-rc="7,9" data-source="t5_ibk_7_9"></i><i hidden data-rc="7,10" data-source="t5_ibk_7_10"></i><i hidden data-rc="7,11" data-source="t5_ibk_7_11"></i><i hidden data-rc="8,0" data-source="t5_ibk_8_0"></i><i hidden data-rc="8,1" data-source="t5_ibk_8_1"></i><i hidden data-rc="8,2" data-source="t5_ibk_8_2"></i><i hidden data-rc="8,3" data-source="t5_ibk_8_3"></i><i hidden data-rc="8,4" data-source="t5_ibk_8_4"></i><i hidden data-rc="8,5" data-source="t5_ibk_8_5"></i><i hidden data-rc="8,6" data-source="t5_ibk_8_6"></i><i hidden data-rc="8,7" data-source="t5_ibk_8_7"></i><i hidden data-rc="8,8" data-source="t5_ibk_8_8"></i><i hidden data-rc="8,9" data-source="t5_ibk_8_9"></i><i hidden data-rc="8,10" data-source="t5_ibk_8_10"></i><i hidden data-rc="8,11" data-source="t5_ibk_8_11"></i><i hidden data-rc="9,0" data-source="t5_ibk_9_0"></i><i hidden data-rc="9,1" data-source="t5_ibk_9_1"></i><i hidden data-rc="9,2" data-source="t5_ibk_9_2"></i><i hidden data-rc="9,3" data-source="t5_ibk_9_3"></i><i hidden data-rc="9,4" data-source="t5_ibk_9_4"></i><i hidden data-rc="9,5" data-source="t5_ibk_9_5"></i><i hidden data-rc="9,6" data-source="t5_ibk_9_6"></i><i hidden data-rc="9,7" data-source="t5_ibk_9_7"></i><i hidden data-rc="9,8" data-source="t5_ibk_9_8"></i><i hidden data-rc="9,9" data-source="t5_ibk_9_9"></i><i hidden data-rc="9,10" data-source="t5_ibk_9_10"></i><i hidden data-rc="9,11" data-source="t5_ibk_9_11"></i></span>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note sw-map-caveat">Slopes from Land Tirol's 5 m lidar terrain model (bare earth, surveyed 2006–2020), so forest doesn't show as false steep ground. Beyond Tirol (the strip south of the Brenner and over the main ridge into South Tyrol) the 30 m Copernicus model fills in and reads softer; the two are blended over about 100 m. Zoomed out, the map shows a 90 m summary of the 5 m steepness; the route check uses 5 m. On glaciers, lidar shows the ice surface in the survey year, and the ice has thinned since. Glacier outlines from the Austrian glacier inventories (Austrian Academy of Sciences, on PANGAEA): Stubai and Ötztal mapped 2017–18, Zillertal (Tux) 2006, so the Tux ice has shrunk since; glaciers on the Italian side of the main ridge aren't included. Names from GeoNames; a summit name is placed only where the terrain model has a top at its published height. A planning aid, not a substitute for measuring slopes on the ground.</p></details>
-      <div class="sw-route-bar">
-        <label class="sw-zbtn sw-upload">Check a GPX route<input type="file" class="sw-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
-        <button type="button" class="sw-zbtn sw-route-clear" hidden>Remove route</button>
-        <span class="sw-timing" hidden>
-          <label class="sw-paths-tog">Start <input type="datetime-local" class="sw-start" step="900" aria-label="Start date and time, local time at the map"></label>
-          <label class="sw-paths-tog">Pace <select class="sw-pace"><option value="0.8">relaxed</option><option value="1" selected>steady</option><option value="1.25">fast</option></select></label>
-        </span>
-        <span class="sw-watchgpx" hidden><button type="button" class="sw-zbtn sw-watchgpx-btn">Download hazard-marked route for watch</button></span>
-        <span class="sw-route-msg" data-draw="route-msg" data-source="terrain">—</span>
-        <span class="sw-route-hint">Your file stays in this browser; nothing is uploaded or saved.</span>
-        <span class="sw-route-msg sw-watchgpx-note" aria-live="polite"></span>
-      </div>
-      <div class="sw-route" hidden>
-        <h3 class="sw-h3">Route check</h3>
-        <div class="sw-brief">
-          <p class="sw-brief-verdict" data-draw="route-verdict" data-source="danger_now problems regional_forecasts">—</p>
-          <div class="sw-brief-lab">Route profile</div>
-          <div class="sw-chart sw-chart-short" data-draw="route-profile" data-source="terrain"></div>
-          <div class="sw-brief-lab">Hazard sections</div>
-          <div class="sw-hz-filter" role="group" aria-label="Show hazards">
-            <span>Show:</span>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="all"> All</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="underfoot" checked> ▼ On the slope</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="overhead"> ▲ From above</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="other" checked> Glaciers and cliffs</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="highOnly"> High-consequence only</label>
-          </div>
-          <div class="sw-tablebox sw-route-box">
-            <table class="sw-table sw-route-table">
-              <thead><tr><th>#</th><th>Km</th><th class="sw-num">Elevation (m)</th><th>Level</th><th>What's there</th></tr></thead>
-              <tbody data-draw="route-rows" data-source="terrain danger_now problems regional_forecasts outlook"></tbody>
-            </table>
-          </div>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">Select a section to zoom the map to it. Most avalanche accidents are triggered by the victim or someone in their group, so the slope underfoot always counts. A slope above counts in full only when today’s data gives it a reason to come down on you: considerable or higher danger at its elevation, a persistent slab problem with the start zone within 300 m (these can be triggered from a distance), a wet-snow problem, 20 cm or more of new snow forecast, a wind-loaded start zone, or warm sun on it when you pass. Otherwise it is shown as exposure. Other parties above you can still trigger it, so cross one at a time and don’t stop underneath. Each Show box matches a group in this table (a section on a slope you could trigger counts as “On the slope” even when there is also a slope above). The Show options apply to this table, the map, the profile, Previous / Next on the map and the watch file.</p></details>
-          <div class="sw-brief-lab">Conditions</div>
-          <ul class="sw-brief-list" data-draw="route-conditions" data-source="danger_now problems stations_daily outlook wind_summary avalanche_reports"></ul>
-          <p class="sw-note">Generated from the route's terrain, today's bulletin and the station and forecast data on this dashboard. A guide to where to focus, not a go/no-go decision.</p>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Download hazard-marked route for watch” saves your route as a .gpx with a waypoint at the start of each section the Show options above let through (the same ones as in the table and on the map), named like “HIGH 3 slope above”, “CARE 5 …” or “EXPOSED 7 …”; section numbers match the table above. Import it into your watch’s app as a route and navigate it, and the watch alerts you as you approach each waypoint.</p></details>
-        </div>
-        <p class="sw-route-sum" data-draw="route-summary" data-source="terrain wind_summary avalanche_reports glaciers">—</p>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Timing uses your start time (local time at the map) and pace to estimate when you reach each section (Munter method: an hour per 4 km plus 400 m climbed at a steady pace, faster downhill), then checks where the sun is and the day's forecast warmth. It ignores shade cast by ridges, so a slope may get sun later than shown.</p></details>
-        <ul class="sw-legend">
-          <li><span class="sw-expo sw-expo-underfoot">▼ On the slope</span> the slope you're on can avalanche: solid line</li>
-          <li><span class="sw-expo sw-expo-overhead">▲ Slope above</span> a slope above can run onto you: dashed line</li>
-          <li><span class="sw-dedge"><i style="background:#4DB848"></i><i style="background:#FFE600"></i><i style="background:#F7941E"></i><i style="background:#E8222A"></i><i style="background:#231F20"></i></span>Outer edge: today's danger rating at that elevation (when a rating is in force)</li>
-          <li><i class="sw-sw" style="background:var(--sw-r2)"></i>High consequence</li>
-          <li><i class="sw-sw" style="background:var(--sw-r1)"></i>Take care</li>
-          <li><i class="sw-sw" style="background:#8A7CC2"></i>Exposure: under a slope above that today’s conditions don’t raise</li>
-          <li><i class="sw-sw" style="background:#fff"></i>No terrain flags</li>
-        </ul>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Every 10 m of the route is checked against the terrain model for: the slope underfoot (30° and up is avalanche terrain, 35° and up is steep); slopes of 30–60° above the route that face it, within 1 km and at least 30 m higher, steep enough to reach it (an angle of 22° or more up from the route to the start zone, the "alpha angle" used to screen avalanche runouts; 28° or more from a 35°+ slope counts as high); and cliffs or very steep drops within 40 m below. "Today" marks sections whose terrain matches the Terrain to watch filter, when that view is on. This reads the terrain only. It knows nothing about the snowpack, and can miss small features or flag paths that are sheltered in reality: a screening tool for planning, not a substitute for the bulletin, training and judgement on the day.</p></details>
-      </div>
-    </div>
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;innsbruck&quot;, &quot;contour&quot;: 100, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 60 by 45 km around Innsbruck: the Nordkette, Patscherkofel and the Tuxer Alps to the Olperer, the Wipptal to the Brenner, Sellrain and Kühtai, the Kalkkögel, and the Stubai Alps to the main ridge and its glaciers. Zoom in and it sharpens to 5 m lidar.&quot;, &quot;map_caveat&quot;: &quot;Slopes from Land Tirol's 5 m lidar terrain model (bare earth, surveyed 2006–2020), so forest doesn't show as false steep ground. Beyond Tirol (the strip south of the Brenner and over the main ridge into South Tyrol) the 30 m Copernicus model fills in and reads softer; the two are blended over about 100 m. Zoomed out, the map shows a 90 m summary of the 5 m steepness; the route check uses 5 m. On glaciers, lidar shows the ice surface in the survey year, and the ice has thinned since. Glacier outlines from the Austrian glacier inventories (Austrian Academy of Sciences, on PANGAEA): Stubai and Ötztal mapped 2017–18, Zillertal (Tux) 2006, so the Tux ice has shrunk since; glaciers on the Italian side of the main ridge aren't included. Names from GeoNames; a summit name is placed only where the terrain model has a top at its published height. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain&quot;, &quot;blocks&quot;: [&quot;t5_ibk&quot;, 10, 12]}"></div>
 
     <div class="sw-avzone" data-zone="Innsbruck" data-ref="Innsbruck" id="avalanches-innsbruck">
       <h2 class="sw-section">Recent avalanches</h2>
@@ -1569,143 +1361,7 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
-    <div class="sw-card sw-wide sw-mapcard" id="rmnp-map" data-pfx="rmnp">
-      <h2 class="sw-h">Slope map</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">About 43 by 47 km: the Never Summer Mountains, Trail Ridge, the Mummy Range, the Bear Lake corridor and Glacier Gorge, Longs Peak and Wild Basin. Zoom in and it sharpens to 5 m lidar. Grid north is up. Contour lines (optional) are every 100 m, with an extra interval when zoomed in. Drag to move around; ctrl- or ⌘-scroll, pinch or the buttons to zoom (plain scrolling zooms once the map is expanded). Hover for elevation, slope and aspect.</p></details>
-      <div class="sw-map-ctrl">
-        <div class="sw-seg" role="group" aria-label="Map view">
-          <button type="button" class="sw-mode" data-mode="slope" aria-pressed="true">Slope angle</button>
-          <button type="button" class="sw-mode" data-mode="watch" aria-pressed="false">Terrain to watch</button>
-          <button type="button" class="sw-mode" data-mode="wind" aria-pressed="false">Wind loading</button>
-        </div>
-        <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
-        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
-          <option value="off">none</option>
-          <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
-          <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
-        </select></label>
-        </div></details>
-        <div class="sw-zoombar">
-          <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
-          <button type="button" class="sw-zbtn sw-zout" aria-label="Zoom out">−</button>
-          <button type="button" class="sw-zbtn sw-zreset">Reset view</button>
-          <button type="button" class="sw-zbtn sw-expand">⤢ Expand</button>
-          <button type="button" class="sw-zbtn sw-collapse" hidden>✕ Close</button>
-        </div>
-      </div>
-      <div class="sw-search">
-        <input type="search" class="sw-search-in" placeholder="Search peaks, passes, places, stations, or lat, lon" aria-label="Search the maps" autocomplete="off" spellcheck="false">
-        <ul class="sw-search-list" role="listbox" hidden></ul>
-      </div>
-      <div class="sw-watch" hidden>
-        <div class="sw-watch-row">
-          <span class="sw-watch-lab">Aspects</span>
-          <span class="sw-aspects">
-            <label><input type="checkbox" class="sw-asp" value="N" checked>N</label>
-            <label><input type="checkbox" class="sw-asp" value="NE" checked>NE</label>
-            <label><input type="checkbox" class="sw-asp" value="E" checked>E</label>
-            <label><input type="checkbox" class="sw-asp" value="SE" checked>SE</label>
-            <label><input type="checkbox" class="sw-asp" value="S" checked>S</label>
-            <label><input type="checkbox" class="sw-asp" value="SW" checked>SW</label>
-            <label><input type="checkbox" class="sw-asp" value="W" checked>W</label>
-            <label><input type="checkbox" class="sw-asp" value="NW" checked>NW</label>
-          </span>
-        </div>
-        <div class="sw-watch-row">
-          <label class="sw-watch-lab" for="rmnp-emin">Elevation</label>
-          <span><input id="rmnp-emin" class="sw-emin" type="number" step="50" min="0" max="5000" placeholder="lowest" aria-label="Lowest elevation in metres"> to <input class="sw-emax" type="number" step="50" min="0" max="5000" placeholder="highest" aria-label="Highest elevation in metres"> m</span>
-          <label class="sw-watch-lab" for="rmnp-smin">Slopes from</label>
-          <select id="rmnp-smin" class="sw-smin">
-            <option value="25">25°</option><option value="30" selected>30°</option><option value="35">35°</option><option value="40">40°</option>
-          </select>
-        </div>
-        <div class="sw-watch-row">
-          <button type="button" class="sw-match">Match current bulletin</button>
-          <button type="button" class="sw-reset-watch">Reset</button>
-        </div>
-        <p class="sw-note sw-match-note" data-draw="match-note" data-source="problems danger_now">—</p>
-      </div>
-      <div class="sw-map dash-skeleton" data-draw="map" data-source="terrain_rmnp wind_summary snow_grid avalanche_reports glaciers"></div>
-      <div class="sw-fc-legend" hidden></div>
-      <ul class="sw-legend sw-leg-slope">
-        <li><i class="sw-sw" style="background:var(--sw-s27)"></i>27–29°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30)"></i>30–34°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s35)"></i>35–39°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s40)"></i>40–44°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s45)"></i>45° and steeper</li>
-        <li><span class="sw-mk-peak">▲</span>Summit</li>
-        <li><span class="sw-mk-col">◆</span>Col or pass</li>
-        <li><span class="sw-mk-stn">●</span>Weather station</li>
-        
-        <li class="sw-leg-glac" hidden><i class="sw-sw" style="background:rgba(150,205,255,.8);border-color:#145FAA"></i>Glacier or permanent snowfield</li>
-      </ul>
-      <ul class="sw-legend sw-leg-wind" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-wind)"></i>Likely wind-loaded (lee of recent winds)</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <p class="sw-note sw-wind-note" data-draw="wind-note" data-source="wind_summary" hidden>—</p>
-      <ul class="sw-legend sw-leg-watch" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-watch)"></i>Matches your filter</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <span class="sw-blockmarks"><i hidden data-rc="0,0" data-source="t5_rmnp_0_0"></i><i hidden data-rc="0,1" data-source="t5_rmnp_0_1"></i><i hidden data-rc="0,2" data-source="t5_rmnp_0_2"></i><i hidden data-rc="0,3" data-source="t5_rmnp_0_3"></i><i hidden data-rc="0,4" data-source="t5_rmnp_0_4"></i><i hidden data-rc="0,5" data-source="t5_rmnp_0_5"></i><i hidden data-rc="0,6" data-source="t5_rmnp_0_6"></i><i hidden data-rc="0,7" data-source="t5_rmnp_0_7"></i><i hidden data-rc="0,8" data-source="t5_rmnp_0_8"></i><i hidden data-rc="1,0" data-source="t5_rmnp_1_0"></i><i hidden data-rc="1,1" data-source="t5_rmnp_1_1"></i><i hidden data-rc="1,2" data-source="t5_rmnp_1_2"></i><i hidden data-rc="1,3" data-source="t5_rmnp_1_3"></i><i hidden data-rc="1,4" data-source="t5_rmnp_1_4"></i><i hidden data-rc="1,5" data-source="t5_rmnp_1_5"></i><i hidden data-rc="1,6" data-source="t5_rmnp_1_6"></i><i hidden data-rc="1,7" data-source="t5_rmnp_1_7"></i><i hidden data-rc="1,8" data-source="t5_rmnp_1_8"></i><i hidden data-rc="2,0" data-source="t5_rmnp_2_0"></i><i hidden data-rc="2,1" data-source="t5_rmnp_2_1"></i><i hidden data-rc="2,2" data-source="t5_rmnp_2_2"></i><i hidden data-rc="2,3" data-source="t5_rmnp_2_3"></i><i hidden data-rc="2,4" data-source="t5_rmnp_2_4"></i><i hidden data-rc="2,5" data-source="t5_rmnp_2_5"></i><i hidden data-rc="2,6" data-source="t5_rmnp_2_6"></i><i hidden data-rc="2,7" data-source="t5_rmnp_2_7"></i><i hidden data-rc="2,8" data-source="t5_rmnp_2_8"></i><i hidden data-rc="3,0" data-source="t5_rmnp_3_0"></i><i hidden data-rc="3,1" data-source="t5_rmnp_3_1"></i><i hidden data-rc="3,2" data-source="t5_rmnp_3_2"></i><i hidden data-rc="3,3" data-source="t5_rmnp_3_3"></i><i hidden data-rc="3,4" data-source="t5_rmnp_3_4"></i><i hidden data-rc="3,5" data-source="t5_rmnp_3_5"></i><i hidden data-rc="3,6" data-source="t5_rmnp_3_6"></i><i hidden data-rc="3,7" data-source="t5_rmnp_3_7"></i><i hidden data-rc="3,8" data-source="t5_rmnp_3_8"></i><i hidden data-rc="4,0" data-source="t5_rmnp_4_0"></i><i hidden data-rc="4,1" data-source="t5_rmnp_4_1"></i><i hidden data-rc="4,2" data-source="t5_rmnp_4_2"></i><i hidden data-rc="4,3" data-source="t5_rmnp_4_3"></i><i hidden data-rc="4,4" data-source="t5_rmnp_4_4"></i><i hidden data-rc="4,5" data-source="t5_rmnp_4_5"></i><i hidden data-rc="4,6" data-source="t5_rmnp_4_6"></i><i hidden data-rc="4,7" data-source="t5_rmnp_4_7"></i><i hidden data-rc="4,8" data-source="t5_rmnp_4_8"></i><i hidden data-rc="5,0" data-source="t5_rmnp_5_0"></i><i hidden data-rc="5,1" data-source="t5_rmnp_5_1"></i><i hidden data-rc="5,2" data-source="t5_rmnp_5_2"></i><i hidden data-rc="5,3" data-source="t5_rmnp_5_3"></i><i hidden data-rc="5,4" data-source="t5_rmnp_5_4"></i><i hidden data-rc="5,5" data-source="t5_rmnp_5_5"></i><i hidden data-rc="5,6" data-source="t5_rmnp_5_6"></i><i hidden data-rc="5,7" data-source="t5_rmnp_5_7"></i><i hidden data-rc="5,8" data-source="t5_rmnp_5_8"></i><i hidden data-rc="6,0" data-source="t5_rmnp_6_0"></i><i hidden data-rc="6,1" data-source="t5_rmnp_6_1"></i><i hidden data-rc="6,2" data-source="t5_rmnp_6_2"></i><i hidden data-rc="6,3" data-source="t5_rmnp_6_3"></i><i hidden data-rc="6,4" data-source="t5_rmnp_6_4"></i><i hidden data-rc="6,5" data-source="t5_rmnp_6_5"></i><i hidden data-rc="6,6" data-source="t5_rmnp_6_6"></i><i hidden data-rc="6,7" data-source="t5_rmnp_6_7"></i><i hidden data-rc="6,8" data-source="t5_rmnp_6_8"></i><i hidden data-rc="7,0" data-source="t5_rmnp_7_0"></i><i hidden data-rc="7,1" data-source="t5_rmnp_7_1"></i><i hidden data-rc="7,2" data-source="t5_rmnp_7_2"></i><i hidden data-rc="7,3" data-source="t5_rmnp_7_3"></i><i hidden data-rc="7,4" data-source="t5_rmnp_7_4"></i><i hidden data-rc="7,5" data-source="t5_rmnp_7_5"></i><i hidden data-rc="7,6" data-source="t5_rmnp_7_6"></i><i hidden data-rc="7,7" data-source="t5_rmnp_7_7"></i><i hidden data-rc="7,8" data-source="t5_rmnp_7_8"></i><i hidden data-rc="8,0" data-source="t5_rmnp_8_0"></i><i hidden data-rc="8,1" data-source="t5_rmnp_8_1"></i><i hidden data-rc="8,2" data-source="t5_rmnp_8_2"></i><i hidden data-rc="8,3" data-source="t5_rmnp_8_3"></i><i hidden data-rc="8,4" data-source="t5_rmnp_8_4"></i><i hidden data-rc="8,5" data-source="t5_rmnp_8_5"></i><i hidden data-rc="8,6" data-source="t5_rmnp_8_6"></i><i hidden data-rc="8,7" data-source="t5_rmnp_8_7"></i><i hidden data-rc="8,8" data-source="t5_rmnp_8_8"></i><i hidden data-rc="9,0" data-source="t5_rmnp_9_0"></i><i hidden data-rc="9,1" data-source="t5_rmnp_9_1"></i><i hidden data-rc="9,2" data-source="t5_rmnp_9_2"></i><i hidden data-rc="9,3" data-source="t5_rmnp_9_3"></i><i hidden data-rc="9,4" data-source="t5_rmnp_9_4"></i><i hidden data-rc="9,5" data-source="t5_rmnp_9_5"></i><i hidden data-rc="9,6" data-source="t5_rmnp_9_6"></i><i hidden data-rc="9,7" data-source="t5_rmnp_9_7"></i><i hidden data-rc="9,8" data-source="t5_rmnp_9_8"></i></span>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note sw-map-caveat">Slopes from USGS 3DEP lidar (1 m bare-earth terrain from 2020–2023 surveys) resampled to 5 m, covering the whole map; forest doesn't show as false steep ground. Zoomed out, the map shows a 90 m summary of the 5 m steepness; the route check uses 5 m. Glaciers are named but not outlined. The park boundary isn't drawn. The stations are NRCS SNOTEL sites, mostly in sheltered openings in the trees, so they read snow and temperature well but not ridge conditions. Names from GeoNames (USGS GNIS); peaks are pinned to the summits of the earlier 30 m model, so a label can sit a few tens of metres off the top. A planning aid, not a substitute for measuring slopes on the ground.</p></details>
-      <div class="sw-route-bar">
-        <label class="sw-zbtn sw-upload">Check a GPX route<input type="file" class="sw-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
-        <button type="button" class="sw-zbtn sw-route-clear" hidden>Remove route</button>
-        <span class="sw-timing" hidden>
-          <label class="sw-paths-tog">Start <input type="datetime-local" class="sw-start" step="900" aria-label="Start date and time, local time at the map"></label>
-          <label class="sw-paths-tog">Pace <select class="sw-pace"><option value="0.8">relaxed</option><option value="1" selected>steady</option><option value="1.25">fast</option></select></label>
-        </span>
-        <span class="sw-watchgpx" hidden><button type="button" class="sw-zbtn sw-watchgpx-btn">Download hazard-marked route for watch</button></span>
-        <span class="sw-route-msg" data-draw="route-msg" data-source="terrain_rmnp">—</span>
-        <span class="sw-route-hint">Your file stays in this browser; nothing is uploaded or saved.</span>
-        <span class="sw-route-msg sw-watchgpx-note" aria-live="polite"></span>
-      </div>
-      <div class="sw-route" hidden>
-        <h3 class="sw-h3">Route check</h3>
-        <div class="sw-brief">
-          <p class="sw-brief-verdict" data-draw="route-verdict" data-source="danger_now problems regional_forecasts">—</p>
-          <div class="sw-brief-lab">Route profile</div>
-          <div class="sw-chart sw-chart-short" data-draw="route-profile" data-source="terrain_rmnp"></div>
-          <div class="sw-brief-lab">Hazard sections</div>
-          <div class="sw-hz-filter" role="group" aria-label="Show hazards">
-            <span>Show:</span>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="all"> All</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="underfoot" checked> ▼ On the slope</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="overhead"> ▲ From above</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="other" checked> Glaciers and cliffs</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="highOnly"> High-consequence only</label>
-          </div>
-          <div class="sw-tablebox sw-route-box">
-            <table class="sw-table sw-route-table">
-              <thead><tr><th>#</th><th>Km</th><th class="sw-num">Elevation (m)</th><th>Level</th><th>What's there</th></tr></thead>
-              <tbody data-draw="route-rows" data-source="terrain_rmnp danger_now problems regional_forecasts outlook"></tbody>
-            </table>
-          </div>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">Select a section to zoom the map to it. Most avalanche accidents are triggered by the victim or someone in their group, so the slope underfoot always counts. A slope above counts in full only when today’s data gives it a reason to come down on you: considerable or higher danger at its elevation, a persistent slab problem with the start zone within 300 m (these can be triggered from a distance), a wet-snow problem, 20 cm or more of new snow forecast, a wind-loaded start zone, or warm sun on it when you pass. Otherwise it is shown as exposure. Other parties above you can still trigger it, so cross one at a time and don’t stop underneath. Each Show box matches a group in this table (a section on a slope you could trigger counts as “On the slope” even when there is also a slope above). The Show options apply to this table, the map, the profile, Previous / Next on the map and the watch file.</p></details>
-          <div class="sw-brief-lab">Conditions</div>
-          <ul class="sw-brief-list" data-draw="route-conditions" data-source="danger_now problems stations_daily outlook wind_summary avalanche_reports"></ul>
-          <p class="sw-note">Generated from the route's terrain, today's bulletin and the station and forecast data on this dashboard. A guide to where to focus, not a go/no-go decision.</p>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Download hazard-marked route for watch” saves your route as a .gpx with a waypoint at the start of each section the Show options above let through (the same ones as in the table and on the map), named like “HIGH 3 slope above”, “CARE 5 …” or “EXPOSED 7 …”; section numbers match the table above. Import it into your watch’s app as a route and navigate it, and the watch alerts you as you approach each waypoint.</p></details>
-        </div>
-        <p class="sw-route-sum" data-draw="route-summary" data-source="terrain_rmnp wind_summary avalanche_reports glaciers">—</p>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Timing uses your start time (local time at the map) and pace to estimate when you reach each section (Munter method: an hour per 4 km plus 400 m climbed at a steady pace, faster downhill), then checks where the sun is and the day's forecast warmth. It ignores shade cast by ridges, so a slope may get sun later than shown.</p></details>
-        <ul class="sw-legend">
-          <li><span class="sw-expo sw-expo-underfoot">▼ On the slope</span> the slope you're on can avalanche: solid line</li>
-          <li><span class="sw-expo sw-expo-overhead">▲ Slope above</span> a slope above can run onto you: dashed line</li>
-          <li><span class="sw-dedge"><i style="background:#4DB848"></i><i style="background:#FFE600"></i><i style="background:#F7941E"></i><i style="background:#E8222A"></i><i style="background:#231F20"></i></span>Outer edge: today's danger rating at that elevation (when a rating is in force)</li>
-          <li><i class="sw-sw" style="background:var(--sw-r2)"></i>High consequence</li>
-          <li><i class="sw-sw" style="background:var(--sw-r1)"></i>Take care</li>
-          <li><i class="sw-sw" style="background:#8A7CC2"></i>Exposure: under a slope above that today’s conditions don’t raise</li>
-          <li><i class="sw-sw" style="background:#fff"></i>No terrain flags</li>
-        </ul>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Every 10 m of the route is checked against the terrain model for: the slope underfoot (30° and up is avalanche terrain, 35° and up is steep); slopes of 30–60° above the route that face it, within 1 km and at least 30 m higher, steep enough to reach it (an angle of 22° or more up from the route to the start zone, the "alpha angle" used to screen avalanche runouts; 28° or more from a 35°+ slope counts as high); and cliffs or very steep drops within 40 m below. "Today" marks sections whose terrain matches the Terrain to watch filter, when that view is on. This reads the terrain only. It knows nothing about the snowpack, and can miss small features or flag paths that are sheltered in reality: a screening tool for planning, not a substitute for the bulletin, training and judgement on the day.</p></details>
-      </div>
-    </div>
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;rmnp&quot;, &quot;contour&quot;: 100, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 43 by 47 km: the Never Summer Mountains, Trail Ridge, the Mummy Range, the Bear Lake corridor and Glacier Gorge, Longs Peak and Wild Basin. Zoom in and it sharpens to 5 m lidar.&quot;, &quot;map_caveat&quot;: &quot;Slopes from USGS 3DEP lidar (1 m bare-earth terrain from 2020–2023 surveys) resampled to 5 m, covering the whole map; forest doesn't show as false steep ground. Zoomed out, the map shows a 90 m summary of the 5 m steepness; the route check uses 5 m. Glaciers are named but not outlined. The park boundary isn't drawn. The stations are NRCS SNOTEL sites, mostly in sheltered openings in the trees, so they read snow and temperature well but not ridge conditions. Names from GeoNames (USGS GNIS); peaks are pinned to the summits of the earlier 30 m model, so a label can sit a few tens of metres off the top. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_rmnp&quot;, &quot;blocks&quot;: [&quot;t5_rmnp&quot;, 10, 9]}"></div>
 
     <div class="sw-avzone" data-zone="Rocky Mountain NP" id="avalanches-rmnp">
       <h2 class="sw-section">Recent avalanches</h2>
@@ -1849,143 +1505,7 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
-    <div class="sw-card sw-wide sw-mapcard" id="chamonix-map" data-pfx="chamonix">
-      <h2 class="sw-h">Slope map</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">About 36 by 36 km over the whole Mont Blanc massif: the Aiguilles Rouges and Le Buet, the Chamonix valley from Les Houches to Le Tour, the Vallée Blanche and Mer de Glace, Argentière, the Trient and Swiss Val Ferret, and Courmayeur with the Italian Val Veny and Val Ferret. Zoom in and it sharpens to 5 m lidar on the French and Swiss sides. Grid north is up. Contour lines (optional) are every 100 m, with an extra interval when zoomed in. Drag to move around; ctrl- or ⌘-scroll, pinch or the buttons to zoom (plain scrolling zooms once the map is expanded). Hover for elevation, slope and aspect.</p></details>
-      <div class="sw-map-ctrl">
-        <div class="sw-seg" role="group" aria-label="Map view">
-          <button type="button" class="sw-mode" data-mode="slope" aria-pressed="true">Slope angle</button>
-          <button type="button" class="sw-mode" data-mode="watch" aria-pressed="false">Terrain to watch</button>
-          <button type="button" class="sw-mode" data-mode="wind" aria-pressed="false">Wind loading</button>
-        </div>
-        <details class="sw-layers" open><summary>Layers</summary><div class="sw-layers-in">
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-topo" checked> Contour lines</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-glac" checked> Glaciers</label>
-        <label class="sw-paths-tog"><input type="checkbox" class="sw-obs" checked> Recent avalanche reports</label>
-        <label class="sw-paths-tog sw-fc-tog">Forecast <select class="sw-fc" aria-label="Forecast layer">
-          <option value="off">none</option>
-          <option value="snow1">new snow, next 24 h</option><option value="snow2">new snow, next 48 h</option><option value="snow3">new snow, next 72 h</option>
-          <option value="fl1">freezing level, today</option><option value="fl2">freezing level, tomorrow</option><option value="fl3">freezing level, day 3</option>
-        </select></label>
-        </div></details>
-        <div class="sw-zoombar">
-          <button type="button" class="sw-zbtn sw-zin" aria-label="Zoom in">+</button>
-          <button type="button" class="sw-zbtn sw-zout" aria-label="Zoom out">−</button>
-          <button type="button" class="sw-zbtn sw-zreset">Reset view</button>
-          <button type="button" class="sw-zbtn sw-expand">⤢ Expand</button>
-          <button type="button" class="sw-zbtn sw-collapse" hidden>✕ Close</button>
-        </div>
-      </div>
-      <div class="sw-search">
-        <input type="search" class="sw-search-in" placeholder="Search peaks, passes, places, stations, or lat, lon" aria-label="Search the maps" autocomplete="off" spellcheck="false">
-        <ul class="sw-search-list" role="listbox" hidden></ul>
-      </div>
-      <div class="sw-watch" hidden>
-        <div class="sw-watch-row">
-          <span class="sw-watch-lab">Aspects</span>
-          <span class="sw-aspects">
-            <label><input type="checkbox" class="sw-asp" value="N" checked>N</label>
-            <label><input type="checkbox" class="sw-asp" value="NE" checked>NE</label>
-            <label><input type="checkbox" class="sw-asp" value="E" checked>E</label>
-            <label><input type="checkbox" class="sw-asp" value="SE" checked>SE</label>
-            <label><input type="checkbox" class="sw-asp" value="S" checked>S</label>
-            <label><input type="checkbox" class="sw-asp" value="SW" checked>SW</label>
-            <label><input type="checkbox" class="sw-asp" value="W" checked>W</label>
-            <label><input type="checkbox" class="sw-asp" value="NW" checked>NW</label>
-          </span>
-        </div>
-        <div class="sw-watch-row">
-          <label class="sw-watch-lab" for="chamonix-emin">Elevation</label>
-          <span><input id="chamonix-emin" class="sw-emin" type="number" step="50" min="0" max="5000" placeholder="lowest" aria-label="Lowest elevation in metres"> to <input class="sw-emax" type="number" step="50" min="0" max="5000" placeholder="highest" aria-label="Highest elevation in metres"> m</span>
-          <label class="sw-watch-lab" for="chamonix-smin">Slopes from</label>
-          <select id="chamonix-smin" class="sw-smin">
-            <option value="25">25°</option><option value="30" selected>30°</option><option value="35">35°</option><option value="40">40°</option>
-          </select>
-        </div>
-        <div class="sw-watch-row">
-          <button type="button" class="sw-match">Match current bulletin</button>
-          <button type="button" class="sw-reset-watch">Reset</button>
-        </div>
-        <p class="sw-note sw-match-note" data-draw="match-note" data-source="problems danger_now">—</p>
-      </div>
-      <div class="sw-map dash-skeleton" data-draw="map" data-source="terrain_chx wind_summary snow_grid avalanche_reports glaciers"></div>
-      <div class="sw-fc-legend" hidden></div>
-      <ul class="sw-legend sw-leg-slope">
-        <li><i class="sw-sw" style="background:var(--sw-s27)"></i>27–29°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30)"></i>30–34°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s35)"></i>35–39°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s40)"></i>40–44°</li>
-        <li><i class="sw-sw" style="background:var(--sw-s45)"></i>45° and steeper</li>
-        <li><span class="sw-mk-peak">▲</span>Summit</li>
-        <li><span class="sw-mk-col">◆</span>Col or pass</li>
-        <li><span class="sw-mk-stn">●</span>Weather station</li>
-        
-        <li class="sw-leg-glac" hidden><i class="sw-sw" style="background:rgba(150,205,255,.8);border-color:#145FAA"></i>Glacier or permanent snowfield</li>
-      </ul>
-      <ul class="sw-legend sw-leg-wind" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-wind)"></i>Likely wind-loaded (lee of recent winds)</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <p class="sw-note sw-wind-note" data-draw="wind-note" data-source="wind_summary" hidden>—</p>
-      <ul class="sw-legend sw-leg-watch" hidden>
-        <li><i class="sw-sw" style="background:var(--sw-watch)"></i>Matches your filter</li>
-        <li><i class="sw-sw" style="background:var(--sw-s30);opacity:.35"></i>Other slopes from 30°</li>
-      </ul>
-      <span class="sw-blockmarks"><i hidden data-rc="0,0" data-source="t5_chx_0_0"></i><i hidden data-rc="0,1" data-source="t5_chx_0_1"></i><i hidden data-rc="0,2" data-source="t5_chx_0_2"></i><i hidden data-rc="0,3" data-source="t5_chx_0_3"></i><i hidden data-rc="0,4" data-source="t5_chx_0_4"></i><i hidden data-rc="0,5" data-source="t5_chx_0_5"></i><i hidden data-rc="0,6" data-source="t5_chx_0_6"></i><i hidden data-rc="1,0" data-source="t5_chx_1_0"></i><i hidden data-rc="1,1" data-source="t5_chx_1_1"></i><i hidden data-rc="1,2" data-source="t5_chx_1_2"></i><i hidden data-rc="1,3" data-source="t5_chx_1_3"></i><i hidden data-rc="1,4" data-source="t5_chx_1_4"></i><i hidden data-rc="1,5" data-source="t5_chx_1_5"></i><i hidden data-rc="1,6" data-source="t5_chx_1_6"></i><i hidden data-rc="2,0" data-source="t5_chx_2_0"></i><i hidden data-rc="2,1" data-source="t5_chx_2_1"></i><i hidden data-rc="2,2" data-source="t5_chx_2_2"></i><i hidden data-rc="2,3" data-source="t5_chx_2_3"></i><i hidden data-rc="2,4" data-source="t5_chx_2_4"></i><i hidden data-rc="2,5" data-source="t5_chx_2_5"></i><i hidden data-rc="2,6" data-source="t5_chx_2_6"></i><i hidden data-rc="3,0" data-source="t5_chx_3_0"></i><i hidden data-rc="3,1" data-source="t5_chx_3_1"></i><i hidden data-rc="3,2" data-source="t5_chx_3_2"></i><i hidden data-rc="3,3" data-source="t5_chx_3_3"></i><i hidden data-rc="3,4" data-source="t5_chx_3_4"></i><i hidden data-rc="3,5" data-source="t5_chx_3_5"></i><i hidden data-rc="3,6" data-source="t5_chx_3_6"></i><i hidden data-rc="4,0" data-source="t5_chx_4_0"></i><i hidden data-rc="4,1" data-source="t5_chx_4_1"></i><i hidden data-rc="4,2" data-source="t5_chx_4_2"></i><i hidden data-rc="4,3" data-source="t5_chx_4_3"></i><i hidden data-rc="4,4" data-source="t5_chx_4_4"></i><i hidden data-rc="4,5" data-source="t5_chx_4_5"></i><i hidden data-rc="4,6" data-source="t5_chx_4_6"></i><i hidden data-rc="5,0" data-source="t5_chx_5_0"></i><i hidden data-rc="5,1" data-source="t5_chx_5_1"></i><i hidden data-rc="5,2" data-source="t5_chx_5_2"></i><i hidden data-rc="5,3" data-source="t5_chx_5_3"></i><i hidden data-rc="5,4" data-source="t5_chx_5_4"></i><i hidden data-rc="5,5" data-source="t5_chx_5_5"></i><i hidden data-rc="5,6" data-source="t5_chx_5_6"></i><i hidden data-rc="6,0" data-source="t5_chx_6_0"></i><i hidden data-rc="6,1" data-source="t5_chx_6_1"></i><i hidden data-rc="6,2" data-source="t5_chx_6_2"></i><i hidden data-rc="6,3" data-source="t5_chx_6_3"></i><i hidden data-rc="6,4" data-source="t5_chx_6_4"></i><i hidden data-rc="6,5" data-source="t5_chx_6_5"></i><i hidden data-rc="6,6" data-source="t5_chx_6_6"></i></span>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note sw-map-caveat">Slopes from lidar terrain models at 5 m: IGN LiDAR HD on the French side and swisstopo swissALTI3D (flown 2024) on the Swiss side. Both are bare-earth, so forest doesn't show as false steep ground. The Italian side (Courmayeur, Val Veny, the Italian Val Ferret) is still the 30 m Copernicus model, smoothed and with summits clipped, so slopes there read softer than they are; the models are blended over about 50 m at the border. Zoomed out, the map shows a 90 m summary of the 5 m steepness; the route check uses 5 m. On glaciers, lidar shows the ice surface on the day it was flown, which changes year to year. Crevasses and serac fall are not avalanche terrain in this model and are not mapped: on glaciers they are often the bigger hazard. Glacier outlines from the Sentinel-2 glacier inventory of the Alps (2015), so today's ice is smaller. Names from GeoNames (France, Italy, Switzerland); peaks are pinned to the model summit. A planning aid, not a substitute for measuring slopes on the ground.</p></details>
-      <div class="sw-route-bar">
-        <label class="sw-zbtn sw-upload">Check a GPX route<input type="file" class="sw-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
-        <button type="button" class="sw-zbtn sw-route-clear" hidden>Remove route</button>
-        <span class="sw-timing" hidden>
-          <label class="sw-paths-tog">Start <input type="datetime-local" class="sw-start" step="900" aria-label="Start date and time, local time at the map"></label>
-          <label class="sw-paths-tog">Pace <select class="sw-pace"><option value="0.8">relaxed</option><option value="1" selected>steady</option><option value="1.25">fast</option></select></label>
-        </span>
-        <span class="sw-watchgpx" hidden><button type="button" class="sw-zbtn sw-watchgpx-btn">Download hazard-marked route for watch</button></span>
-        <span class="sw-route-msg" data-draw="route-msg" data-source="terrain_chx">—</span>
-        <span class="sw-route-hint">Your file stays in this browser; nothing is uploaded or saved.</span>
-        <span class="sw-route-msg sw-watchgpx-note" aria-live="polite"></span>
-      </div>
-      <div class="sw-route" hidden>
-        <h3 class="sw-h3">Route check</h3>
-        <div class="sw-brief">
-          <p class="sw-brief-verdict" data-draw="route-verdict" data-source="danger_now problems regional_forecasts">—</p>
-          <div class="sw-brief-lab">Route profile</div>
-          <div class="sw-chart sw-chart-short" data-draw="route-profile" data-source="terrain_chx"></div>
-          <div class="sw-brief-lab">Hazard sections</div>
-          <div class="sw-hz-filter" role="group" aria-label="Show hazards">
-            <span>Show:</span>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="all"> All</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="underfoot" checked> ▼ On the slope</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="overhead"> ▲ From above</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="other" checked> Glaciers and cliffs</label>
-            <label class="sw-paths-tog"><input type="checkbox" class="sw-hz" value="highOnly"> High-consequence only</label>
-          </div>
-          <div class="sw-tablebox sw-route-box">
-            <table class="sw-table sw-route-table">
-              <thead><tr><th>#</th><th>Km</th><th class="sw-num">Elevation (m)</th><th>Level</th><th>What's there</th></tr></thead>
-              <tbody data-draw="route-rows" data-source="terrain_chx danger_now problems regional_forecasts outlook"></tbody>
-            </table>
-          </div>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">Select a section to zoom the map to it. Most avalanche accidents are triggered by the victim or someone in their group, so the slope underfoot always counts. A slope above counts in full only when today’s data gives it a reason to come down on you: considerable or higher danger at its elevation, a persistent slab problem with the start zone within 300 m (these can be triggered from a distance), a wet-snow problem, 20 cm or more of new snow forecast, a wind-loaded start zone, or warm sun on it when you pass. Otherwise it is shown as exposure. Other parties above you can still trigger it, so cross one at a time and don’t stop underneath. Each Show box matches a group in this table (a section on a slope you could trigger counts as “On the slope” even when there is also a slope above). The Show options apply to this table, the map, the profile, Previous / Next on the map and the watch file.</p></details>
-          <div class="sw-brief-lab">Conditions</div>
-          <ul class="sw-brief-list" data-draw="route-conditions" data-source="danger_now problems stations_daily outlook wind_summary avalanche_reports"></ul>
-          <p class="sw-note">Generated from the route's terrain, today's bulletin and the station and forecast data on this dashboard. A guide to where to focus, not a go/no-go decision.</p>
-          <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Download hazard-marked route for watch” saves your route as a .gpx with a waypoint at the start of each section the Show options above let through (the same ones as in the table and on the map), named like “HIGH 3 slope above”, “CARE 5 …” or “EXPOSED 7 …”; section numbers match the table above. Import it into your watch’s app as a route and navigate it, and the watch alerts you as you approach each waypoint.</p></details>
-        </div>
-        <p class="sw-route-sum" data-draw="route-summary" data-source="terrain_chx wind_summary avalanche_reports glaciers">—</p>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Timing uses your start time (local time at the map) and pace to estimate when you reach each section (Munter method: an hour per 4 km plus 400 m climbed at a steady pace, faster downhill), then checks where the sun is and the day's forecast warmth. It ignores shade cast by ridges, so a slope may get sun later than shown.</p></details>
-        <ul class="sw-legend">
-          <li><span class="sw-expo sw-expo-underfoot">▼ On the slope</span> the slope you're on can avalanche: solid line</li>
-          <li><span class="sw-expo sw-expo-overhead">▲ Slope above</span> a slope above can run onto you: dashed line</li>
-          <li><span class="sw-dedge"><i style="background:#4DB848"></i><i style="background:#FFE600"></i><i style="background:#F7941E"></i><i style="background:#E8222A"></i><i style="background:#231F20"></i></span>Outer edge: today's danger rating at that elevation (when a rating is in force)</li>
-          <li><i class="sw-sw" style="background:var(--sw-r2)"></i>High consequence</li>
-          <li><i class="sw-sw" style="background:var(--sw-r1)"></i>Take care</li>
-          <li><i class="sw-sw" style="background:#8A7CC2"></i>Exposure: under a slope above that today’s conditions don’t raise</li>
-          <li><i class="sw-sw" style="background:#fff"></i>No terrain flags</li>
-        </ul>
-        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Every 10 m of the route is checked against the terrain model for: the slope underfoot (30° and up is avalanche terrain, 35° and up is steep); slopes of 30–60° above the route that face it, within 1 km and at least 30 m higher, steep enough to reach it (an angle of 22° or more up from the route to the start zone, the "alpha angle" used to screen avalanche runouts; 28° or more from a 35°+ slope counts as high); and cliffs or very steep drops within 40 m below. "Today" marks sections whose terrain matches the Terrain to watch filter, when that view is on. This reads the terrain only. It knows nothing about the snowpack, and can miss small features or flag paths that are sheltered in reality: a screening tool for planning, not a substitute for the bulletin, training and judgement on the day.</p></details>
-      </div>
-    </div>
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;chamonix&quot;, &quot;contour&quot;: 100, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 36 by 36 km over the whole Mont Blanc massif: the Aiguilles Rouges and Le Buet, the Chamonix valley from Les Houches to Le Tour, the Vallée Blanche and Mer de Glace, Argentière, the Trient and Swiss Val Ferret, and Courmayeur with the Italian Val Veny and Val Ferret. Zoom in and it sharpens to 5 m lidar on the French and Swiss sides.&quot;, &quot;map_caveat&quot;: &quot;Slopes from lidar terrain models at 5 m: IGN LiDAR HD on the French side and swisstopo swissALTI3D (flown 2024) on the Swiss side. Both are bare-earth, so forest doesn't show as false steep ground. The Italian side (Courmayeur, Val Veny, the Italian Val Ferret) is still the 30 m Copernicus model, smoothed and with summits clipped, so slopes there read softer than they are; the models are blended over about 50 m at the border. Zoomed out, the map shows a 90 m summary of the 5 m steepness; the route check uses 5 m. On glaciers, lidar shows the ice surface on the day it was flown, which changes year to year. Crevasses and serac fall are not avalanche terrain in this model and are not mapped: on glaciers they are often the bigger hazard. Glacier outlines from the Sentinel-2 glacier inventory of the Alps (2015), so today's ice is smaller. Names from GeoNames (France, Italy, Switzerland); peaks are pinned to the model summit. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_chx&quot;, &quot;blocks&quot;: [&quot;t5_chx&quot;, 7, 7]}"></div>
 
     <div class="sw-avzone" data-zone="Chamonix" id="avalanches-chamonix">
       <h2 class="sw-section">Recent avalanches</h2>

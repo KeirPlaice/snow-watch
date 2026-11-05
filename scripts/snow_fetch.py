@@ -16,8 +16,11 @@ UA = {"User-Agent": "snow-dashboard/1.0"}
 
 ROGERS = "Rogers Pass"
 VALLTER = "Vallter / Ulldeter"
-ROSS = "Rossland"
-TZ = {ROGERS: ZoneInfo("America/Vancouver"), VALLTER: ZoneInfo("Europe/Madrid"), ROSS: ZoneInfo("America/Vancouver")}
+ROSS = "Rossland"  # the Rossland Range map (Red Mountain to Nancy Greene)
+WW = "Whitewater"  # Whitewater and Ymir Mountain, south-east of Nelson
+KP = "Kootenay Pass"  # Kootenay Pass and Stagleap on Highway 3
+TZ = {ROGERS: ZoneInfo("America/Vancouver"), VALLTER: ZoneInfo("Europe/Madrid"), ROSS: ZoneInfo("America/Vancouver"),
+      WW: ZoneInfo("America/Vancouver"), KP: ZoneInfo("America/Vancouver")}
 
 AVCAN_STATIONS = [  # (id, name, elevation m)
     (98, "Rogers Pass", 1315),
@@ -29,8 +32,11 @@ AVCAN_STATIONS = [  # (id, name, elevation m)
     (92, "Asulkan", 2025),  # wind and temperature only
     (99, "Round Hill", 2100),  # wind and temperature only, west of Fidelity
 ]
-ROSS_STATIONS = [(75, "Strawberry Pass", 1575), (76, "Paulson Summit", 1535), (22, "Southridge", 1990),
-                 (41, "Kootenay Pass", 1780), (42, "Stagleap", 2140)]  # BC MoTI highway avalanche-program stations
+KOOTENAY_STATIONS = {  # BC MoTI highway avalanche-program stations, via Avalanche Canada
+    ROSS: [(75, "Strawberry Pass", 1575), (76, "Paulson Summit", 1535)],
+    WW: [(22, "Southridge", 1990), (148, "Hall Creek", 860)],
+    KP: [(41, "Kootenay Pass", 1780), (42, "Stagleap", 2140), (88, "Crags Ridge", 2054)],
+}
 XEMA_STATIONS = [("DG", "Núria", 1971), ("ZC", "Ulldeter", 2413)]
 XEMA_VARS = {"38": "depth", "32": "temp", "50": "gust_ms", "35": "precip"}
 
@@ -143,7 +149,8 @@ def xema_station(code, name, elev):
 
 # ---------- wind: what has been moving snow, and which slopes it loads ----------
 WIND_STATIONS = {ROGERS: ("avcan", 96, "MacDonald West Shoulder", 1930), VALLTER: ("xema", "ZC", "Ulldeter", 2413),
-                 ROSS: ("avcan", 42, "Stagleap", 2140)}
+                 ROSS: ("avcan", 75, "Strawberry Pass", 1575), WW: ("avcan", 22, "Southridge", 1990),
+                 KP: ("avcan", 42, "Stagleap", 2140)}
 WIND_HOURS = 72
 TRANSPORT_KMH = 15  # hourly mean wind that can start moving loose snow
 STRONG_KMH = 30
@@ -152,7 +159,7 @@ COMPASS16 = {d: i * 22.5 for i, d in enumerate("N NNE NE ENE E ESE SE SSE S SSW 
 
 
 # extra 72-hour wind cards: (zone, Avalanche Canada station id, name, elevation); each gets a summary under "<zone> · <name>"
-EXTRA_WIND = [(ROSS, 75, "Strawberry Pass", 1575), (ROSS, 41, "Kootenay Pass", 1780),
+EXTRA_WIND = [(KP, 88, "Crags Ridge", 2054), (KP, 41, "Kootenay Pass", 1780),
               (ROGERS, 97, "Rockfall", 2240), (ROGERS, 92, "Asulkan", 2025), (ROGERS, 99, "Round Hill", 2100)]
 NO_TEMP = {92}  # Asulkan: its temperature sensor reads -118 °C this autumn and sat at -38 °C for days in October
 LAST_OBS = {}  # station name -> time of its newest wind reading (Parks Canada stations reach the feed about a day late)
@@ -269,7 +276,9 @@ def _words(v, table):
 
 
 ROSS_HOME = (49.0781, -117.8000)  # Rossland
-ROSS_BBOX = "-118.25,48.95,-116.85,49.88"
+# field reports: each map's box plus about 10 km around it, and the point distances are measured from
+KOOT_MIN = {ROSS: ("-118.08,48.97,-117.65,49.35", ROSS_HOME), WW: ("-117.35,49.31,-116.95,49.56", (49.4433, -117.1450)),
+            KP: ("-117.26,48.95,-116.73,49.26", (49.0581, -117.0400))}
 
 
 def min_reports(today, zone=ROGERS, bbox=MIN_BBOX, home=PASS):
@@ -339,7 +348,9 @@ def min_reports(today, zone=ROGERS, bbox=MIN_BBOX, home=PASS):
 
 # ---------- every avalanche forecast that covers part of the Rogers Pass map ----------
 MAP_BOUNDS = (-118.90, 50.81, -117.15, 51.53)
-ROSS_BOUNDS = (-118.13, 49.00, -116.95, 49.80)
+KOOT_BOUNDS = {ROSS: (-117.9388, 49.0563, -117.7927, 49.2562), KP: (-117.1162, 49.0148, -116.8720, 49.1710),
+               WW: (-117.2077, 49.3998, -117.0880, 49.4754)}  # the three slope maps
+KOOT_POINT = {ROSS: (49.10, -117.84), WW: (49.4433, -117.1450), KP: (49.0581, -117.0400)}  # Red Mountain, Whitewater, the pass
 
 
 def regional_forecasts(zone=ROGERS, bounds=MAP_BOUNDS):
@@ -489,8 +500,12 @@ def outlook(zone, lat, lon, elev, tzname, point=None):
 
 # ---------- forecast by elevation band, from Canada's GEM models (HRDPS 2.5 km for 48 h, then RDPS, then GDPS) ----------
 LEVELS = (900, 850, 800, 750, 700)  # hPa; roughly 1,000 / 1,500 / 2,000 / 2,500 / 3,000 m
+KOOT_BANDS = [("btl", "Below treeline", 1300), ("tl", "Treeline", 1800), ("alp", "Alpine", 2200)]
 MTN_BANDS = {ROGERS: (51.30, -117.52, "America/Vancouver",
-                      [("btl", "Below treeline", 1300), ("tl", "Treeline", 1900), ("alp", "Alpine", 2500)])}
+                      [("btl", "Below treeline", 1300), ("tl", "Treeline", 1900), ("alp", "Alpine", 2500)]),
+             ROSS: (49.15, -117.88, "America/Vancouver", KOOT_BANDS),  # between Old Glory and Granite Mountain
+             WW: (49.4433, -117.1450, "America/Vancouver", KOOT_BANDS),
+             KP: (49.0716, -117.0839, "America/Vancouver", KOOT_BANDS)}  # Stagleap
 RIDGE_HPA = 750  # free-air wind near the alpine band and most ridge crests
 RIDGE_MOVES_KMH = 20  # ridge-top wind that can move loose snow
 
@@ -865,7 +880,9 @@ def ibk_reports(today):
 # ---------- forecast new snow and freezing level on a coarse grid over each map (Open-Meteo) ----------
 GRID = {  # zone: (west, south, east, north, columns, rows, time zone)
     ROGERS: (-118.85, 50.84, -117.20, 51.50, 9, 6, "America/Vancouver"),
-    ROSS: (-118.08, 49.03, -117.00, 49.77, 7, 7, "America/Vancouver"),
+    ROSS: (-117.9388, 49.0563, -117.7927, 49.2562, 3, 5, "America/Vancouver"),
+    WW: (-117.2077, 49.3998, -117.0880, 49.4754, 3, 3, "America/Vancouver"),
+    KP: (-117.1162, 49.0148, -116.8720, 49.1710, 4, 4, "America/Vancouver"),
     VALLTER: (2.20, 42.38, 2.34, 42.46, 4, 3, "Europe/Madrid"),
     IBK: (10.98, 46.95, 11.72, 47.34, 8, 5, "Europe/Vienna"),
     "Rocky Mountain NP": (-105.95, 40.16, -105.48, 40.55, 6, 6, "America/Denver"),
@@ -1278,8 +1295,9 @@ def main():
     stations = []
     for sid, name, elev in AVCAN_STATIONS:
         stations += avcan_station(sid, name, elev, now)
-    for sid, name, elev in ROSS_STATIONS:
-        stations += avcan_station(sid, name, elev, now, ROSS)
+    for zname, sts in KOOTENAY_STATIONS.items():
+        for sid, name, elev in sts:
+            stations += avcan_station(sid, name, elev, now, zname)
     for code, name, elev in XEMA_STATIONS:
         stations += xema_station(code, name, elev)
     ibk_rows, ibk_wind = ibk_stations(now, prev_rows)
@@ -1302,7 +1320,7 @@ def main():
     ws, wr = [], []
     wname = next(n for c, n, e in IBK_STATIONS if c == IBK_WIND)
     welev = next(e for c, n, e in IBK_STATIONS if c == IBK_WIND)
-    for zname in (ROGERS, VALLTER, IBK, ROSS):
+    for zname in (ROGERS, VALLTER, IBK, ROSS, WW, KP):
         a, b = wind_summary(zname, now, stations, (ibk_wind, wname, welev) if zname == IBK else None)
         ws.append(a)
         wr += b
@@ -1369,11 +1387,11 @@ def main():
             "headline": "The Mont Blanc bulletins couldn't be fetched this morning; check meteofrance.com/meteo-montagne.", "snowpack": "",
             "detail": "", "trend": "", "confidence": "", "language": "en", "url": CHX_SERVICE["FR"][1]}
         xdanger, xprob, xrf = [], [], []
-    rf = regional_forecasts() + regional_forecasts(ROSS, ROSS_BOUNDS) + irf + crf + xrf
+    rf = regional_forecasts() + sum((regional_forecasts(z, b) for z, b in KOOT_BOUNDS.items()), []) + irf + crf + xrf
     write_csv(f"{out}/regional_forecasts.json", rf, list(rf[0].keys()))
 
     today_bc = now.astimezone(TZ[ROGERS]).date()
-    reps = min_reports(today_bc) + min_reports(today_bc, ROSS, ROSS_BBOX, ROSS_HOME) + ibk_reports(today_ibk)
+    reps = min_reports(today_bc) + sum((min_reports(today_bc, z, bb, home) for z, (bb, home) in KOOT_MIN.items()), []) + ibk_reports(today_ibk)
     write_csv(f"{out}/avalanche_reports.json", reps, ["zone", "id", "date", "title", "lat", "lon", "dist_km", "kind", "avalanches", "count_label",
               "max_size", "triggers", "aspects", "elevations", "elev_m", "types", "avalanche_date", "signs", "caught", "comment", "url"])
 
@@ -1384,8 +1402,10 @@ def main():
             for r in json.load(f):
                 hist[(r["zone"], r["date"], r["band"])] = r
     rb, rdanger, rprob = avcan_bulletin()
-    sb, sdanger, sprob = avcan_bulletin(ROSS, 49.10, -117.84)  # Red Mountain
-    for r in rdanger + sdanger + idanger + cdanger + xdanger:
+    koot = {z: avcan_bulletin(z, *pt) for z, pt in KOOT_POINT.items()}  # the forecast covering each map's home point
+    sb, sdanger, sprob = koot[ROSS]
+    kdanger = [r for z in (WW, KP) for r in koot[z][1]]
+    for r in rdanger + sdanger + kdanger + idanger + cdanger + xdanger:
         hist[(r["zone"], r["date"], r["band"])] = r
     vb = None
     for attempt in range(3):  # the ICGC server sometimes drops connections for a while; give it a few minutes
@@ -1419,9 +1439,10 @@ def main():
     fields = ["zone", "date", "band", "band_label", "level", "rating", "kind", "issued"]
     write_csv(f"{out}/danger_history.json", sorted(hist.values(), key=lambda r: (r["zone"], r["date"], r["band"])), fields)
 
-    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb, cb, xb], list(rb.keys()))
-    probs = rprob + vprob + iprob + sprob + cprob + xprob
-    for zname, issued in ((ROGERS, rb["issued"]), (VALLTER, vb["issued"]), (IBK, ib["issued"]), (ROSS, sb["issued"]), (RMNP, cb["issued"]), (CHX, xb["issued"])):
+    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb, koot[WW][0], koot[KP][0], cb, xb], list(rb.keys()))
+    probs = rprob + vprob + iprob + sprob + koot[WW][2] + koot[KP][2] + cprob + xprob
+    for zname, issued in ((ROGERS, rb["issued"]), (VALLTER, vb["issued"]), (IBK, ib["issued"]), (ROSS, sb["issued"]), (WW, koot[WW][0]["issued"]),
+                          (KP, koot[KP][0]["issued"]), (RMNP, cb["issued"]), (CHX, xb["issued"])):
         if not any(p["zone"] == zname for p in probs):  # one blank row keeps each zone (and the file) readable
             probs.append({"zone": zname, "problem": None, "issued": issued})
     write_csv(f"{out}/problems.json", probs,
@@ -1431,7 +1452,8 @@ def main():
          outlook(VALLTER, 42.42, 2.25, 2400, "Europe/Madrid", "Vallter") + \
          outlook(IBK, 47.15, 11.25, 2300, "Europe/Vienna", "Sellrain–Stubai") + \
          outlook(ROSS, 49.2044, -117.8966, 1575, "America/Vancouver", "Strawberry Pass") + \
-         outlook(ROSS, 49.0581, -117.0400, 1780, "America/Vancouver", "Kootenay Pass") + \
+         outlook(WW, 49.4433, -117.1450, 1700, "America/Vancouver", "Whitewater") + \
+         outlook(KP, 49.0581, -117.0400, 1780, "America/Vancouver", "Kootenay Pass") + \
          outlook(RMNP, 40.3118, -105.6448, 2900, "America/Denver", "Bear Lake") + \
          outlook(RMNP, 40.4206, -105.8162, 3280, "America/Denver", "Milner Pass") + \
          outlook(CHX, 45.9030, 6.8880, 2300, "Europe/Paris", "Plan de l'Aiguille (Chamonix)") + \
