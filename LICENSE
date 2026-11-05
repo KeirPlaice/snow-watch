@@ -1,0 +1,21 @@
+Copyright (c) 2026 Keir Plaice. All rights reserved.
+
+The source code, page design and build scripts in this repository ("the Software")
+are proprietary. No licence is granted to copy, modify, distribute, publish,
+sublicense or create derivative works of the Software, in whole or in part,
+without the prior written permission of the copyright holder.
+
+Viewing the Software on GitHub, or using the published website for personal
+planning, does not grant any other right.
+
+THE SOFTWARE AND THE WEBSITE ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+They are a planning aid, not a go/no-go decision, and nothing they show means a
+slope or route is safe. In no event shall the copyright holder be liable for any
+claim, damages or other liability arising from the use of the Software or the
+website.
+
+Third-party material is not covered by this notice and stays under its own
+terms. That includes the terrain, avalanche bulletin, weather station, glacier
+and place-name data in fixed/ and the data the site fetches each day (credited
+on web/about.html, mostly CC BY 4.0, Licence Ouverte / Etalab 2.0 or Open
+Government Licence terms), and the D3 library (web/d3.min.js, ISC licence).

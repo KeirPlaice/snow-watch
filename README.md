@@ -12,3 +12,5 @@ Avalanche danger, snowpack, slope maps and a GPX route check for Rogers Pass, Ro
 To refresh by hand: Actions → "Daily refresh and deploy" → Run workflow.
 
 Data sources and licences are listed on the site's About page.
+
+The code is proprietary: copyright Keir Plaice, all rights reserved. See LICENSE. Third-party data and libraries keep their own licences.
