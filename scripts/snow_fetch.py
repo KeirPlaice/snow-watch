@@ -24,6 +24,10 @@ AVCAN_STATIONS = [  # (id, name, elevation m)
     (93, "Fidelity", 1905),
     (96, "MacDonald West Shoulder", 1930),
     (91, "Mt. Abbott", 2130),
+    (97, "Rockfall", 2240),  # north of the pass, above the Beaver valley side
+    (165, "Klotz", 1975),  # Clachnacudainn Range, west of the pass toward Revelstoke
+    (92, "Asulkan", 2025),  # wind and temperature only
+    (99, "Round Hill", 2100),  # wind and temperature only, west of Fidelity
 ]
 ROSS_STATIONS = [(75, "Strawberry Pass", 1575), (76, "Paulson Summit", 1535), (22, "Southridge", 1990),
                  (41, "Kootenay Pass", 1780), (42, "Stagleap", 2140)]  # BC MoTI highway avalanche-program stations
@@ -146,7 +150,9 @@ COMPASS16 = {d: i * 22.5 for i, d in enumerate("N NNE NE ENE E ESE SE SSE S SSW 
 
 
 # extra 72-hour wind cards: (zone, Avalanche Canada station id, name, elevation); each gets a summary under "<zone> · <name>"
-EXTRA_WIND = [(ROSS, 75, "Strawberry Pass", 1575), (ROSS, 41, "Kootenay Pass", 1780)]
+EXTRA_WIND = [(ROSS, 75, "Strawberry Pass", 1575), (ROSS, 41, "Kootenay Pass", 1780),
+              (ROGERS, 97, "Rockfall", 2240), (ROGERS, 92, "Asulkan", 2025), (ROGERS, 99, "Round Hill", 2100)]
+LAST_OBS = {}  # station name -> time of its newest wind reading (Parks Canada stations reach the feed about a day late)
 
 
 def wind_obs(zone, now, station=None):
@@ -155,10 +161,17 @@ def wind_obs(zone, now, station=None):
     t0 = now - timedelta(hours=WIND_HOURS)
     out = {}
     if kind == "avcan":
-        for r in get(f"https://weather.prod.avalanche.ca/stations/{sid}/measurements",
-                     {"fromDate": t0.strftime("%Y-%m-%dT%H:%M:%SZ"), "toDate": now.strftime("%Y-%m-%dT%H:%M:%SZ")}):
+        # Parks Canada stations arrive in a daily batch, so the window is the 72 hours up to the newest reading
+        recs = get(f"https://weather.prod.avalanche.ca/stations/{sid}/measurements",
+                   {"fromDate": (t0 - timedelta(hours=36)).strftime("%Y-%m-%dT%H:%M:%SZ"), "toDate": now.strftime("%Y-%m-%dT%H:%M:%SZ")})
+        times = [r["measurementDateTime"] for r in recs if num(r.get("windSpeedAvg")) is not None]
+        if times:
+            last = datetime.fromisoformat(max(times).replace("Z", "+00:00"))
+            LAST_OBS[name] = last
+            t0 = last - timedelta(hours=WIND_HOURS)
+        for r in recs:
             sp, dr = num(r.get("windSpeedAvg")), COMPASS16.get(r.get("windDirCompass"))
-            if sp is not None and dr is not None:
+            if sp is not None and dr is not None and datetime.fromisoformat(r["measurementDateTime"].replace("Z", "+00:00")) > t0:
                 out[r["measurementDateTime"]] = (sp, dr, num(r.get("windSpeedGust")))
     else:
         rows = {}
@@ -219,7 +232,7 @@ def wind_summary(zone, now, stations_rows, given=None):
         "from_deg": None if from_deg is None else round(from_deg),
         "from_dir": None if from_deg is None else OCT[int(((from_deg + 22.5) % 360) // 45)],
         "loaded_aspects": ",".join(loaded), "snow_depth_cm": depth, "new_snow_3d_cm": new3,
-        "until": now.strftime("%Y-%m-%dT%H:%MZ"),
+        "until": LAST_OBS.get(name, now).strftime("%Y-%m-%dT%H:%MZ"),
     }
     rose_rows = [{"zone": zone, "from_dir": o, "hours": round(v["hours"], 1), "transport_hours": round(v["transport"], 1),
                   "mean_kmh": round(v["sum"] / v["hours"], 1) if v["hours"] else None} for o, v in rose.items()]
@@ -469,6 +482,114 @@ def outlook(zone, lat, lon, elev, tzname, point=None):
         "temp_max_c": dl["temperature_2m_max"][i], "temp_min_c": dl["temperature_2m_min"][i],
         "gust_max_kmh": dl["wind_gusts_10m_max"][i], "freezing_level_max_m": round(fl[t]) if t in fl else "",
     } for i, t in enumerate(dl["time"])]
+
+
+# ---------- forecast by elevation band, from Canada's GEM models (HRDPS 2.5 km for 48 h, then RDPS, then GDPS) ----------
+LEVELS = (900, 850, 800, 750, 700)  # hPa; roughly 1,000 / 1,500 / 2,000 / 2,500 / 3,000 m
+MTN_BANDS = {ROGERS: (51.30, -117.52, "America/Vancouver",
+                      [("btl", "Below treeline", 1300), ("tl", "Treeline", 1900), ("alp", "Alpine", 2500)])}
+RIDGE_HPA = 750  # free-air wind near the alpine band and most ridge crests
+RIDGE_MOVES_KMH = 20  # ridge-top wind that can move loose snow
+
+
+def _at_height(zs, vals, h):
+    """Linear interpolation (or extrapolation off the ends) of vals at height h, zs ascending."""
+    if h <= zs[0]:
+        i = 0
+    elif h >= zs[-1]:
+        i = len(zs) - 2
+    else:
+        i = next(k for k in range(len(zs) - 1) if zs[k] <= h <= zs[k + 1])
+    z0, z1, v0, v1 = zs[i], zs[i + 1], vals[i], vals[i + 1]
+    return v0 + (v1 - v0) * (h - z0) / (z1 - z0) if z1 != z0 else v0
+
+
+def _freezing_level(zs, ts):
+    """Top of the above-freezing air: the highest height where temperature crosses 0 °C going up.
+    Returns (height, flag): flag 'below' when it is freezing at every level, 'above' when it is above 0 °C to 3,000 m."""
+    if all(t <= 0 for t in ts):  # below the lowest level: extend down at a standard 6.5 °C per km
+        return max(0, round(zs[0] + ts[0] / 0.0065)), "below"
+    if ts[-1] > 0:
+        return round(zs[-1] + ts[-1] / 0.0065), "above"
+    flag = "warm layer aloft" if ts[0] <= 0 else ""  # freezing low down under above-freezing air: rain or freezing rain on cold snow
+    for k in range(len(zs) - 1, 0, -1):
+        if ts[k] <= 0 < ts[k - 1]:
+            return round(zs[k - 1] + (zs[k] - zs[k - 1]) * ts[k - 1] / (ts[k - 1] - ts[k])), flag
+    return round(zs[0]), flag
+
+
+def _snow_share(t):
+    """Share of precipitation falling as snow at air temperature t (°C): all snow at 0 °C or colder, all rain from +2 °C."""
+    return 1.0 if t <= 0 else 0.0 if t >= 2 else 1 - t / 2
+
+
+def mountain_forecast(zone):
+    lat, lon, tzname, bands = MTN_BANDS[zone]
+    hv = ",".join(f"{v}_{p}hPa" for p in LEVELS for v in ("temperature", "geopotential_height"))
+    d = get("https://api.open-meteo.com/v1/forecast", {
+        "latitude": lat, "longitude": lon, "timezone": tzname, "forecast_days": 7, "models": "gem_seamless",
+        "hourly": f"precipitation,{hv},wind_speed_{RIDGE_HPA}hPa,wind_direction_{RIDGE_HPA}hPa"})
+    h = d["hourly"]
+    hours, days = [], {}
+    for i, t in enumerate(h["time"]):
+        lv = [(h[f"geopotential_height_{p}hPa"][i], h[f"temperature_{p}hPa"][i]) for p in LEVELS]
+        if any(z is None or tt is None for z, tt in lv):
+            continue
+        lv.sort()
+        zs, ts = [z for z, _ in lv], [tt for _, tt in lv]
+        fl, flag = _freezing_level(zs, ts)
+        pr = h["precipitation"][i] or 0.0
+        ws, wd = h[f"wind_speed_{RIDGE_HPA}hPa"][i], h[f"wind_direction_{RIDGE_HPA}hPa"][i]
+        row = {"zone": zone, "kind": "hour", "time": t, "model": "HRDPS 2.5 km" if i < 48 else "RDPS 10 km" if i < 84 else "GDPS 15 km",
+               "precip_mm": round(pr, 1), "freezing_level_m": fl, "freezing_flag": flag,
+               "ridge_kmh": None if ws is None else round(ws), "ridge_from_deg": wd}
+        for key, _, elev in bands:
+            tb = _at_height(zs, ts, elev)
+            share = _snow_share(tb)
+            row[f"t_{key}_c"] = round(tb, 1)
+            row[f"snow_{key}_cm"] = round(pr * share, 1)  # about 1 cm of snow per mm of water
+            row[f"rain_{key}_mm"] = round(pr * (1 - share), 1)
+        hours.append(row)
+        day = days.setdefault(t[:10], {"rows": []})
+        day["rows"].append(row)
+    daily = []
+    for day, v in days.items():
+        rs = v["rows"]
+        if len(rs) < 20:  # a partial day at the end of the run
+            continue
+        out = {"zone": zone, "kind": "day", "time": day, "model": rs[0]["model"] if rs[0]["model"] == rs[-1]["model"] else f'{rs[0]["model"]} then {rs[-1]["model"]}',
+               "precip_mm": round(sum(r["precip_mm"] for r in rs), 1),
+               "freezing_level_min_m": min(r["freezing_level_m"] for r in rs), "freezing_level_max_m": max(r["freezing_level_m"] for r in rs)}
+        for key, _, _ in bands:
+            out[f"t_{key}_min_c"] = min(r[f"t_{key}_c"] for r in rs)
+            out[f"t_{key}_max_c"] = max(r[f"t_{key}_c"] for r in rs)
+            out[f"snow_{key}_cm"] = round(sum(r[f"snow_{key}_cm"] for r in rs))
+            out[f"rain_{key}_mm"] = round(sum(r[f"rain_{key}_mm"] for r in rs), 1)
+        w = [r for r in rs if r["ridge_kmh"] is not None and r["ridge_from_deg"] is not None]
+        out["ridge_mean_kmh"] = round(sum(r["ridge_kmh"] for r in w) / len(w)) if w else None
+        out["ridge_max_kmh"] = max((r["ridge_kmh"] for r in w), default=None)
+        mv = [r for r in w if r["ridge_kmh"] >= RIDGE_MOVES_KMH]
+        out["ridge_moving_hours"] = len(mv)
+        vx = sum((r["ridge_kmh"] - RIDGE_MOVES_KMH + 1) ** 2 * math.sin(math.radians(r["ridge_from_deg"])) for r in mv)
+        vy = sum((r["ridge_kmh"] - RIDGE_MOVES_KMH + 1) ** 2 * math.cos(math.radians(r["ridge_from_deg"])) for r in mv)
+        if mv:
+            frm = (math.degrees(math.atan2(vx, vy)) + 360) % 360
+            i = int((((frm + 180) % 360 + 22.5) % 360) // 45)
+            out["ridge_from_dir"] = OCT[int(((frm + 22.5) % 360) // 45)]
+            out["loads"] = ",".join([OCT[(i - 1) % 8], OCT[i], OCT[(i + 1) % 8]])
+        else:
+            allw = [(r["ridge_kmh"] + 1) ** 2 for r in w]
+            if w:
+                frm = (math.degrees(math.atan2(sum(a * math.sin(math.radians(r["ridge_from_deg"])) for a, r in zip(allw, w)),
+                                               sum(a * math.cos(math.radians(r["ridge_from_deg"])) for a, r in zip(allw, w)))) + 360) % 360
+                out["ridge_from_dir"] = OCT[int(((frm + 22.5) % 360) // 45)]
+            else:
+                out["ridge_from_dir"] = None
+            out["loads"] = ""
+        daily.append(out)
+    now_local = datetime.now(ZoneInfo(tzname)).replace(tzinfo=None).isoformat(timespec="minutes")
+    hours = [r for r in hours if r["time"] >= now_local[:13]][:72]
+    return hours + daily
 
 
 # ---------- Innsbruck (Euregio Tirol – South Tyrol – Trentino) ----------
@@ -1314,6 +1435,17 @@ def main():
          outlook(CHX, 45.8330, 6.9350, 2200, "Europe/Paris", "Pavillon (Courmayeur)") + \
          outlook(CHX, 46.0100, 7.0900, 2200, "Europe/Paris", "Val Ferret / Champex")
     write_csv(f"{out}/outlook.json", ol, list(ol[0].keys()))
+    mf = []
+    for zname in MTN_BANDS:
+        try:
+            mf += mountain_forecast(zname)
+        except (OSError, ValueError, KeyError) as e:
+            print("mountain forecast unavailable for", zname, e)
+    if mf:
+        fields = []
+        for r in mf:
+            fields += [k for k in r if k not in fields]
+        write_csv(f"{out}/mountain_forecast.json", mf, fields)
     sg = snow_grid()
     if sg:
         write_csv(f"{out}/snow_grid.json", sg, list(sg[0].keys()))
