@@ -4,6 +4,12 @@
 .sw-page{--sw-av:#C4122F;--sw-wind:#0E8A84;--sw-r1:#FFB000;--sw-r2:#D0007A;--sw-s27:#FFE600;--sw-s30:#F7941E;--sw-s35:#E8222A;--sw-s40:#8E3CAA;--sw-s45:#283CA0;--sw-watch:#E8222A;--sw-d0:var(--color-border-line);--sw-d1:#4DB848;--sw-d2:#FFE600;--sw-d3:#F7941E;--sw-d4:#E8222A;--sw-d5:#231F20;font-family:var(--font-anthropic-sans);display:flex;flex-direction:column;gap:var(--cds-gap-lg)}
 .sw-head h1{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);margin:0}
 .sw-head p{margin:var(--cds-gap-xs) 0 0;color:var(--color-fg-muted)}
+.sw-ranges{display:flex;gap:var(--cds-gap-xs);flex-wrap:wrap}
+.sw-range{font:inherit;font-size:var(--cds-font-size-caption);background:none;border:1px solid var(--color-border-line);border-radius:999px;color:var(--color-fg-muted);padding:4px 12px;cursor:pointer}
+.sw-range:hover{color:var(--color-fg)}
+.sw-range[aria-pressed=true]{background:var(--color-fg);color:var(--color-bg);border-color:var(--color-fg)}
+.sw-ranges+.sw-tabs{margin-top:calc(-1 * var(--cds-gap-sm))}
+.sw-tab[hidden]{display:none}
 .sw-tabs{display:flex;gap:var(--cds-gap-xs);border-bottom:1px solid var(--color-border-line);flex-wrap:wrap}
 .sw-tab{font:inherit;font-size:var(--cds-font-size-body);background:none;border:0;border-bottom:2px solid transparent;color:var(--color-fg-muted);padding:var(--cds-pad-sm) var(--cds-pad-md);cursor:pointer;margin-bottom:-1px}
 .sw-tab[aria-selected=true]{color:var(--color-fg);border-bottom-color:var(--color-fg);font-weight:var(--cds-font-weight-medium)}
@@ -277,7 +283,8 @@ details.sw-how[open] > summary{display:none}
     <h1>Snow &amp; Avalanche Watch</h1>
     <p>Avalanche danger, snowpack and the week ahead for Rogers Pass, the Rossland Range, Whitewater, Kootenay Pass, the hills above Vallter, the mountains around Innsbruck, Rocky Mountain National Park, the Mont Blanc massif around Chamonix and the Urseren valley around Andermatt. Refreshed every morning.</p>
   </header>
-  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="rossland" aria-selected="false">Rossland Range</button><button class="sw-tab" role="tab" data-tab="whitewater" aria-selected="false">Whitewater</button><button class="sw-tab" role="tab" data-tab="kpass" aria-selected="false">Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="vallter" aria-selected="false">Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="innsbruck" aria-selected="false">Innsbruck</button><button class="sw-tab" role="tab" data-tab="rmnp" aria-selected="false">Rocky Mountain NP</button><button class="sw-tab" role="tab" data-tab="chamonix" aria-selected="false">Chamonix</button><button class="sw-tab" role="tab" data-tab="andermatt" aria-selected="false">Andermatt</button></nav>
+  <nav class="sw-ranges" aria-label="Mountain range"><button type="button" class="sw-range" data-range="bc" aria-pressed="true">British Columbia</button><button type="button" class="sw-range" data-range="rockies" aria-pressed="false">Rockies</button><button type="button" class="sw-range" data-range="alps" aria-pressed="false">Alps</button><button type="button" class="sw-range" data-range="pyrenees" aria-pressed="false">Pyrenees</button></nav>
+  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" data-range="bc" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="whitewater" data-range="bc" aria-selected="false">Whitewater</button><button class="sw-tab" role="tab" data-tab="kpass" data-range="bc" aria-selected="false">Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="rossland" data-range="bc" aria-selected="false">Rossland Range</button><button class="sw-tab" role="tab" data-tab="rmnp" data-range="rockies" aria-selected="false" hidden>Rocky Mountain NP</button><button class="sw-tab" role="tab" data-tab="chamonix" data-range="alps" aria-selected="false" hidden>Chamonix</button><button class="sw-tab" role="tab" data-tab="andermatt" data-range="alps" aria-selected="false" hidden>Andermatt</button><button class="sw-tab" role="tab" data-tab="innsbruck" data-range="alps" aria-selected="false" hidden>Innsbruck</button><button class="sw-tab" role="tab" data-tab="vallter" data-range="pyrenees" aria-selected="false" hidden>Vallter / Ulldeter</button></nav>
 
   <section class="sw-zone" id="rogers" data-zone="Rogers Pass" data-temp="Fidelity" data-wind="MacDonald West Shoulder">
     <p class="sw-sub">Glacier National Park, Selkirk Mountains, BC · forecast by Parks Canada via Avalanche Canada</p>
@@ -1815,15 +1822,30 @@ details.sw-how[open] > summary{display:none}
 <script src="app.js"></script>
 
 <script>
+const swStore = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } };
 const showTab = (id) => {
+  const tab = document.querySelector(`.sw-tab[data-tab="${id}"]`);
+  if (!tab) return;
+  const range = tab.dataset.range;
   for (const s of document.querySelectorAll('.sw-zone')) s.hidden = s.id !== id;
-  for (const b of document.querySelectorAll('.sw-tab')) b.setAttribute('aria-selected', String(b.dataset.tab === id));
+  for (const b of document.querySelectorAll('.sw-tab')) { b.setAttribute('aria-selected', String(b.dataset.tab === id)); b.hidden = b.dataset.range !== range; }
+  for (const b of document.querySelectorAll('.sw-range')) b.setAttribute('aria-pressed', String(b.dataset.range === range));
+  swStore('sw-last-' + range, id);
+  swStore('sw-last', id);
 };
 for (const b of document.querySelectorAll('.sw-tab')) {
   b.addEventListener('click', () => { showTab(b.dataset.tab); dash.setLink(b.dataset.tab); });
 }
+for (const b of document.querySelectorAll('.sw-range')) {
+  b.addEventListener('click', () => {
+    const r = b.dataset.range, last = swStore('sw-last-' + r);
+    const t = document.querySelector(`.sw-tab[data-range="${r}"][data-tab="${last}"]`) || document.querySelector(`.sw-tab[data-range="${r}"]`);
+    showTab(t.dataset.tab); dash.setLink(t.dataset.tab);
+  });
+}
 const named = location.hash.slice(1);
 if (named && document.getElementById(named)?.classList.contains('sw-zone')) showTab(named);
 else if (named === 'avalanches') showTab('rogers');
+else { const last = swStore('sw-last'); if (last && document.getElementById(last)?.classList.contains('sw-zone')) showTab(last); }
 </script>
 
