@@ -900,6 +900,7 @@ GRID = {  # zone: (west, south, east, north, columns, rows, time zone)
     IBK: (10.98, 46.95, 11.72, 47.34, 8, 5, "Europe/Vienna"),
     "Rocky Mountain NP": (-105.95, 40.16, -105.48, 40.55, 6, 6, "America/Denver"),
     "Chamonix": (6.74, 45.76, 7.16, 46.04, 6, 5, "Europe/Paris"),
+    "Andermatt": (8.37, 46.54, 8.71, 46.69, 6, 4, "Europe/Zurich"),
 }
 
 
@@ -1193,14 +1194,18 @@ SLF_API = "https://measurement-api.slf.ch/public/api/imis"
 
 
 def chx_stations(now, prev_rows):
-    """SLF IMIS stations in the massif: the API gives the last 7 days of half-hourly readings, so earlier days
-    carry over from yesterday's file. Returns (daily rows, half-hourly wind at the ridge station for the last WIND_HOURS)."""
-    tz = TZ[CHX]
-    prev = [r for r in prev_rows if r.get("zone") == CHX]
+    return slf_stations(CHX, CHX_IMIS, (CHX_IMIS_WIND,), now, prev_rows)[0], slf_stations.last_wind.get(CHX_IMIS_WIND, [])
+
+
+def slf_stations(zone, imis, wind_codes, now, prev_rows):
+    """SLF IMIS stations: the API gives the last 7 days of half-hourly readings, so earlier days carry over from
+    yesterday's file. Returns (daily rows, {code: half-hourly wind for the last WIND_HOURS} for the wind_codes stations)."""
+    tz = TZ[zone]
+    prev = [r for r in prev_rows if r.get("zone") == zone]
     start_day = (now - timedelta(days=6)).astimezone(tz).date()
-    rows, wind = [], []
+    rows, winds = [], {}
     k = lambda v, f=1.0: None if v is None else v * f
-    for code, name, elev in CHX_IMIS:
+    for code, name, elev in imis:
         try:
             data = get(f"{SLF_API}/station/{code}/measurements", {"period_in_days": 7})
         except (OSError, ValueError) as e:
@@ -1211,9 +1216,9 @@ def chx_stations(now, prev_rows):
         for p in data:
             t = datetime.fromisoformat(p["measure_date"].replace("Z", "+00:00"))
             obs.append((t.astimezone(tz).date(), p.get("HS"), p.get("TA_30MIN_MEAN"), k(p.get("VW_30MIN_MAX"), 3.6), None, k(p.get("VW_30MIN_MEAN"), 3.6)))
-            if code == CHX_IMIS_WIND and t >= now - timedelta(hours=WIND_HOURS) and p.get("VW_30MIN_MEAN") is not None and p.get("DW_30MIN_MEAN") is not None:
-                wind.append((p["VW_30MIN_MEAN"] * 3.6, p["DW_30MIN_MEAN"], k(p.get("VW_30MIN_MAX"), 3.6)))
-        fresh = [r for r in daily_rows(CHX, name, elev, obs) if r["date"] > start_day.isoformat()]  # the first day is partial
+            if code in wind_codes and t >= now - timedelta(hours=WIND_HOURS) and p.get("VW_30MIN_MEAN") is not None and p.get("DW_30MIN_MEAN") is not None:
+                winds.setdefault(code, []).append((p["VW_30MIN_MEAN"] * 3.6, p["DW_30MIN_MEAN"], k(p.get("VW_30MIN_MAX"), 3.6)))
+        fresh = [r for r in daily_rows(zone, name, elev, obs) if r["date"] > start_day.isoformat()]  # the first day is partial
         old = [r for r in prev if r["station"] == name and r["date"] <= start_day.isoformat()]
         merged = sorted(old + fresh, key=lambda r: r["date"])
         pd_ = None
@@ -1223,7 +1228,11 @@ def chx_stations(now, prev_rows):
                 r["depth_change_cm"] = "" if pd_ is None else dv - pd_
                 pd_ = dv
         rows += merged
-    return rows, wind
+    slf_stations.last_wind = winds
+    return rows, winds
+
+
+slf_stations.last_wind = {}
 
 
 MF_HOR = "https://files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/HOR/"
@@ -1278,6 +1287,85 @@ def chx_wind(now):
         tt = datetime.fromisoformat(t).replace(tzinfo=timezone.utc)
         if t0 <= tt <= now and sp is not None and dr is not None:
             obs.append((sp, dr, g))
+    return obs, name, elev
+
+
+# ---------- Andermatt / Urseren (SLF bulletin and IMIS stations) ----------
+AND = "Andermatt"
+TZ[AND] = ZoneInfo("Europe/Zurich")
+AND_BOUNDS = (8.355, 46.53, 8.72, 46.695)
+AND_REGIONS = json.loads(r"""{"CH-1246":{"name":"Gadmertal","share":0.048,"rings":[[[8.455,46.695],[8.452,46.689],[8.441,46.687],[8.413,46.691],[8.401,46.691],[8.399,46.675],[8.411,46.655],[8.374,46.632],[8.364,46.643],[8.315,46.682],[8.305,46.685],[8.305,46.745],[8.45,46.745],[8.45,46.729],[8.454,46.707],[8.455,46.695]]]},"CH-1247":{"name":"Grimsel Pass","share":0.011,"rings":[[[8.369,46.627],[8.362,46.6],[8.361,46.588],[8.362,46.585],[8.367,46.584],[8.344,46.564],[8.305,46.547],[8.305,46.624],[8.364,46.643],[8.374,46.632],[8.369,46.627]]]},"CH-2221":{"name":"Meiental","share":0.035,"rings":[[[8.692,46.704],[8.658,46.708],[8.591,46.708],[8.552,46.702],[8.449,46.672],[8.415,46.659],[8.411,46.655],[8.399,46.675],[8.401,46.691],[8.413,46.691],[8.437,46.687],[8.452,46.689],[8.455,46.695],[8.454,46.707],[8.45,46.729],[8.45,46.745],[8.681,46.745],[8.692,46.704]]]},"CH-2223":{"name":"Northern Urseren","share":0.31,"rings":[[[8.644,46.655],[8.559,46.617],[8.473,46.586],[8.463,46.589],[8.454,46.588],[8.414,46.575],[8.422,46.629],[8.411,46.655],[8.415,46.659],[8.449,46.672],[8.552,46.702],[8.591,46.708],[8.658,46.708],[8.692,46.704],[8.694,46.701],[8.671,46.66],[8.659,46.659],[8.644,46.655]]]},"CH-2224":{"name":"Southern Urseren","share":0.259,"rings":[[[8.652,46.637],[8.651,46.634],[8.66,46.625],[8.676,46.616],[8.68,46.595],[8.68,46.579],[8.57,46.562],[8.475,46.527],[8.427,46.547],[8.414,46.575],[8.454,46.588],[8.463,46.589],[8.473,46.586],[8.559,46.617],[8.644,46.655],[8.659,46.659],[8.671,46.66],[8.652,46.637]]]},"CH-4243":{"name":"Northern Obergoms","share":0.089,"rings":[[[8.414,46.575],[8.427,46.547],[8.4,46.552],[8.354,46.54],[8.305,46.511],[8.305,46.547],[8.344,46.564],[8.362,46.579],[8.367,46.584],[8.362,46.585],[8.361,46.588],[8.362,46.6],[8.369,46.627],[8.374,46.632],[8.411,46.655],[8.422,46.629],[8.414,46.575]]]},"CH-4244":{"name":"Southern Obergoms","share":0.027,"rings":[[[8.475,46.527],[8.466,46.508],[8.449,46.498],[8.417,46.492],[8.405,46.492],[8.394,46.487],[8.391,46.48],[8.305,46.48],[8.305,46.511],[8.354,46.54],[8.4,46.552],[8.427,46.547],[8.475,46.527]]]},"CH-5211":{"name":"Northern Tujetsch","share":0.035,"rings":[[[8.76,46.674],[8.675,46.64],[8.657,46.643],[8.671,46.66],[8.694,46.701],[8.711,46.7],[8.77,46.721],[8.77,46.675],[8.76,46.674]]]},"CH-5212":{"name":"Southern Tujetsch","share":0.067,"rings":[[[8.77,46.551],[8.701,46.558],[8.692,46.562],[8.68,46.579],[8.68,46.595],[8.676,46.616],[8.66,46.625],[8.651,46.634],[8.652,46.637],[8.657,46.643],[8.675,46.64],[8.754,46.672],[8.77,46.675],[8.77,46.551]]]},"CH-6111":{"name":"Bedretto Valley","share":0.029,"rings":[[[8.659,46.48],[8.391,46.48],[8.394,46.487],[8.405,46.492],[8.417,46.492],[8.449,46.498],[8.466,46.508],[8.475,46.527],[8.57,46.562],[8.597,46.525],[8.605,46.516],[8.636,46.49],[8.651,46.482],[8.659,46.48]]]},"CH-6112":{"name":"Upper Leventina","share":0.089,"rings":[[[8.696,46.559],[8.77,46.551],[8.77,46.51],[8.709,46.48],[8.659,46.48],[8.651,46.482],[8.636,46.49],[8.605,46.516],[8.597,46.525],[8.57,46.562],[8.68,46.579],[8.692,46.562],[8.696,46.559]]]}}""")
+AND_HOME = "CH-2223"  # Northern Urseren: the SLF region that holds Andermatt
+AND_IMIS = [("GOS3", "Gütsch", 2209), ("URS2", "Giltnasen", 2169), ("VAL2", "Vallascia", 2268),
+            ("URS1", "Gross Schijen", 2784), ("BED1", "Lucendro", 2963)]  # SLF IMIS
+AND_IMIS_WIND = ("URS1", "BED1")  # Gross Schijen above Andermatt; Lucendro on the Gotthard as a second card
+AND_WIND = (46.6560, 8.6060, 2500, "Gütsch ridge (model)")  # stand-in if the SLF API is down
+MTN_BANDS[AND] = (46.62, 8.58, "Europe/Zurich",  # the Urseren valley between Andermatt and Hospental
+                  [("btl", "Below treeline", 1600), ("tl", "Treeline", 2200), ("alp", "Alpine", 2900)])
+MTN_MODEL[AND] = {"model": "icon_seamless", "levels": (850, 800, 750, 700, 650, 600, 550), "ridge": 700, "label": _icon_label}
+SLF_URL = "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation/"
+
+
+def and_bulletins(today):
+    """bulletin row, danger rows, problem rows and regional rows for the Andermatt map (all SLF)."""
+    day = today.isoformat()
+    by_region = {}
+    st, raw = get_raw(f"{EAWS}/eaws_bulletins/{day}/{day}-CH.json")
+    for b in (json.loads(raw).get("bulletins") or [] if st == 200 and raw else []):
+        for r in b.get("regions") or []:
+            if r["regionID"] in AND_REGIONS:
+                by_region[r["regionID"]] = b
+    regional = []
+    for rid, info in sorted(AND_REGIONS.items(), key=lambda kv: -kv[1]["share"]):
+        b = by_region.get(rid)
+        bands = eu_bands(b) if b else []
+        ratings = [{"date": day, "band": k, "band_label": lab, "level": lvl, "rating": rt} for k, lab, lvl, rt in bands]
+        probs = [{k: p[k] for k in ("problem", "aspects", "elevations")} for p in (eu_problems(b) if b else [])]
+        act = (b or {}).get("avalancheActivity") or {}
+        regional.append({
+            "zone": AND, "area_id": rid, "name": info["name"], "forecaster": "SLF",
+            "issued": (b or {}).get("publicationTime", "")[:10], "valid_until": ((b or {}).get("validTime") or {}).get("endTime", "")[:10],
+            "max_level": max((x["level"] for x in ratings), default=0),
+            "today": ", ".join(f"{x['band_label'].lower()} {x['rating'].lower()}" for x in ratings),
+            "ratings": json.dumps(ratings), "problems": json.dumps(probs, ensure_ascii=False),
+            "highlights": (clean(act.get("highlights")) or clean(act.get("comment")))[:600], "url": SLF_URL,
+            "rings": json.dumps(info["rings"], separators=(",", ":")),
+        })
+    b = by_region.get(AND_HOME)
+    if not b:
+        bull = {"zone": AND, "region": "Northern Urseren", "forecaster": "SLF", "issued": "", "valid_until": "",
+                "headline": "No SLF bulletin for the Urseren valley today. SLF issues bulletins for the whole Swiss Alps from about "
+                            "November to May, and only snow notes before the season starts; check slf.ch."
+                            + (" Bulletins in force today for parts of the map are on the regional map." if by_region else ""),
+                "snowpack": "", "detail": "", "trend": "", "confidence": "", "language": "en", "url": SLF_URL}
+        return bull, [], [], regional
+    act, snow = b.get("avalancheActivity") or {}, b.get("snowpackStructure") or {}
+    issued = b.get("publicationTime", "")[:10]
+    head = clean(act.get("highlights")) or clean(act.get("comment")).split("\n")[0]
+    detail = clean(act.get("comment"))
+    if detail.startswith(head):
+        detail = detail[len(head):].strip()
+    bull = {"zone": AND, "region": "Northern Urseren", "forecaster": "SLF", "issued": issued,
+            "valid_until": (b.get("validTime") or {}).get("endTime", "")[:10],
+            "headline": head, "snowpack": clean(snow.get("comment")), "detail": detail,
+            "trend": clean(((b.get("tendency") or [{}])[0]).get("highlights")), "confidence": "", "language": "en", "url": SLF_URL}
+    danger = [{"zone": AND, "date": day, "band": k, "band_label": lab, "level": lvl, "rating": rt, "kind": "bulletin", "issued": issued}
+              for k, lab, lvl, rt in eu_bands(b)]
+    probs = [{"zone": AND, "problem": p["problem"], "likelihood": p["likelihood"], "size": p["size"],
+              "elevations": p["elevations"], "aspects": p["aspects"], "issued": issued} for p in eu_problems(b)]
+    return bull, danger, probs, regional
+
+
+def and_wind(now):
+    """Modelled hourly wind on the Gütsch ridge, last WIND_HOURS (Open-Meteo), if the SLF stations can't be read."""
+    lat, lon, elev, name = AND_WIND
+    d = get("https://api.open-meteo.com/v1/forecast", {"latitude": lat, "longitude": lon, "elevation": elev, "past_days": 3,
+                                                       "forecast_days": 1, "timezone": "UTC",
+                                                       "hourly": "wind_speed_10m,wind_direction_10m,wind_gusts_10m"})
+    h = d["hourly"]
+    t0 = now - timedelta(hours=WIND_HOURS)
+    obs = [(sp, dr, g) for t, sp, dr, g in zip(h["time"], h["wind_speed_10m"], h["wind_direction_10m"], h["wind_gusts_10m"])
+           if t0 <= datetime.fromisoformat(t).replace(tzinfo=timezone.utc) <= now and sp is not None and dr is not None]
     return obs, name, elev
 
 
@@ -1342,6 +1430,8 @@ def main():
         mf_names = {n for c, n, e in CHX_MF}
         mf_rows, chx_midi = [r for r in prev_rows if r.get("zone") == CHX and r.get("station") in mf_names], []
     stations += mf_rows + chx_rows
+    and_rows, and_wind_obs = slf_stations(AND, AND_IMIS, AND_IMIS_WIND, now, prev_rows)
+    stations += and_rows
     write_csv(f"{out}/stations_daily.json", stations, list(stations[0].keys()))
 
     ws, wr = [], []
@@ -1373,6 +1463,24 @@ def main():
             wr += b
     except (OSError, ValueError, KeyError) as e:
         print("Chamonix wind unavailable:", e)
+    try:
+        meta = {c: (n, e) for c, n, e in AND_IMIS}
+        c0 = AND_IMIS_WIND[0]
+        main_w = (and_wind_obs[c0], *meta[c0]) if len(and_wind_obs.get(c0, [])) >= 72 else and_wind(now)
+        a, b = wind_summary(AND, now, stations, main_w)
+        ws.append(a)
+        wr += b
+        for c in AND_IMIS_WIND[1:]:
+            if len(and_wind_obs.get(c, [])) >= 72:
+                key = f"{AND} · {meta[c][0]}"
+                a, b = wind_summary(key, now, stations, (and_wind_obs[c], *meta[c]))
+                a["zone"] = key
+                for x in b:
+                    x["zone"] = key
+                ws.append(a)
+                wr += b
+    except (OSError, ValueError, KeyError) as e:
+        print("Andermatt wind unavailable:", e)
     for zname, sid, name, elev in EXTRA_WIND:
         try:
             a, b = wind_summary(zname, now, stations, wind_obs(zname, now, ("avcan", sid, name, elev)))
@@ -1414,7 +1522,16 @@ def main():
             "headline": "The Mont Blanc bulletins couldn't be fetched this morning; check meteofrance.com/meteo-montagne.", "snowpack": "",
             "detail": "", "trend": "", "confidence": "", "language": "en", "url": CHX_SERVICE["FR"][1]}
         xdanger, xprob, xrf = [], [], []
-    rf = regional_forecasts() + sum((regional_forecasts(z, b) for z, b in KOOT_BOUNDS.items()), []) + irf + crf + xrf
+    try:
+        ab, adanger, aprob, arf = and_bulletins(now.astimezone(TZ[AND]).date())
+    except (OSError, ValueError, KeyError) as e:
+        print("SLF bulletin unavailable:", e)
+        ab = dict(prev_bull[AND]) if AND in prev_bull else {
+            "zone": AND, "region": "Northern Urseren", "forecaster": "SLF", "issued": "", "valid_until": "",
+            "headline": "The SLF bulletin couldn't be fetched this morning; check slf.ch.", "snowpack": "",
+            "detail": "", "trend": "", "confidence": "", "language": "en", "url": SLF_URL}
+        adanger, aprob, arf = [], [], []
+    rf = regional_forecasts() + sum((regional_forecasts(z, b) for z, b in KOOT_BOUNDS.items()), []) + irf + crf + xrf + arf
     write_csv(f"{out}/regional_forecasts.json", rf, list(rf[0].keys()))
 
     today_bc = now.astimezone(TZ[ROGERS]).date()
@@ -1432,7 +1549,7 @@ def main():
     koot = {z: avcan_bulletin(z, *pt) for z, pt in KOOT_POINT.items()}  # the forecast covering each map's home point
     sb, sdanger, sprob = koot[ROSS]
     kdanger = [r for z in (WW, KP) for r in koot[z][1]]
-    for r in rdanger + sdanger + kdanger + idanger + cdanger + xdanger:
+    for r in rdanger + sdanger + kdanger + idanger + cdanger + xdanger + adanger:
         hist[(r["zone"], r["date"], r["band"])] = r
     vb = None
     for attempt in range(3):  # the ICGC server sometimes drops connections for a while; give it a few minutes
@@ -1466,10 +1583,10 @@ def main():
     fields = ["zone", "date", "band", "band_label", "level", "rating", "kind", "issued"]
     write_csv(f"{out}/danger_history.json", sorted(hist.values(), key=lambda r: (r["zone"], r["date"], r["band"])), fields)
 
-    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb, koot[WW][0], koot[KP][0], cb, xb], list(rb.keys()))
-    probs = rprob + vprob + iprob + sprob + koot[WW][2] + koot[KP][2] + cprob + xprob
+    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb, koot[WW][0], koot[KP][0], cb, xb, ab], list(rb.keys()))
+    probs = rprob + vprob + iprob + sprob + koot[WW][2] + koot[KP][2] + cprob + xprob + aprob
     for zname, issued in ((ROGERS, rb["issued"]), (VALLTER, vb["issued"]), (IBK, ib["issued"]), (ROSS, sb["issued"]), (WW, koot[WW][0]["issued"]),
-                          (KP, koot[KP][0]["issued"]), (RMNP, cb["issued"]), (CHX, xb["issued"])):
+                          (KP, koot[KP][0]["issued"]), (RMNP, cb["issued"]), (CHX, xb["issued"]), (AND, ab["issued"])):
         if not any(p["zone"] == zname for p in probs):  # one blank row keeps each zone (and the file) readable
             probs.append({"zone": zname, "problem": None, "issued": issued})
     write_csv(f"{out}/problems.json", probs,
@@ -1486,7 +1603,9 @@ def main():
          outlook(RMNP, 40.4206, -105.8162, 3280, "America/Denver", "Milner Pass") + \
          outlook(CHX, 45.9030, 6.8880, 2300, "Europe/Paris", "Plan de l'Aiguille (Chamonix)") + \
          outlook(CHX, 45.8330, 6.9350, 2200, "Europe/Paris", "Pavillon (Courmayeur)") + \
-         outlook(CHX, 46.0100, 7.0900, 2200, "Europe/Paris", "Val Ferret / Champex")
+         outlook(CHX, 46.0100, 7.0900, 2200, "Europe/Paris", "Val Ferret / Champex") + \
+         outlook(AND, 46.6440, 8.6050, 2200, "Europe/Zurich", "Gütsch / Nätschen (Andermatt)") + \
+         outlook(AND, 46.5590, 8.5640, 2100, "Europe/Zurich", "Gotthard Pass")
     write_csv(f"{out}/outlook.json", ol, list(ol[0].keys()))
     mf = []
     for zname in MTN_BANDS:
