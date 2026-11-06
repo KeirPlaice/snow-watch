@@ -2306,6 +2306,58 @@ dash.draw('history', (el) => {
     }
     return { dist, up };
   };
+  // slope underfoot at an overview cell position: mean over ~15 m of the detail blocks when loaded (as the check
+  // does), else the overview cell
+  const slopeAt = (zone, row, t, det, c, r) => {
+    if (det) {
+      const f = row.cell_m / det.cell_m, fc = c * f, fr = r * f;
+      const bk = ((window.swFine || {})[zone] || {})[`${det.prefix}_${Math.floor(fr / det.block)}_${Math.floor(fc / det.block)}`];
+      if (bk && bk.d) {
+        const m = bk.meta, d = bk.d, rad = Math.max(1, Math.round(7.5 / det.cell_m));
+        const cc = Math.floor(fc) - m.col0, rr = Math.floor(fr) - m.row0;
+        let sum = 0, n = 0;
+        for (let y = Math.max(0, rr - rad); y <= Math.min(m.height - 1, rr + rad); y++)
+          for (let x = Math.max(0, cc - rad); x <= Math.min(m.width - 1, cc + rad); x++) { sum += d.slope[y * m.width + x]; n++; }
+        if (n) return { sl: sum / n, fine: true };
+      }
+    }
+    const W = row.width, ci = Math.max(0, Math.min(W - 1, Math.round(c))), ri = Math.max(0, Math.min(row.height - 1, Math.round(r)));
+    return { sl: t ? t.slope[ri * W + ci] : 0, fine: false };
+  };
+  // the drawn line cut into pieces by how steep the ground underfoot is: 0 under 30°, 1 for 30–34°, 2 from 35°
+  const drawPieces = (zone, row, pts) => {
+    const t = window.swTerrainFor(row), det = row.detail ? JSON.parse(row.detail) : null;
+    const out = [];
+    let len1 = 0, len2 = 0, fineN = 0, allN = 0;
+    for (let i = 1; i < pts.length; i++) {
+      const [c0, r0] = pts[i - 1], [c1, r1] = pts[i];
+      const segM = Math.hypot(c1 - c0, r1 - r0) * row.cell_m, n = Math.max(1, Math.ceil(segM / 10));
+      for (let k = 0; k < n; k++) {
+        const a = k / n, b = (k + 1) / n, m = (a + b) / 2;
+        const q = slopeAt(zone, row, t, det, c0 + (c1 - c0) * m, r0 + (r1 - r0) * m);
+        const lv = q.sl >= 35 ? 2 : q.sl >= 30 ? 1 : 0;
+        allN++; if (q.fine) fineN++;
+        if (lv === 1) len1 += segM / n; else if (lv === 2) len2 += segM / n;
+        const p0 = [c0 + (c1 - c0) * a, r0 + (r1 - r0) * a], p1 = [c0 + (c1 - c0) * b, r0 + (r1 - r0) * b];
+        const last = out[out.length - 1];
+        if (last && last.lv === lv && last.seg === i) last.pts.push(p1); else out.push({ lv, seg: i, pts: [p0, p1] });
+      }
+    }
+    return { pieces: out, len1, len2, fine: allN ? fineN / allN : 0 };
+  };
+  // ask for the detail blocks under the line being drawn, so the colouring sharpens as they arrive
+  const drawBlocks = (zone, row, pts) => {
+    const card = cardOf(zone);
+    if (!card || !row.detail || !pts.length) return;
+    const det = JSON.parse(row.detail), f = row.cell_m / det.cell_m, hit = new Set();
+    const add = (c, r) => hit.add(`${Math.floor((r * f) / det.block)},${Math.floor((c * f) / det.block)}`);
+    add(pts[0][0], pts[0][1]);
+    for (let i = 1; i < pts.length; i++) {
+      const [c0, r0] = pts[i - 1], [c1, r1] = pts[i], n = Math.max(1, Math.ceil((Math.hypot(c1 - c0, r1 - r0) * row.cell_m) / 200));
+      for (let k = 1; k <= n; k++) add(c0 + ((c1 - c0) * k) / n, r0 + ((r1 - r0) * k) / n);
+    }
+    for (const mk of card.querySelectorAll('[data-rc]')) if (hit.has(mk.dataset.rc)) mk.hidden = false;
+  };
   const redrawMap = (zone) => { const card = cardOf(zone), m = card && window.swMaps.get(card.querySelector('.sw-map')); if (m) m.redraw(); };
   const drawLabel = (zone) => {
     const card = cardOf(zone), st = byZone[zone];
@@ -2319,14 +2371,14 @@ dash.draw('history', (el) => {
     if (!bar) {
       bar = document.createElement('div');
       bar.className = 'sw-drawbar';
-      bar.innerHTML = '<span class="sw-drawbar-txt"></span><span class="sw-drawbar-btns"><button type="button" class="sw-co-btn" data-a="undo">Undo</button>'
+      bar.innerHTML = '<span class="sw-drawbar-txt"></span><span class="sw-drawbar-help" hidden>Drag a point to move it, tap it to remove it, drag a ◦ to add a bend.</span><span class="sw-drawbar-btns"><button type="button" class="sw-co-btn" data-a="undo">Undo</button>'
         + '<button type="button" class="sw-co-btn sw-draw-done" data-a="done">Check route</button><button type="button" class="sw-co-btn" data-a="cancel">Cancel</button></span>';
       // the bar sits on the map: keep its taps and drags away from panning and point placing
       for (const ty of ['pointerdown', 'mousedown', 'touchstart', 'wheel', 'dblclick']) bar.addEventListener(ty, (e) => e.stopPropagation());
       bar.addEventListener('click', (e) => {
         e.stopPropagation();
         const btn = e.target.closest('button'), a = btn && btn.dataset.a;
-        if (a === 'undo') { drawing[zone].pts.pop(); updateDraw(zone); }
+        if (a === 'undo') undoDraw(zone);
         else if (a === 'done') finishDraw(zone);
         else if (a === 'cancel') endDraw(zone);
       });
@@ -2338,10 +2390,16 @@ dash.draw('history', (el) => {
     const d = drawing[zone], bar = drawBar(zone), row = rowOf(zone);
     if (!d || !bar || !row) return;
     const n = d.pts.length, { dist, up } = drawStats(row, d.pts);
+    const pc = n > 1 ? drawPieces(zone, row, d.pts) : null;
+    d.pieces = pc;
+    drawBlocks(zone, row, d.pts);
+    const steep = pc && pc.len1 + pc.len2 >= 5 ? ` · on 30°+ for ${fmt(Math.round((pc.len1 + pc.len2) / 10) * 10)} m${pc.len2 >= 5 ? `, ${fmt(Math.round(pc.len2 / 10) * 10)} m of it 35°+` : ''}` : n > 1 ? ' · nothing 30°+ underfoot' : '';
     bar.querySelector('.sw-drawbar-txt').textContent = !n ? 'Tap the map to start your route; drag to move the map.'
       : n === 1 ? 'Now tap the next point along your route.'
-      : `${n} points · ${km(dist / 1000)} km · about ${fmt(Math.round(up / 10) * 10)} m up`;
-    bar.querySelector('[data-a="undo"]').disabled = !n;
+      : `${km(dist / 1000)} km · about ${fmt(Math.round(up / 10) * 10)} m up${steep}`;
+    const help = bar.querySelector('.sw-drawbar-help');
+    if (help) help.hidden = n < 2;
+    bar.querySelector('[data-a="undo"]').disabled = !d.hist.length;
     bar.querySelector('[data-a="done"]').disabled = n < 2;
     drawLabel(zone);
     redrawMap(zone);
@@ -2350,7 +2408,7 @@ dash.draw('history', (el) => {
     const card = cardOf(zone);
     if (!card || !rowOf(zone)) return;
     const st = byZone[zone];
-    drawing[zone] = { pts: st && st.route && st.route.drawn ? st.route.drawn.map((p) => p.slice()) : [], auto: false };
+    drawing[zone] = { pts: st && st.route && st.route.drawn ? st.route.drawn.map((p) => p.slice()) : [], auto: false, hist: [], screen: [], mids: [] };
     // on a phone, draw on the full-screen map
     if (window.matchMedia('(max-width: 640px)').matches && !card.classList.contains('sw-map-big')) {
       const ex = card.querySelector('.sw-expand');
@@ -2381,13 +2439,80 @@ dash.draw('history', (el) => {
     endDraw(zone);
     startRoute(zone, { name: 'Drawn route', file: 'drawn-route.gpx', points, drawn }, false);
   };
+  const snap = (zone) => { const d = drawing[zone]; d.hist.push(d.pts.map((p) => p.slice())); if (d.hist.length > 200) d.hist.shift(); };
+  const undoDraw = (zone) => { const d = drawing[zone]; if (!d || !d.hist.length) return; d.pts = d.hist.pop(); updateDraw(zone); };
+  // press on a point or a ◦ handle: drag to move or bend; a tap (no movement) on a point removes it
+  const hitDraw = (d, x, y, touch) => {
+    const R = touch ? 22 : 12;
+    let best = null, bd = R;
+    d.screen.forEach(([px, py], i) => { const dd = Math.hypot(px - x, py - y); if (dd < bd) { bd = dd; best = { kind: 'pt', i }; } });
+    if (!best) d.mids.forEach(([px, py, i]) => { const dd = Math.hypot(px - x, py - y); if (dd < bd) { bd = dd; best = { kind: 'mid', i }; } });
+    return best;
+  };
+  const wireDrawEdit = (zone, mapEl) => {
+    let drag = null, raf = 0;
+    const local = (ev) => { const rc = mapEl.getBoundingClientRect(); return [ev.clientX - rc.left, ev.clientY - rc.top]; };
+    mapEl.addEventListener('pointerdown', (ev) => {
+      const d = drawing[zone];
+      if (!d || ev.button > 0 || ev.target.closest('.sw-drawbar, .sw-callout')) return;
+      const [x, y] = local(ev), hit = hitDraw(d, x, y, ev.pointerType === 'touch');
+      if (!hit) return;
+      drag = { ...hit, x0: x, y0: y, moved: false, id: ev.pointerId };
+      ev.preventDefault(); // no compatibility mousedown, so the map doesn't pan
+    }, true);
+    // keep the map's own pan/zoom off a press that started on a point or handle
+    for (const ty of ['mousedown', 'touchstart']) mapEl.addEventListener(ty, (ev) => { if (drag) { ev.stopImmediatePropagation(); if (ty === 'touchstart') ev.preventDefault(); } }, { capture: true, passive: false });
+    window.addEventListener('pointermove', (ev) => {
+      if (!drag || ev.pointerId !== drag.id) return;
+      const d = drawing[zone];
+      if (!d) { drag = null; return; }
+      const [x, y] = local(ev);
+      if (!drag.moved) {
+        if (Math.hypot(x - drag.x0, y - drag.y0) < 4) return;
+        drag.moved = true;
+        snap(zone);
+        if (drag.kind === 'mid') { d.pts.splice(drag.i, 0, d.pts[drag.i].slice()); drag = { ...drag, kind: 'pt' }; }
+      }
+      const m = window.swMaps.get(mapEl), cell = m && m.toCell(x, y);
+      if (!cell) return;
+      d.pts[drag.i] = cell;
+      if (!raf) raf = requestAnimationFrame(() => { raf = 0; updateDraw(zone); });
+      ev.preventDefault();
+    }, { passive: false });
+    const up = (ev) => {
+      if (!drag || ev.pointerId !== drag.id) return;
+      const d = drawing[zone], g = drag;
+      drag = null;
+      if (!d) return;
+      d.noClick = true; // the click that follows this press shouldn't add a point
+      setTimeout(() => { if (drawing[zone]) drawing[zone].noClick = false; }, 400);
+      if (!g.moved && g.kind === 'pt') { snap(zone); d.pts.splice(g.i, 1); }
+      updateDraw(zone);
+    };
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
+  };
   window.swDrawOverlay = (sel, zone, row, toX, toY) => {
     const d = drawing[zone];
     if (!d || !d.pts.length) return;
     const pts = d.pts.map(([c, r]) => [toX(c), toY(r)]);
+    d.screen = pts;
+    d.mids = [];
     if (pts.length > 1) {
-      sel.append('path').attr('d', d3.line()(pts)).attr('fill', 'none').attr('stroke', '#fff').attr('stroke-width', 7).attr('stroke-opacity', 0.85).attr('stroke-linejoin', 'round').attr('stroke-linecap', 'round');
+      sel.append('path').attr('d', d3.line()(pts)).attr('fill', 'none').attr('stroke', '#fff').attr('stroke-width', 8).attr('stroke-opacity', 0.85).attr('stroke-linejoin', 'round').attr('stroke-linecap', 'round');
       sel.append('path').attr('d', d3.line()(pts)).attr('fill', 'none').attr('stroke', '#1A1A1A').attr('stroke-width', 3).attr('stroke-dasharray', '9 5').attr('stroke-linejoin', 'round');
+      // steep ground underfoot, coloured as the route check colours it
+      for (const pc of (d.pieces && d.pieces.pieces) || []) {
+        if (!pc.lv) continue;
+        sel.append('path').attr('d', d3.line()(pc.pts.map(([c, r]) => [toX(c), toY(r)]))).attr('fill', 'none')
+          .attr('stroke', pc.lv === 2 ? '#D0007A' : '#FFB000').attr('stroke-width', 7).attr('stroke-linecap', 'round');
+      }
+      for (let i = 1; i < pts.length; i++) {
+        const mx = (pts[i - 1][0] + pts[i][0]) / 2, my = (pts[i - 1][1] + pts[i][1]) / 2;
+        if (Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]) < 36) continue; // too short to fit a handle
+        d.mids.push([mx, my, i]);
+        sel.append('circle').attr('cx', mx).attr('cy', my).attr('r', 4).attr('fill', '#fff').attr('fill-opacity', 0.75).attr('stroke', '#1A1A1A').attr('stroke-opacity', 0.6).attr('stroke-width', 1.5);
+      }
     }
     pts.forEach(([x, y], i) => sel.append('circle').attr('cx', x).attr('cy', y).attr('r', i === 0 || i === pts.length - 1 ? 6 : 4)
       .attr('fill', i === 0 ? '#1E8E3E' : i === pts.length - 1 ? '#1A1A1A' : '#fff').attr('stroke', i === 0 ? '#fff' : '#1A1A1A').attr('stroke-width', 2));
@@ -2397,7 +2522,7 @@ dash.draw('history', (el) => {
     if (!zone || (ev.target && /^(INPUT|SELECT|TEXTAREA)$/.test(ev.target.tagName))) return;
     if (ev.key === 'Escape') { endDraw(zone); ev.preventDefault(); }
     else if (ev.key === 'Enter') { finishDraw(zone); ev.preventDefault(); }
-    else if (ev.key === 'Backspace' || ((ev.ctrlKey || ev.metaKey) && ev.key === 'z')) { drawing[zone].pts.pop(); updateDraw(zone); ev.preventDefault(); }
+    else if (ev.key === 'Backspace' || ((ev.ctrlKey || ev.metaKey) && ev.key === 'z')) { undoDraw(zone); ev.preventDefault(); }
   });
 
   for (const card of document.querySelectorAll('.sw-mapcard')) {
@@ -2422,6 +2547,7 @@ dash.draw('history', (el) => {
     }
     for (const b of card.querySelectorAll('.sw-draw')) b.addEventListener('click', () => (drawing[myZone] ? finishDraw(myZone) : startDraw(myZone)));
     for (const mapEl of card.querySelectorAll('.sw-map')) {
+      wireDrawEdit(myZone, mapEl);
       mapEl.addEventListener('click', (ev) => {
         if (drawing[myZone]) {
           // drawing: a tap (not a drag, which d3-zoom swallows) adds a point
@@ -2429,6 +2555,8 @@ dash.draw('history', (el) => {
           const m = window.swMaps.get(mapEl), row = rowOf(myZone), rc = mapEl.getBoundingClientRect();
           const cell = m && m.toCell ? m.toCell(ev.clientX - rc.left, ev.clientY - rc.top) : null;
           if (!cell || !row || cell[0] < 0 || cell[1] < 0 || cell[0] > row.width || cell[1] > row.height) return;
+          if (drawing[myZone].noClick) { drawing[myZone].noClick = false; return; } // the tap that ended a drag or removed a point
+          snap(myZone);
           drawing[myZone].pts.push(cell);
           updateDraw(myZone);
           return;
