@@ -21,15 +21,15 @@ HEAD = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="Avalanche danger, snowpack, slope maps and a GPX route check for Rogers Pass, Rossland to Kootenay Pass, Vallter, Innsbruck, Rocky Mountain National Park and Chamonix (Mont Blanc).">
+<meta name="description" content="A route-planning tool with terrain gradients, plus today’s avalanche bulletins, snow conditions, and the week’s weather, refreshed every morning.">
 <meta name="theme-color" content="#F5F4EF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Traça">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png" type="image/png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png?v={ic_v}" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v={ic_v}">
 <title>Traça</title>
 <link rel="stylesheet" href="site.css?v={css_v}">
 <script src="d3.min.js"></script>
@@ -85,7 +85,14 @@ def main():
     page = open(os.path.join(ROOT, "page", "index.html"), encoding="utf-8").read()
     page = page.replace('<meta name="dash-one-writer">', '')
     page = page.replace('<script src="app.js"></script>', f'<script src="app.js?v={h(os.path.join(out, "app.js"))}"></script>')
-    html = (HEAD.replace("{css_v}", h(os.path.join(out, "site.css"))).replace("{rt_v}", h(os.path.join(out, "runtime.js")))
+    # icons carry a version so phones fetch a changed icon instead of a cached copy (iOS keeps touch icons a long time)
+    ic_v = h(os.path.join(out, "icons", "apple-touch-icon.png"))
+    mf = os.path.join(out, "manifest.webmanifest")
+    m = open(mf, encoding="utf-8").read()
+    for name in ("icon-192.png", "icon-512.png", "icon-maskable-512.png"):
+        m = m.replace(f'"icons/{name}"', f'"icons/{name}?v={ic_v}"')
+    open(mf, "w", encoding="utf-8").write(m)
+    html = (HEAD.replace("{css_v}", h(os.path.join(out, "site.css"))).replace("{rt_v}", h(os.path.join(out, "runtime.js"))).replace("{ic_v}", ic_v)
             + page + FOOT)
     open(os.path.join(out, "index.html"), "w", encoding="utf-8").write(html)
     # data: the fixed files plus today's
