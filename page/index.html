@@ -117,6 +117,12 @@
 .sw-av-bull p{margin:0 0 var(--cds-gap-sm);line-height:1.5}
 .sw-av-docsum{margin:var(--cds-gap-sm) 0;line-height:1.5}
 .sw-route-bar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--cds-gap-sm);margin-top:var(--cds-gap-sm)}
+.sw-off-open[aria-pressed=true]{background:var(--color-fg);color:var(--color-bg)}
+.sw-offline{margin-top:var(--cds-gap-sm);padding:var(--cds-pad-md);border:1px solid var(--color-border-line);border-radius:var(--cds-radius)}
+.sw-offline .sw-h3{margin-top:0}
+.sw-off-btns{display:flex;gap:var(--cds-gap-sm);flex-wrap:wrap}
+.sw-off-list{list-style:none;padding:0;margin:var(--cds-gap-sm) 0 0;font-size:var(--cds-font-size-caption)}
+.sw-off-list li{padding:4px 0;border-top:1px solid var(--color-border-line)}
 .sw-upload{position:relative;overflow:hidden;display:inline-flex;align-items:center}
 .sw-upload input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
 .sw-route-msg{font-size:var(--cds-font-size-caption)}
@@ -235,7 +241,7 @@ details.sw-how[open] > summary{display:none}
   /* map: taller, to the card's edges, with the layers folded behind one button */
   .sw-mapcard .sw-map{aspect-ratio:auto!important;height:min(70vh,620px);width:auto;margin-left:calc(-1 * var(--cds-pad-lg));margin-right:calc(-1 * var(--cds-pad-lg));border-radius:0}
   .sw-mapcard.sw-map-big .sw-map{margin:0 calc(-1 * max(8px, env(safe-area-inset-left)));height:auto;border-radius:0}
-  .sw-mapcard.sw-map-big details.sw-how,.sw-mapcard.sw-map-big .sw-route-bar,.sw-mapcard.sw-map-big .sw-legend,.sw-mapcard.sw-map-big .sw-fc-legend,.sw-mapcard.sw-map-big .sw-watch{display:none!important}
+  .sw-mapcard.sw-map-big details.sw-how,.sw-mapcard.sw-map-big .sw-route-bar,.sw-mapcard.sw-map-big .sw-legend,.sw-mapcard.sw-map-big .sw-fc-legend,.sw-mapcard.sw-map-big .sw-watch,.sw-mapcard.sw-map-big .sw-offline{display:none!important}
   .sw-mapcard.sw-map-big .sw-map-ctrl{row-gap:6px}
   details.sw-layers{display:block;flex:none}
   details.sw-layers[open]{flex-basis:100%;order:3}

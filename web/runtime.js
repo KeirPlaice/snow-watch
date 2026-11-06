@@ -78,6 +78,7 @@
     setLink() {},
   };
   window.swStandalone = true;
+  window.swIndex = () => index; // for saving offline areas
   // a marked element that becomes visible starts loading its datasets (the route check asks for terrain this way)
   // and anything that becomes visible (a tab, a folded section) is drawn again at its real size,
   // since maps and charts drawn while hidden have no width
@@ -97,7 +98,7 @@
     const el = document.querySelector('.sw-updated');
     if (el && index && index.built) {
       const d = new Date(index.built);
-      el.textContent = `Data updated ${d.toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}`;
+      el.textContent = `Data updated ${d.toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}${navigator.onLine ? '' : ' · offline, showing saved data'}`;
     }
   });
 })();

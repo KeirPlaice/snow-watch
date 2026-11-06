@@ -108,7 +108,8 @@ def main():
     missing = [d for d in DAILY if d not in files]
     if missing:
         raise SystemExit(f"missing daily files: {missing}")
-    json.dump({"built": datetime.now(timezone.utc).isoformat(timespec="seconds"), "files": files},
+    sizes = {k: os.path.getsize(os.path.join(dd, k + ".json")) for k in files}  # for the offline-area size estimate
+    json.dump({"built": datetime.now(timezone.utc).isoformat(timespec="seconds"), "files": files, "sizes": sizes},
               open(os.path.join(dd, "index.json"), "w"))
     # the service worker caches by this version
     sw = os.path.join(out, "sw.js")
