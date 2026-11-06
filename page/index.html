@@ -91,6 +91,13 @@
 .sw-callout.sw-lv1{border-left-color:#FFB000}
 .sw-callout.sw-lvE{border-left-color:#8A7CC2}
 .sw-callout[hidden]{display:none}
+.sw-co-more{display:none}
+.sw-callout.sw-dock{left:6px;right:6px;top:auto;bottom:6px;width:auto;max-height:60%;overflow:auto;overscroll-behavior:contain}
+.sw-callout.sw-dock .sw-co-more{display:inline-block}
+.sw-callout.sw-dock .sw-co-list{display:none}
+.sw-callout.sw-dock.sw-open .sw-co-list{display:block}
+.sw-callout.sw-dock .sw-co-head{flex-wrap:wrap}
+.sw-callout.sw-dock .sw-co-nav{margin-top:2px}
 .sw-co-head{display:flex;align-items:center;gap:6px;margin-bottom:4px}
 .sw-co-title{font-weight:var(--cds-font-weight-medium);flex:1}
 .sw-co-sub{color:var(--cds-text-secondary);margin-bottom:4px}
