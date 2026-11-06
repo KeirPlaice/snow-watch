@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds the Snow & Avalanche Watch website into one folder ready for GitHub Pages.
+"""Builds the Traça website into one folder ready for GitHub Pages.
 
   python3 scripts/build_site.py --daily out --out _site
 
@@ -26,11 +26,11 @@ HEAD = """<!doctype html>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Snow Watch">
+<meta name="apple-mobile-web-app-title" content="Traça">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<title>Snow &amp; Avalanche Watch</title>
+<title>Traça</title>
 <link rel="stylesheet" href="site.css?v={css_v}">
 <script src="d3.min.js"></script>
 <script src="runtime.js?v={rt_v}"></script>
@@ -48,7 +48,7 @@ FOOT = """
 <div class="sw-gate" hidden>
   <div class="sw-gate-box" role="dialog" aria-modal="true" aria-labelledby="sw-gate-h">
     <h2 id="sw-gate-h">Before you use this</h2>
-    <p>Snow &amp; Avalanche Watch is a personal planning aid shared among friends. It flags terrain from elevation models and summarises public avalanche bulletins and weather data. It does not know the snowpack, can miss or misplace hazards, and is never a substitute for the official bulletin, avalanche training, rescue gear and your own judgement on the day.</p>
+    <p>Traça is a personal planning aid shared among friends. It flags terrain from elevation models and summarises public avalanche bulletins and weather data. It does not know the snowpack, can miss or misplace hazards, and is never a substitute for the official bulletin, avalanche training, rescue gear and your own judgement on the day.</p>
     <p>Nothing here says a slope or route is safe.</p>
     <button type="button" class="sw-gate-ok">I understand</button>
   </div>

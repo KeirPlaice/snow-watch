@@ -1,4 +1,4 @@
-// Snow & Avalanche Watch service worker: the app opens even with weak signal.
+// Traça service worker: the app opens even with weak signal.
 // Terrain and other fixed files are kept once fetched (their URLs carry a content hash);
 // the page and daily data always try the network first and fall back to the last copy.
 const VERSION = '__VERSION__';

@@ -1,4 +1,4 @@
-// Snow & Avalanche Watch — standalone runtime.
+// Traça — standalone runtime.
 // Stands in for the dashboard runtime the page was written for: loads each dataset from data/<id>.json
 // the first time it is read, runs the page's calcs, keeps view settings in this browser, and redraws.
 (() => {

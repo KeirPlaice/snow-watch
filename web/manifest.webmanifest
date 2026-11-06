@@ -1,7 +1,7 @@
 {
-  "name": "Snow & Avalanche Watch",
-  "short_name": "Snow Watch",
-  "description": "Avalanche danger, snowpack, slope maps and a GPX route check for Rogers Pass, Rossland to Kootenay Pass, Vallter and Innsbruck.",
+  "name": "Traça",
+  "short_name": "Traça",
+  "description": "A route-planning tool with today's avalanche bulletins, the snowpack, and the week's weather, refreshed every morning.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
