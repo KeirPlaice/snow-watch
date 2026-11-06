@@ -173,8 +173,8 @@ document.querySelectorAll('.sw-tile[data-st]').forEach((el) => {
 ;
 
 // terrain rows live in two datasets: Rossland on its own (the main file is near its size limit)
-window.swTerrainData = (zone) => dash.data(['Rossland', 'Whitewater', 'Kootenay Pass'].includes(zone) ? 'terrain_rossland' : zone === 'Rocky Mountain NP' ? 'terrain_rmnp' : zone === 'Chamonix' ? 'terrain_chx' : 'terrain');
-window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrain_rmnp', 'terrain_chx'].map((id) => { const d = dash.data(id); return d.status === 'ok' ? d.data : []; }));
+window.swTerrainData = (zone) => dash.data(['Rossland', 'Whitewater', 'Kootenay Pass'].includes(zone) ? 'terrain_rossland' : zone === 'Rocky Mountain NP' ? 'terrain_rmnp' : zone === 'Chamonix' ? 'terrain_chx' : zone === 'Vallter / Ulldeter' ? 'terrain_vallter' : 'terrain');
+window.swTerrainAll = () => [].concat(...['terrain', 'terrain_rossland', 'terrain_rmnp', 'terrain_chx', 'terrain_vallter'].map((id) => { const d = dash.data(id); return d.status === 'ok' ? d.data : []; }));
 (() => {
   const parse = d3.utcParse('%Y-%m-%d');
   const fmtDay = d3.utcFormat('%b %-d');
