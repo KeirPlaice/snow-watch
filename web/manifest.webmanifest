@@ -1,7 +1,7 @@
 {
   "name": "Traça",
   "short_name": "Traça",
-  "description": "A route-planning tool with today's avalanche bulletins, the snowpack, and the week's weather, refreshed every morning.",
+  "description": "A route-planning tool with today's avalanche bulletins, snow conditions, terrain gradients, and the week's weather, refreshed every morning.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
