@@ -21,7 +21,7 @@ HEAD = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="A route-planning tool with terrain gradients, plus today’s avalanche bulletins, snow conditions, and the week’s weather, refreshed every morning.">
+<meta name="description" content="A route-checking tool with terrain gradients, plus today’s avalanche bulletins, snow conditions, and the week’s weather, refreshed every morning.">
 <meta name="theme-color" content="#F5F4EF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
