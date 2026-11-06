@@ -86,6 +86,7 @@ const MAPCARD_T = (p) => `
       <span class="sw-blockmarks">${p.block_marks}</span>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note sw-map-caveat">${p.map_caveat}</p></details>
       <div class="sw-route-bar">
+        <button type="button" class="sw-zbtn sw-draw">Draw a route</button>
         <label class="sw-zbtn sw-upload">Check a GPX route<input type="file" class="sw-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml"></label>
         <button type="button" class="sw-zbtn sw-route-clear" hidden>Remove route</button>
         <span class="sw-timing" hidden>
@@ -94,7 +95,7 @@ const MAPCARD_T = (p) => `
         </span>
         <span class="sw-watchgpx" hidden><button type="button" class="sw-zbtn sw-watchgpx-btn">Download hazard-marked route for watch</button></span>
         <span class="sw-route-msg" data-draw="route-msg" data-source="${p.terrain_src}">—</span>
-        <span class="sw-route-hint">Your file stays in this browser; nothing is uploaded or saved.</span>
+        <span class="sw-route-hint">Draw on the map or load a GPX file; your route stays in this browser and nothing is uploaded or saved.</span>
         <span class="sw-route-msg sw-watchgpx-note" aria-live="polite"></span>
       </div>
       <div class="sw-route" hidden>
@@ -830,6 +831,21 @@ dash.draw('history', (el) => {
     return [x, y];
   };
   const zoneOfCrs = (crs) => Number(String(crs).slice(-2));
+  // UTM back to WGS84 lat-lon (northern hemisphere), for routes drawn on the map
+  const utmInv = (x, y, zone) => {
+    const a = 6378137, f = 1 / 298.257223563, k0 = 0.9996, e2 = f * (2 - f), ep2 = e2 / (1 - e2);
+    const e1 = (1 - Math.sqrt(1 - e2)) / (1 + Math.sqrt(1 - e2));
+    const mu = y / k0 / (a * (1 - e2 / 4 - (3 * e2 ** 2) / 64 - (5 * e2 ** 3) / 256));
+    const p1 = mu + ((3 * e1) / 2 - (27 * e1 ** 3) / 32) * Math.sin(2 * mu) + ((21 * e1 ** 2) / 16 - (55 * e1 ** 4) / 32) * Math.sin(4 * mu)
+      + ((151 * e1 ** 3) / 96) * Math.sin(6 * mu) + ((1097 * e1 ** 4) / 512) * Math.sin(8 * mu);
+    const s = Math.sin(p1), c = Math.cos(p1), tn = Math.tan(p1);
+    const N1 = a / Math.sqrt(1 - e2 * s * s), T1 = tn * tn, C1 = ep2 * c * c, R1 = (a * (1 - e2)) / Math.pow(1 - e2 * s * s, 1.5);
+    const D = (x - 500000) / (N1 * k0);
+    const lat = p1 - ((N1 * tn) / R1) * ((D * D) / 2 - ((5 + 3 * T1 + 10 * C1 - 4 * C1 * C1 - 9 * ep2) * D ** 4) / 24
+      + ((61 + 90 * T1 + 298 * C1 + 45 * T1 * T1 - 252 * ep2 - 3 * C1 * C1) * D ** 6) / 720);
+    const lon = (D - ((1 + 2 * T1 + C1) * D ** 3) / 6 + ((5 - 2 * C1 + 28 * T1 - 3 * C1 * C1 + 8 * ep2 + 24 * T1 * T1) * D ** 5) / 120) / c;
+    return [(lat * 180) / Math.PI, (zone - 1) * 6 - 180 + 3 + (lon * 180) / Math.PI];
+  };
 
   // GPX text to points (track points, else route points)
   const parseGpx = (text) => {
@@ -1125,7 +1141,7 @@ dash.draw('history', (el) => {
     const p = preparePaths([{ path_id: g.glacier_id, rings: g.rings }])[0];
     return Object.assign(p, { name: g.name, area_ha: g.area_ha });
   });
-  root.swRouteCore = { utm, zoneOfCrs, parseGpx, coverage, analyse, windMask, preparePaths, pathAt, glacierAt, prepareGlaciers, STEP };
+  root.swRouteCore = { utm, utmInv, zoneOfCrs, parseGpx, coverage, analyse, windMask, preparePaths, pathAt, glacierAt, prepareGlaciers, STEP };
 })();
 
 ;
@@ -1268,6 +1284,12 @@ dash.draw('history', (el) => {
         zoomBy: (f) => d3.select(el).transition().duration(250).call(made.zoom.scaleBy, f),
         reset: () => d3.select(el).transition().duration(250).call(made.zoom.transform, d3.zoomIdentity),
         redraw: () => { if (made.apply) made.apply(); },
+        // screen pixel (relative to the map box) to overview grid cell, for drawing routes
+        toCell: (x, y) => {
+          const g = made.geo, t = made.t;
+          if (!g) return null;
+          return [((x - t.x) / t.k - g.ox) / g.s0, ((y - t.y) / t.k - g.oy) / g.s0];
+        },
         zoomTo: (c0, r0, c1, r1) => {
           const g = made.geo;
           if (!g) return;
@@ -1679,6 +1701,7 @@ dash.draw('history', (el) => {
         }
         if (window.swObsOverlay) window.swObsOverlay(sel, zone, row, toX, toY, s, card);
         if (window.swRouteOverlay) window.swRouteOverlay(sel, zone, row, toX, toY);
+        if (window.swDrawOverlay) window.swDrawOverlay(sel, zone, row, toX, toY);
         if (window.swSearchOverlay) window.swSearchOverlay(sel, zone, toX, toY);
         const boxes = [];
         for (const m of markers) {
@@ -1804,6 +1827,7 @@ dash.draw('history', (el) => {
 (() => {
   const C = window.swRouteCore;
   const byZone = {}; // zone -> { route, res, key, error, busy, sel }
+  const drawing = {}; // zone -> { pts: [[col, row], ...] on the overview grid, auto: map expanded for drawing }
   const fmt = d3.format(','), km = d3.format('.1f'), km2 = d3.format('.2f');
   const LV = ['#FFFFFF', '#FFB000', '#D0007A'];
   const cardOf = (zone) => document.querySelector(`.sw-zone[data-zone="${CSS.escape(zone)}"] .sw-mapcard`) || document.querySelector(`.sw-mapcard[data-zone="${CSS.escape(zone)}"]`);
@@ -1843,6 +1867,16 @@ dash.draw('history', (el) => {
       st.mosaicCell = m.row.cell_m;
     } else { st.res = C.analyse(st.route, row, t, fine, watch, { paths, wind, glaciers }); st.boxT = null; }
     if (st.res && det) st.res.fineCell = coarse ? st.mosaicCell || det.cell_m : det.cell_m;
+    if (st.res && st.route.drawn) {
+      // a drawn route has no heights of its own: take each point's from the nearest checked sample
+      const z = C.zoneOfCrs(row.crs), sm = st.res.samples.filter((q) => !q.outside && Number.isFinite(q.elev));
+      for (const p of st.route.points) {
+        const [x, y] = C.utm(p.lat, p.lon, z);
+        let best = null, bd = Infinity;
+        for (const q of sm) { const d = (q.x - x) ** 2 + (q.y - y) ** 2; if (d < bd) { bd = d; best = q; } }
+        if (best) p.ele = Math.round(best.elev * 10) / 10;
+      }
+    }
     st.condKey = null;
     applyConditions(zone, st);
     st.busy = false;
@@ -2002,7 +2036,7 @@ dash.draw('history', (el) => {
   window.swRouteOverlay = (sel, zone, row, toX, toY) => {
     const st = byZone[zone];
     const host = sel.node().parentNode;
-    if (!st || !st.res) { hideCallout(host); return; }
+    if (!st || !st.res || drawing[zone]) { hideCallout(host); return; }
     const pts = st.res.samples.filter((s) => !s.outside).map((s) => ({ s, x: toX((s.x - row.x0) / row.cell_m), y: toY((row.y0 - s.y) / row.cell_m) }));
     st.screen = pts;
     if (pts.length < 2) { hideCallout(host); return; }
@@ -2221,6 +2255,151 @@ dash.draw('history', (el) => {
     }
   };
 
+  // a route from a GPX file or drawn on the map: find its map, switch tab if needed, and check it
+  const startRoute = (myZone, route, zoom) => {
+    const rows = terrainRows();
+    const best = rows.map((r) => ({ r, c: C.coverage(route.points, r) })).sort((a, b) => b.c - a.c)[0];
+    if (!best || best.c < 0.05) {
+      byZone[myZone] = { error: 'This route isn’t inside any of the map areas, so it can’t be checked here.' };
+      showResults(myZone, false);
+      dash.draw('route-msg');
+      return;
+    }
+    const zone = best.r.zone;
+    if (zone !== myZone) {
+      byZone[myZone] = null;
+      dash.draw('route-msg');
+      const tab = document.querySelector(`.sw-tab[data-tab="${cardOf(zone).dataset.pfx}"]`);
+      if (tab) tab.click();
+    }
+    const prev = byZone[zone];
+    byZone[zone] = { route, res: null, key: null, busy: true, sel: null, start: prev && prev.start, pace: prev && prev.pace };
+    showResults(zone, true);
+    drawLabel(zone);
+    askBlocks(zone);
+    dash.draw('route-msg');
+    setTimeout(() => { refresh(zone); if (zoom) zoomToRoute(zone); }, 30);
+  };
+
+  // ---- drawing a route on the map ----
+  const rowOf = (zone) => terrainRows().find((r) => r.zone === zone);
+  const elevAt = (row, t, c, r) => {
+    const W = row.width, H = row.height;
+    const ci = Math.max(0, Math.min(W - 2, Math.floor(c))), ri = Math.max(0, Math.min(H - 2, Math.floor(r)));
+    const fx = Math.max(0, Math.min(1, c - ci)), fy = Math.max(0, Math.min(1, r - ri));
+    const E = (a, b) => t.elev[b * W + a];
+    return E(ci, ri) * (1 - fx) * (1 - fy) + E(ci + 1, ri) * fx * (1 - fy) + E(ci, ri + 1) * (1 - fx) * fy + E(ci + 1, ri + 1) * fx * fy;
+  };
+  const drawStats = (row, pts) => {
+    const t = row && window.swTerrainFor(row);
+    let dist = 0, up = 0, last = null;
+    for (let i = 0; i < pts.length; i++) {
+      if (i) {
+        const [c0, r0] = pts[i - 1], [c1, r1] = pts[i], seg = Math.hypot(c1 - c0, r1 - r0);
+        dist += seg * row.cell_m;
+        if (t) for (let k = 1, n = Math.max(1, Math.ceil(seg)); k <= n; k++) {
+          const e = elevAt(row, t, c0 + ((c1 - c0) * k) / n, r0 + ((r1 - r0) * k) / n);
+          if (last !== null && e > last) up += e - last;
+          last = e;
+        }
+      } else if (t) last = elevAt(row, t, pts[0][0], pts[0][1]);
+    }
+    return { dist, up };
+  };
+  const redrawMap = (zone) => { const card = cardOf(zone), m = card && window.swMaps.get(card.querySelector('.sw-map')); if (m) m.redraw(); };
+  const drawLabel = (zone) => {
+    const card = cardOf(zone), st = byZone[zone];
+    if (!card) return;
+    for (const b of card.querySelectorAll('.sw-draw')) b.textContent = drawing[zone] ? 'Check drawn route' : st && st.route && st.route.drawn ? 'Edit drawn route' : 'Draw a route';
+  };
+  const drawBar = (zone) => {
+    const card = cardOf(zone), mapEl = card && card.querySelector('.sw-map');
+    if (!mapEl) return null;
+    let bar = mapEl.querySelector('.sw-drawbar');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.className = 'sw-drawbar';
+      bar.innerHTML = '<span class="sw-drawbar-txt"></span><span class="sw-drawbar-btns"><button type="button" class="sw-co-btn" data-a="undo">Undo</button>'
+        + '<button type="button" class="sw-co-btn sw-draw-done" data-a="done">Check route</button><button type="button" class="sw-co-btn" data-a="cancel">Cancel</button></span>';
+      // the bar sits on the map: keep its taps and drags away from panning and point placing
+      for (const ty of ['pointerdown', 'mousedown', 'touchstart', 'wheel', 'dblclick']) bar.addEventListener(ty, (e) => e.stopPropagation());
+      bar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const btn = e.target.closest('button'), a = btn && btn.dataset.a;
+        if (a === 'undo') { drawing[zone].pts.pop(); updateDraw(zone); }
+        else if (a === 'done') finishDraw(zone);
+        else if (a === 'cancel') endDraw(zone);
+      });
+      mapEl.append(bar);
+    }
+    return bar;
+  };
+  const updateDraw = (zone) => {
+    const d = drawing[zone], bar = drawBar(zone), row = rowOf(zone);
+    if (!d || !bar || !row) return;
+    const n = d.pts.length, { dist, up } = drawStats(row, d.pts);
+    bar.querySelector('.sw-drawbar-txt').textContent = !n ? 'Tap the map to start your route; drag to move the map.'
+      : n === 1 ? 'Now tap the next point along your route.'
+      : `${n} points · ${km(dist / 1000)} km · about ${fmt(Math.round(up / 10) * 10)} m up`;
+    bar.querySelector('[data-a="undo"]').disabled = !n;
+    bar.querySelector('[data-a="done"]').disabled = n < 2;
+    drawLabel(zone);
+    redrawMap(zone);
+  };
+  const startDraw = (zone) => {
+    const card = cardOf(zone);
+    if (!card || !rowOf(zone)) return;
+    const st = byZone[zone];
+    drawing[zone] = { pts: st && st.route && st.route.drawn ? st.route.drawn.map((p) => p.slice()) : [], auto: false };
+    // on a phone, draw on the full-screen map
+    if (window.matchMedia('(max-width: 640px)').matches && !card.classList.contains('sw-map-big')) {
+      const ex = card.querySelector('.sw-expand');
+      if (ex) { ex.click(); drawing[zone].auto = true; }
+    }
+    card.classList.add('sw-drawing');
+    // the button sits under the map, which can be taller than the screen: bring the map's top into view
+    if (!card.classList.contains('sw-map-big')) { const mEl = card.querySelector('.sw-map'); if (mEl && mEl.getBoundingClientRect().top < 0) mEl.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+    updateDraw(zone);
+  };
+  const endDraw = (zone) => {
+    const d = drawing[zone], card = cardOf(zone);
+    delete drawing[zone];
+    if (card) {
+      card.classList.remove('sw-drawing');
+      const bar = card.querySelector('.sw-drawbar'); if (bar) bar.remove();
+      if (d && d.auto && card.classList.contains('sw-map-big')) { const c = card.querySelector('.sw-collapse'); if (c) c.click(); }
+    }
+    drawLabel(zone);
+    redrawMap(zone);
+  };
+  const finishDraw = (zone) => {
+    const d = drawing[zone], row = rowOf(zone);
+    if (!d || !row || d.pts.length < 2) return;
+    const z = C.zoneOfCrs(row.crs);
+    const points = d.pts.map(([c, r]) => { const [lat, lon] = C.utmInv(row.x0 + c * row.cell_m, row.y0 - r * row.cell_m, z); return { lat, lon, ele: NaN }; });
+    const drawn = d.pts.map((p) => p.slice());
+    endDraw(zone);
+    startRoute(zone, { name: 'Drawn route', file: 'drawn-route.gpx', points, drawn }, false);
+  };
+  window.swDrawOverlay = (sel, zone, row, toX, toY) => {
+    const d = drawing[zone];
+    if (!d || !d.pts.length) return;
+    const pts = d.pts.map(([c, r]) => [toX(c), toY(r)]);
+    if (pts.length > 1) {
+      sel.append('path').attr('d', d3.line()(pts)).attr('fill', 'none').attr('stroke', '#fff').attr('stroke-width', 7).attr('stroke-opacity', 0.85).attr('stroke-linejoin', 'round').attr('stroke-linecap', 'round');
+      sel.append('path').attr('d', d3.line()(pts)).attr('fill', 'none').attr('stroke', '#1A1A1A').attr('stroke-width', 3).attr('stroke-dasharray', '9 5').attr('stroke-linejoin', 'round');
+    }
+    pts.forEach(([x, y], i) => sel.append('circle').attr('cx', x).attr('cy', y).attr('r', i === 0 || i === pts.length - 1 ? 6 : 4)
+      .attr('fill', i === 0 ? '#1E8E3E' : i === pts.length - 1 ? '#1A1A1A' : '#fff').attr('stroke', i === 0 ? '#fff' : '#1A1A1A').attr('stroke-width', 2));
+  };
+  document.addEventListener('keydown', (ev) => {
+    const zone = Object.keys(drawing)[0];
+    if (!zone || (ev.target && /^(INPUT|SELECT|TEXTAREA)$/.test(ev.target.tagName))) return;
+    if (ev.key === 'Escape') { endDraw(zone); ev.preventDefault(); }
+    else if (ev.key === 'Enter') { finishDraw(zone); ev.preventDefault(); }
+    else if (ev.key === 'Backspace' || ((ev.ctrlKey || ev.metaKey) && ev.key === 'z')) { drawing[zone].pts.pop(); updateDraw(zone); ev.preventDefault(); }
+  });
+
   for (const card of document.querySelectorAll('.sw-mapcard')) {
     const myZone = card.closest('[data-zone]').dataset.zone;
     for (const input of card.querySelectorAll('.sw-gpx')) {
@@ -2238,30 +2417,22 @@ dash.draw('history', (el) => {
           dash.draw('route-msg');
           return;
         }
-        const rows = terrainRows();
-        const best = rows.map((r) => ({ r, c: C.coverage(route.points, r) })).sort((a, b) => b.c - a.c)[0];
-        if (!best || best.c < 0.05) {
-          byZone[myZone] = { error: 'This route isn’t inside any of the map areas, so it can’t be checked here.' };
-          showResults(myZone, false);
-          dash.draw('route-msg');
-          return;
-        }
-        const zone = best.r.zone;
-        if (zone !== myZone) {
-          byZone[myZone] = null;
-          dash.draw('route-msg');
-          const tab = document.querySelector(`.sw-tab[data-tab="${cardOf(zone).dataset.pfx}"]`);
-          if (tab) tab.click();
-        }
-        byZone[zone] = { route, res: null, key: null, busy: true, sel: null };
-        showResults(zone, true);
-        askBlocks(zone);
-        dash.draw('route-msg');
-        setTimeout(() => { refresh(zone); zoomToRoute(zone); }, 30);
+        startRoute(myZone, route, true);
       });
     }
+    for (const b of card.querySelectorAll('.sw-draw')) b.addEventListener('click', () => (drawing[myZone] ? finishDraw(myZone) : startDraw(myZone)));
     for (const mapEl of card.querySelectorAll('.sw-map')) {
       mapEl.addEventListener('click', (ev) => {
+        if (drawing[myZone]) {
+          // drawing: a tap (not a drag, which d3-zoom swallows) adds a point
+          if (ev.target.closest('.sw-drawbar, .sw-callout, .sw-map-ctrl')) return;
+          const m = window.swMaps.get(mapEl), row = rowOf(myZone), rc = mapEl.getBoundingClientRect();
+          const cell = m && m.toCell ? m.toCell(ev.clientX - rc.left, ev.clientY - rc.top) : null;
+          if (!cell || !row || cell[0] < 0 || cell[1] < 0 || cell[0] > row.width || cell[1] > row.height) return;
+          drawing[myZone].pts.push(cell);
+          updateDraw(myZone);
+          return;
+        }
         const st = byZone[myZone];
         if (!st || !st.res || !st.screen || ev.target.closest('.sw-callout')) return;
         const r = mapEl.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top;
@@ -2275,7 +2446,9 @@ dash.draw('history', (el) => {
     for (const b of card.querySelectorAll('.sw-route-clear')) {
       b.addEventListener('click', () => {
         byZone[myZone] = null;
+        if (drawing[myZone]) endDraw(myZone);
         showResults(myZone, false);
+        drawLabel(myZone);
         for (const n of card.querySelectorAll('.sw-watchgpx-note')) n.textContent = '';
         dash.draw('route-msg');
         const m = window.swMaps.get(card.querySelector('.sw-map'));
