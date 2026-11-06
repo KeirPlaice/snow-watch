@@ -275,9 +275,9 @@ details.sw-how[open] > summary{display:none}
 <div class="sw-page">
   <header class="sw-head">
     <h1>Snow &amp; Avalanche Watch</h1>
-    <p>Avalanche danger, snowpack and the week ahead for Rogers Pass, the Rossland Range, Whitewater, Kootenay Pass, the hills above Vallter, the mountains around Innsbruck, Rocky Mountain National Park and the Mont Blanc massif around Chamonix. Refreshed every morning.</p>
+    <p>Avalanche danger, snowpack and the week ahead for Rogers Pass, the Rossland Range, Whitewater, Kootenay Pass, the hills above Vallter, the mountains around Innsbruck, Rocky Mountain National Park, the Mont Blanc massif around Chamonix and the Urseren valley around Andermatt. Refreshed every morning.</p>
   </header>
-  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="rossland" aria-selected="false">Rossland Range</button><button class="sw-tab" role="tab" data-tab="whitewater" aria-selected="false">Whitewater</button><button class="sw-tab" role="tab" data-tab="kpass" aria-selected="false">Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="vallter" aria-selected="false">Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="innsbruck" aria-selected="false">Innsbruck</button><button class="sw-tab" role="tab" data-tab="rmnp" aria-selected="false">Rocky Mountain NP</button><button class="sw-tab" role="tab" data-tab="chamonix" aria-selected="false">Chamonix</button></nav>
+  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="rossland" aria-selected="false">Rossland Range</button><button class="sw-tab" role="tab" data-tab="whitewater" aria-selected="false">Whitewater</button><button class="sw-tab" role="tab" data-tab="kpass" aria-selected="false">Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="vallter" aria-selected="false">Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="innsbruck" aria-selected="false">Innsbruck</button><button class="sw-tab" role="tab" data-tab="rmnp" aria-selected="false">Rocky Mountain NP</button><button class="sw-tab" role="tab" data-tab="chamonix" aria-selected="false">Chamonix</button><button class="sw-tab" role="tab" data-tab="andermatt" aria-selected="false">Andermatt</button></nav>
 
   <section class="sw-zone" id="rogers" data-zone="Rogers Pass" data-temp="Fidelity" data-wind="MacDonald West Shoulder">
     <p class="sw-sub">Glacier National Park, Selkirk Mountains, BC · forecast by Parks Canada via Avalanche Canada</p>
@@ -1643,6 +1643,159 @@ details.sw-how[open] > summary{display:none}
     </div>
 
     <div class="sw-card sw-wide" id="chamonix-history">
+      <h2 class="sw-h">Danger through the season</h2>
+      <p class="sw-note">Each square is one day's rating for that elevation band. This builds up day by day from the daily refresh.</p>
+      <div class="sw-chart sw-chart-strip dash-skeleton" data-draw="history" data-source="danger_history"></div>
+      <ul class="sw-legend">
+        <li><i class="sw-sw" style="background:var(--sw-d0)"></i>No rating yet</li>
+        <li><i class="sw-sw" style="background:var(--sw-d1)"></i>1 Low</li>
+        <li><i class="sw-sw" style="background:var(--sw-d2)"></i>2 Moderate</li>
+        <li><i class="sw-sw" style="background:var(--sw-d3)"></i>3 Considerable</li>
+        <li><i class="sw-sw" style="background:var(--sw-d4)"></i>4 High</li>
+        <li><i class="sw-sw" style="background:var(--sw-d5)"></i>5 Extreme / Very high</li>
+      </ul>
+    </div>
+  </section>
+  <section class="sw-zone" id="andermatt" data-zone="Andermatt" data-temp="Gütsch" data-wind="Gross Schijen" hidden>
+    <p class="sw-sub">The Urseren valley: Andermatt, Gemsstock, the Oberalp, Furka and Gotthard passes · bulletin by the SLF</p>
+
+    <div class="sw-grid sw-grid-top">
+      <div class="sw-card" id="andermatt-danger">
+        <h2 class="sw-h">Avalanche danger</h2>
+        <p class="sw-note">Danger above and below the bulletin's elevation threshold, from the SLF bulletin for the Northern Urseren region, which holds Andermatt. Other parts of the map can have a different rating; see below.</p>
+        <div class="sw-danger" data-draw="danger" data-source="danger_now"></div>
+        <dl class="sw-meta">
+          <dt>Issued</dt><dd data-draw="cell" data-source="bulletins" data-field="issued" data-where="zone=Andermatt">—</dd>
+          <dt>Valid until</dt><dd data-draw="cell" data-source="bulletins" data-field="valid_until" data-where="zone=Andermatt">—</dd>
+        </dl>
+        <h3 class="sw-h3">Forecasts across the map</h3>
+        <p class="sw-note">The SLF splits the map into a dozen micro-regions, which can carry different ratings; the bulletin above is the one for Northern Urseren. The route check uses whichever region covers most of your route.</p>
+        <ul class="sw-regional" data-draw="regional" data-source="regional_forecasts"></ul>
+      </div>
+      <div class="sw-card" id="andermatt-bulletin">
+        <h2 class="sw-h">What the forecasters say</h2>
+        <p class="sw-note">The current bulletin's headline and snowpack notes.</p>
+        <div class="sw-bulletin" data-draw="bulletin" data-source="bulletins"></div>
+        <h3 class="sw-h3">Avalanche problems</h3>
+        <div class="sw-problems" data-draw="problems" data-source="problems"></div>
+      </div>
+    </div>
+
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;andermatt&quot;, &quot;contour&quot;: 100, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 28 by 18 km around the Urseren valley: Andermatt and Gemsstock, the Oberalp Pass and Tujetsch, Realp and the Furka Pass, the Galenstock and Dammastock with the Rhone glacier, Göschenen and the Göscheneralp, and the Gotthard Pass to above Airolo. Zoom in and it sharpens to 5 m lidar.&quot;, &quot;map_caveat&quot;: &quot;Slopes from swisstopo's swissALTI3D (2 m lidar, bare-earth, flown 2022–2025) averaged to 5 m, covering the whole map; forest doesn't show as false steep ground. Zoomed out, the map shows a 30 m summary of the 5 m steepness; the route check uses 5 m. On glaciers, lidar shows the ice surface on the day it was flown, which changes year to year. Crevasses and serac fall are not avalanche terrain in this model and are not mapped. Glacier outlines from the Sentinel-2 glacier inventory of the Alps (2015), so today's ice is smaller. Names from GeoNames; peaks are pinned to the 5 m model summit. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_and&quot;, &quot;blocks&quot;: [&quot;t5_and&quot;, 4, 6]}"></div>
+
+    <div class="sw-avzone" data-zone="Andermatt" id="avalanches-andermatt">
+      <h2 class="sw-section">Recent avalanches</h2>
+      <p class="sw-note">Field reports aren't included for Andermatt yet. The SLF publishes observations and recent avalanches with its bulletin at <a href="https://www.slf.ch/en/avalanche-bulletin-and-snow-situation/" target="_blank" rel="noopener">slf.ch</a> and in its White Risk app. Check them before you go.</p>
+    </div>
+
+
+    <h2 class="sw-section">On the ground, latest day</h2>
+    <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
+    <div class="sw-tiles">
+      <div class="sw-tile" data-st="Gütsch" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Gütsch</div></div>
+      <div class="sw-tile" data-st="Giltnasen" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Giltnasen</div></div>
+      <div class="sw-tile" data-st="Vallascia" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Vallascia</div></div>
+      <div class="sw-tile" data-st="Gross Schijen" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Gross Schijen</div></div>
+      <div class="sw-tile" data-st="Lucendro" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Lucendro</div></div>
+    </div>
+
+    <div class="sw-card sw-wide" id="andermatt-windcard">
+      <h2 class="sw-h">Wind, last 72 hours · Gross Schijen</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">At the Gross Schijen, the SLF's ridge station at 2,784 m north-east of Andermatt; half-hourly. If it's missing, modelled wind on the Gütsch ridge stands in. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Andermatt">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Andermatt">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Andermatt">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Andermatt">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Andermatt">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Gross Schijen">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Gross Schijen">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Gross Schijen">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="andermatt-windcard-2" data-zone="Andermatt · Lucendro">
+      <h2 class="sw-h">Wind, last 72 hours · Lucendro</h2>
+      <p class="sw-note">At the SLF's station at 2,963 m by the Lucendro lake on the Gotthard, on the south side of the map. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Andermatt · Lucendro">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Andermatt · Lucendro">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Andermatt · Lucendro">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Andermatt · Lucendro">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Andermatt · Lucendro">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Lucendro">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Lucendro">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Lucendro">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="andermatt-depth">
+      <h2 class="sw-h">Snow depth this season</h2>
+      <p class="sw-note">Daily median snow height at each station since 1 October, in cm. Wind-scoured ridge sensors can read low.</p>
+      <div class="sw-chart dash-skeleton" data-draw="depth" data-source="stations_daily"></div>
+    </div>
+
+    <div class="sw-grid">
+      <div class="sw-card" id="andermatt-temp" data-temp="Gütsch">
+        <h2 class="sw-h">Temperature, daily low to high · Gütsch</h2>
+        <p class="sw-note">SLF IMIS station on the Gütsch above Andermatt, 2,209 m. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="andermatt-temp-2" data-temp="Vallascia">
+        <h2 class="sw-h">Temperature, daily low to high · Vallascia</h2>
+        <p class="sw-note">SLF IMIS station at Vallascia above Airolo, 2,268 m, on the south side of the Gotthard. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="andermatt-wind" data-wind="Gross Schijen" data-wfield="gust_max_kmh">
+        <h2 class="sw-h">Strongest wind gust each day</h2>
+        <p class="sw-note">The SLF's ridge station on the Gross Schijen above Andermatt, 2,784 m; the strongest half-hourly gust each day. In km/h.</p>
+        <div class="sw-chart dash-skeleton" data-draw="wind" data-source="stations_daily"></div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="andermatt-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for the Urseren valley between Andermatt and Hospental: the 2 km ICON-D2 for about the first two days, then the 7 km ICON-EU and the 13 km global run, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the Urseren valley between Andermatt and Hospental, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the Urseren valley between Andermatt and Hospental; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 2,900 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 2,200 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
+      </div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 2,800 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1600,2200,2900" data-tz="Central European"></div>
+      <h3 class="sw-h3">Day by day</h3>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
+          <thead><tr>
+            <th>Day</th>
+            <th>Alpine 2,900 m</th>
+            <th>Treeline 2,200 m</th>
+            <th>Below treeline 1,600 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
+          </tr></thead>
+          <tbody data-draw="mtn-rows"></tbody>
+        </table>
+      </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
+    </div>
+
+    <div class="sw-card sw-wide" id="andermatt-history">
       <h2 class="sw-h">Danger through the season</h2>
       <p class="sw-note">Each square is one day's rating for that elevation band. This builds up day by day from the daily refresh.</p>
       <div class="sw-chart sw-chart-strip dash-skeleton" data-draw="history" data-source="danger_history"></div>
