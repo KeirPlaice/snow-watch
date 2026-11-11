@@ -7,7 +7,7 @@ Usage: python3 snow_fetch.py OUTDIR [--prev-danger PREVIOUS_danger_history.json]
 (Innsbruck station history is rebuilt from hourly archives; with --prev-stations only the last few days are re-read.)
 Writes: stations_daily.json, danger_history.json, bulletins.json, problems.json, outlook.json
 """
-import csv, json, math, re, sys, html, statistics, urllib.request, urllib.parse
+import base64, csv, json, math, os, re, sys, html, statistics, urllib.error, urllib.request, urllib.parse
 from datetime import date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
@@ -224,7 +224,7 @@ def wind_summary(zone, now, stations_rows, given=None):
         lee = (from_deg + 180) % 360
         i = int(((lee + 22.5) % 360) // 45)
         loaded = [OCT[(i - 1) % 8], OCT[i], OCT[(i + 1) % 8]]
-    zr = [r for r in stations_rows if r["zone"] == zone]
+    zr = [r for r in stations_rows if r["zone"] == zone.split(" · ")[0]]  # an extra card "<zone> · <station>" reads its zone's snow
     last = max((r["date"] for r in zr), default=None)
     recent = [r for r in zr if last and r["date"] > (date.fromisoformat(last) - timedelta(days=3)).isoformat()]
     per_station = {}
@@ -1446,6 +1446,75 @@ def nor_bulletins(zone, today):
     return bull, danger, probs, hist
 
 
+FROST = "https://frost.met.no/observations/v0.jsonld"
+NOR_STATIONS = {  # (Frost source id, name, elevation m, time resolution of its readings) — MET Norway and road-weather stations
+    ROM: [("SN61410", "Mannen", 1294, "PT1H"), ("SN61310", "Trollstigen", 700, "PT10M"),
+          ("SN60620", "Grønning", 312, "PT1H"), ("SN61420", "Marstein", 67, "PT1H")],
+    JOT: [("SN15270", "Juvasshøe", 1894, "PT1H"), ("SN55290", "Sognefjellhytta", 1413, "PT1H"),
+          ("SN13750", "Øvre Heimdalsvatn", 1088, "PT1H"), ("SN15430", "Bøverdal", 700, "PT1H")],
+    HEM: [("SN25115", "Hemsedal Skisenter", 1344, "PT1H"), ("SN25165", "Hemsedalsfjellet", 1130, "PT10M"),
+          ("SN25112", "Hollekolten", 807, "PT1H"), ("SN25100", "Hølto", 648, "PT1H")],
+}
+NOR_STATION_WIND = {ROM: ("SN61410",), JOT: ("SN15270", "SN55290"), HEM: ("SN25115", "SN25165")}  # first is the main card
+FROST_EL = "air_temperature,wind_speed,wind_from_direction,max(wind_speed_of_gust PT1H),surface_snow_thickness"
+
+
+def frost_stations(zone, now, prev_rows):
+    """MET Norway Frost observations. Needs FROST_CLIENT_ID; without it, returns yesterday's rows. A station with
+    rows from yesterday's file only fetches the last week; a new one fetches the season.
+    Returns (daily rows, {source id: hourly wind for the last WIND_HOURS} for the zone's wind stations)."""
+    cid = os.environ.get("FROST_CLIENT_ID", "")
+    prev = [r for r in prev_rows if r.get("zone") == zone]
+    if not cid:
+        return prev, {}
+    tz, rows, winds = TZ[zone], [], {}
+    auth = {"Authorization": "Basic " + base64.b64encode((cid + ":").encode()).decode()}
+    for sid, name, elev, res in NOR_STATIONS[zone]:
+        had = [r for r in prev if r["station"] == name]
+        start_day = (now - timedelta(days=6)).astimezone(tz).date() if had else SEASON_START - timedelta(days=1)
+        t0 = datetime.combine(start_day, datetime.min.time(), tz).astimezone(timezone.utc)
+        try:
+            q = urllib.parse.urlencode({"sources": sid, "elements": FROST_EL, "timeresolutions": f"{res},P1D",
+                                        "referencetime": f"{t0:%Y-%m-%dT%H:%M}/{now + timedelta(minutes=5):%Y-%m-%dT%H:%M}"})
+            try:
+                with urllib.request.urlopen(urllib.request.Request(f"{FROST}?{q}", headers=dict(UA, **auth)), timeout=90) as resp:
+                    data = json.load(resp).get("data", [])
+            except urllib.error.HTTPError as he:
+                if he.code != 404:  # 404: no readings in the period
+                    raise
+                data = []
+        except (OSError, ValueError) as e:
+            print("Frost station unavailable:", name, e)
+            rows += had
+            continue
+        obs = []
+        for item in data:
+            t = datetime.fromisoformat(item["referenceTime"].replace("Z", "+00:00"))
+            v = {}
+            for o in item.get("observations", []):
+                v.setdefault(o["elementId"], o.get("value"))  # first sensor of each element
+            ws, wd = v.get("wind_speed"), v.get("wind_from_direction")
+            g = v.get("max(wind_speed_of_gust PT1H)")
+            hs = v.get("surface_snow_thickness")
+            hs = 0 if hs is not None and hs < 0 else hs  # MET writes -1 for bare ground
+            obs.append((t.astimezone(tz).date(), hs, v.get("air_temperature"),
+                        None if g is None else g * 3.6, None, None if ws is None or t.minute else ws * 3.6))
+            # hourly readings only (10-minute stations keep the reading on the hour), so the rose counts hours
+            if sid in NOR_STATION_WIND[zone] and t >= now - timedelta(hours=WIND_HOURS) and t.minute == 0 and ws is not None and wd is not None:
+                winds.setdefault(sid, []).append((ws * 3.6, wd, None if g is None else g * 3.6))
+        fresh = [x for x in daily_rows(zone, name, elev, obs) if x["date"] > start_day.isoformat()]
+        old = [x for x in had if x["date"] <= start_day.isoformat()]
+        merged = sorted(old + fresh, key=lambda x: x["date"])
+        pd_ = None
+        for x in merged:
+            dv = x.get("snow_depth_cm")
+            if isinstance(dv, (int, float)):
+                x["depth_change_cm"] = "" if pd_ is None else dv - pd_
+                pd_ = dv
+        rows += merged
+    return rows, winds
+
+
 def nor_wind(zone, now):
     """Modelled hourly wind on a ridge in the zone, last WIND_HOURS (Open-Meteo): no open station feed reaches us."""
     lat, lon, elev, name = NOR_WIND[zone]
@@ -1522,6 +1591,11 @@ def main():
     stations += mf_rows + chx_rows
     and_rows, and_wind_obs = slf_stations(AND, AND_IMIS, AND_IMIS_WIND, now, prev_rows)
     stations += and_rows
+    nor_wind_obs = {}
+    for zname in (ROM, JOT, HEM):
+        nrows, nw = frost_stations(zname, now, prev_rows)
+        stations += nrows
+        nor_wind_obs.update(nw)
     write_csv(f"{out}/stations_daily.json", stations, list(stations[0].keys()))
 
     ws, wr = [], []
@@ -1572,12 +1646,24 @@ def main():
     except (OSError, ValueError, KeyError) as e:
         print("Andermatt wind unavailable:", e)
     for zname in (ROM, JOT, HEM):
+        meta = {c: (n, e) for c, n, e, _ in NOR_STATIONS[zname]}
         try:
-            a, b = wind_summary(zname, now, stations, nor_wind(zname, now))
+            c0 = NOR_STATION_WIND[zname][0]
+            main_w = (nor_wind_obs[c0], *meta[c0]) if len(nor_wind_obs.get(c0, [])) >= 36 else nor_wind(zname, now)
+            a, b = wind_summary(zname, now, stations, main_w)
             ws.append(a)
             wr += b
         except (OSError, ValueError, KeyError) as e:
             print("Norway wind unavailable for", zname, e)
+        for c in NOR_STATION_WIND[zname][1:]:
+            if len(nor_wind_obs.get(c, [])) >= 36:
+                key = f"{zname} · {meta[c][0]}"
+                a, b = wind_summary(key, now, stations, (nor_wind_obs[c], *meta[c]))
+                a["zone"] = key
+                for x in b:
+                    x["zone"] = key
+                ws.append(a)
+                wr += b
     for zname, sid, name, elev in EXTRA_WIND:
         try:
             a, b = wind_summary(zname, now, stations, wind_obs(zname, now, ("avcan", sid, name, elev)))

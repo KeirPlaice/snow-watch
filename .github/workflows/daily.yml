@@ -43,6 +43,8 @@ jobs:
           ls -l prev
 
       - name: Fetch today's data
+        env:
+          FROST_CLIENT_ID: ${{ secrets.FROST_CLIENT_ID }}   # MET Norway observations for the Norway tabs
         run: |
           args=""
           [ -f prev/danger_history.json ] && args="$args --prev-danger prev/danger_history.json"

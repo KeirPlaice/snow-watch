@@ -1831,7 +1831,7 @@ details.sw-how[open] > summary{display:none}
       </ul>
     </div>
   </section>
-  <section class="sw-zone" id="romsdal" data-zone="Romsdal" data-temp="" data-wind="Venjetindane ridge (model)" hidden>
+  <section class="sw-zone" id="romsdal" data-zone="Romsdal" data-temp="Mannen" data-wind="Mannen" hidden>
     <p class="sw-sub">Romsdalen and Isfjorden above Åndalsnes, with the Romsdal Alps · bulletin by Varsom (NVE)</p>
 
     <div class="sw-grid sw-grid-top">
@@ -1861,12 +1861,18 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
-    <h2 class="sw-section">On the ground</h2>
-    <p class="sw-note">Weather-station readings (snow depth, temperature, wind) aren't connected for this area yet. The model forecasts below and the bulletin's snowpack notes stand in for now.</p>
+    <h2 class="sw-section">On the ground, latest day</h2>
+    <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
+    <div class="sw-tiles">
+      <div class="sw-tile" data-st="Mannen" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Mannen</div></div>
+      <div class="sw-tile" data-st="Trollstigen" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Trollstigen</div></div>
+      <div class="sw-tile" data-st="Grønning" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Grønning</div></div>
+      <div class="sw-tile" data-st="Marstein" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Marstein</div></div>
+    </div>
 
     <div class="sw-card sw-wide" id="romsdal-windcard">
       <h2 class="sw-h">Wind, last 72 hours</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Modelled (Open-Meteo) on the Venjetindane ridge above Romsdalen at 1,500 m: Norway's mountain weather stations aren't connected here yet. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">At Mannen, MET Norway's station on the summit above Romsdalen at 1,294 m. If it's missing, modelled wind on the Venjetindane ridge stands in. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
       <div class="sw-windgrid">
         <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
         <div>
@@ -1877,11 +1883,37 @@ details.sw-how[open] > summary{display:none}
             <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Romsdal">—</span> km/h</dd>
             <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Romsdal">—</span></dd>
             <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Romsdal">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Mannen">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Mannen">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Mannen">—</span></dd>
           </dl>
         </div>
       </div>
     </div>
 
+
+    <div class="sw-card sw-wide" id="romsdal-depth">
+      <h2 class="sw-h">Snow depth this season</h2>
+      <p class="sw-note">Daily median snow height at each station since 1 October, in cm. Wind-scoured ridge sensors can read low.</p>
+      <div class="sw-chart dash-skeleton" data-draw="depth" data-source="stations_daily"></div>
+    </div>
+
+    <div class="sw-grid">
+      <div class="sw-card" id="romsdal-temp" data-temp="Mannen">
+        <h2 class="sw-h">Temperature, daily low to high · Mannen</h2>
+        <p class="sw-note">MET Norway station on Mannen, 1,294 m, the summit above Romsdalen opposite Trollveggen. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="romsdal-temp-2" data-temp="Trollstigen">
+        <h2 class="sw-h">Temperature, daily low to high · Trollstigen</h2>
+        <p class="sw-note">Road-weather station at Trollstigen, 700 m; temperature and wind only. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="romsdal-wind" data-wind="Mannen" data-wfield="gust_max_kmh">
+        <h2 class="sw-h">Strongest wind gust each day</h2>
+        <p class="sw-note">MET Norway's station on Mannen above Romsdalen, 1,294 m; the strongest hourly gust each day. In km/h.</p>
+        <div class="sw-chart dash-skeleton" data-draw="wind" data-source="stations_daily"></div>
+      </div>
+    </div>
 
 
     <div class="sw-card sw-wide" id="romsdal-mtn">
@@ -1928,7 +1960,7 @@ details.sw-how[open] > summary{display:none}
       </ul>
     </div>
   </section>
-  <section class="sw-zone" id="jotunheimen" data-zone="Jotunheimen" data-temp="" data-wind="Galdhøpiggen massif (model)" hidden>
+  <section class="sw-zone" id="jotunheimen" data-zone="Jotunheimen" data-temp="Juvasshøe" data-wind="Juvasshøe" hidden>
     <p class="sw-sub">The high Jotunheimen: Galdhøpiggen, Glittertind, Visdalen, Leirvassbu and Gjende · bulletin by Varsom (NVE)</p>
 
     <div class="sw-grid sw-grid-top">
@@ -1958,12 +1990,18 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
-    <h2 class="sw-section">On the ground</h2>
-    <p class="sw-note">Weather-station readings (snow depth, temperature, wind) aren't connected for this area yet. The model forecasts below and the bulletin's snowpack notes stand in for now.</p>
+    <h2 class="sw-section">On the ground, latest day</h2>
+    <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
+    <div class="sw-tiles">
+      <div class="sw-tile" data-st="Juvasshøe" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Juvasshøe</div></div>
+      <div class="sw-tile" data-st="Sognefjellhytta" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Sognefjellhytta</div></div>
+      <div class="sw-tile" data-st="Øvre Heimdalsvatn" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Øvre Heimdalsvatn</div></div>
+      <div class="sw-tile" data-st="Bøverdal" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Bøverdal</div></div>
+    </div>
 
     <div class="sw-card sw-wide" id="jotunheimen-windcard">
-      <h2 class="sw-h">Wind, last 72 hours</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Modelled (Open-Meteo) on the Galdhøpiggen massif at 2,300 m: Norway's mountain weather stations aren't connected here yet. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <h2 class="sw-h">Wind, last 72 hours · Juvasshøe</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">At Juvasshøe, MET Norway's station at 1,894 m on the plateau below Galdhøpiggen. If it's missing, modelled wind on the Galdhøpiggen massif stands in. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
       <div class="sw-windgrid">
         <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
         <div>
@@ -1974,11 +2012,57 @@ details.sw-how[open] > summary{display:none}
             <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Jotunheimen">—</span> km/h</dd>
             <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Jotunheimen">—</span></dd>
             <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Jotunheimen">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Juvasshøe">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Juvasshøe">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Juvasshøe">—</span></dd>
           </dl>
         </div>
       </div>
     </div>
 
+    <div class="sw-card sw-wide" id="jotunheimen-windcard-2" data-zone="Jotunheimen · Sognefjellhytta">
+      <h2 class="sw-h">Wind, last 72 hours · Sognefjellhytta</h2>
+      <p class="sw-note">At MET Norway's station at 1,413 m on the Sognefjell road, at the west edge of the map. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Jotunheimen · Sognefjellhytta">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Jotunheimen · Sognefjellhytta">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Jotunheimen · Sognefjellhytta">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Jotunheimen · Sognefjellhytta">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Jotunheimen · Sognefjellhytta">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Sognefjellhytta">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Sognefjellhytta">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Sognefjellhytta">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="jotunheimen-depth">
+      <h2 class="sw-h">Snow depth this season</h2>
+      <p class="sw-note">Daily median snow height at each station since 1 October, in cm. Wind-scoured ridge sensors can read low.</p>
+      <div class="sw-chart dash-skeleton" data-draw="depth" data-source="stations_daily"></div>
+    </div>
+
+    <div class="sw-grid">
+      <div class="sw-card" id="jotunheimen-temp" data-temp="Juvasshøe">
+        <h2 class="sw-h">Temperature, daily low to high · Juvasshøe</h2>
+        <p class="sw-note">MET Norway station at Juvasshøe, 1,894 m, on the plateau below Galdhøpiggen. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="jotunheimen-temp-2" data-temp="Sognefjellhytta">
+        <h2 class="sw-h">Temperature, daily low to high · Sognefjellhytta</h2>
+        <p class="sw-note">MET Norway station at Sognefjellhytta, 1,413 m, at the west edge of the map. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="jotunheimen-wind" data-wind="Juvasshøe" data-wfield="gust_max_kmh">
+        <h2 class="sw-h">Strongest wind gust each day</h2>
+        <p class="sw-note">MET Norway's station at Juvasshøe below Galdhøpiggen, 1,894 m; the strongest hourly gust each day. In km/h.</p>
+        <div class="sw-chart dash-skeleton" data-draw="wind" data-source="stations_daily"></div>
+      </div>
+    </div>
 
 
     <div class="sw-card sw-wide" id="jotunheimen-mtn">
@@ -2025,7 +2109,7 @@ details.sw-how[open] > summary{display:none}
       </ul>
     </div>
   </section>
-  <section class="sw-zone" id="hemsedal" data-zone="Hemsedal" data-temp="" data-wind="Skogshorn (model)" hidden>
+  <section class="sw-zone" id="hemsedal" data-zone="Hemsedal" data-temp="Hemsedal Skisenter" data-wind="Hemsedal Skisenter" hidden>
     <p class="sw-sub">Hemsedal: the ski area, Skogshorn and the surrounding fells · bulletin by Varsom (NVE), Hallingdal region</p>
 
     <div class="sw-grid sw-grid-top">
@@ -2055,12 +2139,18 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
-    <h2 class="sw-section">On the ground</h2>
-    <p class="sw-note">Weather-station readings (snow depth, temperature, wind) aren't connected for this area yet. The model forecasts below and the bulletin's snowpack notes stand in for now.</p>
+    <h2 class="sw-section">On the ground, latest day</h2>
+    <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
+    <div class="sw-tiles">
+      <div class="sw-tile" data-st="Hemsedal Skisenter" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Hemsedal Skisenter</div></div>
+      <div class="sw-tile" data-st="Hemsedalsfjellet" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Hemsedalsfjellet</div></div>
+      <div class="sw-tile" data-st="Hollekolten" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Hollekolten</div></div>
+      <div class="sw-tile" data-st="Hølto" data-last="Max hourly wind|wind_max_kmh|km/h"><div class="sw-tile-name">Hølto</div></div>
+    </div>
 
     <div class="sw-card sw-wide" id="hemsedal-windcard">
-      <h2 class="sw-h">Wind, last 72 hours</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Modelled (Open-Meteo) on Skogshorn at 1,700 m: Norway's mountain weather stations aren't connected here yet. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <h2 class="sw-h">Wind, last 72 hours · Hemsedal Skisenter</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">At the top of Hemsedal ski area, MET Norway's station at 1,344 m. If it's missing, modelled wind on Skogshorn stands in. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
       <div class="sw-windgrid">
         <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
         <div>
@@ -2071,11 +2161,57 @@ details.sw-how[open] > summary{display:none}
             <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Hemsedal">—</span> km/h</dd>
             <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Hemsedal">—</span></dd>
             <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Hemsedal">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Hemsedal Skisenter">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Hemsedal Skisenter">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Hemsedal Skisenter">—</span></dd>
           </dl>
         </div>
       </div>
     </div>
 
+    <div class="sw-card sw-wide" id="hemsedal-windcard-2" data-zone="Hemsedal · Hemsedalsfjellet">
+      <h2 class="sw-h">Wind, last 72 hours · Hemsedalsfjellet</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">At the road-weather station on Hemsedalsfjellet (Rv52), 1,130 m, north-west of the valley; hourly readings, no gusts. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Hemsedal · Hemsedalsfjellet">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Hemsedal · Hemsedalsfjellet">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Hemsedal · Hemsedalsfjellet">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Hemsedal · Hemsedalsfjellet">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Hemsedal · Hemsedalsfjellet">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Hemsedalsfjellet">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Hemsedalsfjellet">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Hemsedalsfjellet">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="hemsedal-depth">
+      <h2 class="sw-h">Snow depth this season</h2>
+      <p class="sw-note">Daily median snow height at each station since 1 October, in cm. Wind-scoured ridge sensors can read low.</p>
+      <div class="sw-chart dash-skeleton" data-draw="depth" data-source="stations_daily"></div>
+    </div>
+
+    <div class="sw-grid">
+      <div class="sw-card" id="hemsedal-temp" data-temp="Hemsedal Skisenter">
+        <h2 class="sw-h">Temperature, daily low to high · Hemsedal Skisenter</h2>
+        <p class="sw-note">MET Norway station at the top of the ski area, 1,344 m; temperature and wind, no snow depth. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="hemsedal-temp-2" data-temp="Hemsedalsfjellet">
+        <h2 class="sw-h">Temperature, daily low to high · Hemsedalsfjellet</h2>
+        <p class="sw-note">Road-weather station on Hemsedalsfjellet (Rv52), 1,130 m. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="hemsedal-wind" data-wind="Hemsedal Skisenter" data-wfield="gust_max_kmh">
+        <h2 class="sw-h">Strongest wind gust each day</h2>
+        <p class="sw-note">MET Norway's station at the top of the ski area, 1,344 m; the strongest hourly gust each day. In km/h.</p>
+        <div class="sw-chart dash-skeleton" data-draw="wind" data-source="stations_daily"></div>
+      </div>
+    </div>
 
 
     <div class="sw-card sw-wide" id="hemsedal-mtn">
