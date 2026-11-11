@@ -7,10 +7,11 @@ page/index.html and page/app.js are the dashboard page (built elsewhere); web/ h
 runtime, styles, icons and service worker; fixed/ holds terrain and other data that never changes;
 --daily is the folder snow_fetch.py just wrote.
 """
-import argparse, hashlib, json, os, shutil
+import argparse, base64, hashlib, json, os, re, shutil
 from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BLOCK = re.compile(r"^t\d+_[a-z]+_\d+_\d+$")  # detail terrain blocks
 DAILY = ["stations_daily", "danger_history", "bulletins", "problems", "outlook", "wind_summary",
          "wind_rose", "avalanche_reports", "regional_forecasts", "snow_grid", "mountain_forecast"]
 OPTIONAL = ["snow_grid", "mountain_forecast"]
@@ -98,13 +99,22 @@ def main():
     # data: the fixed files plus today's
     dd = os.path.join(out, "data")
     os.makedirs(dd)
-    files = {}
+    files, blocks = {}, {}
     for src in (os.path.join(ROOT, "fixed"), a.daily):
         for f in sorted(os.listdir(src)):
             if not f.endswith(".json"):
                 continue
             ident = f[:-5]
             if src == a.daily and ident not in DAILY:
+                continue
+            if src != a.daily and BLOCK.match(ident):
+                # detail terrain blocks ship as raw gzip (base64 in JSON is a third bigger); their few fields go in
+                # index.json and the runtime puts the row back together
+                row = json.load(open(os.path.join(src, f), encoding="utf-8"))[0]
+                out_bin = os.path.join(dd, ident + ".bin")
+                open(out_bin, "wb").write(base64.b64decode(row.pop("elev_dm_b64")))
+                blocks[ident] = row
+                files[ident] = h(out_bin)
                 continue
             shutil.copy(os.path.join(src, f), os.path.join(dd, f))
             files[ident] = h(os.path.join(dd, f))
@@ -115,8 +125,8 @@ def main():
     missing = [d for d in DAILY if d not in files]
     if missing:
         raise SystemExit(f"missing daily files: {missing}")
-    sizes = {k: os.path.getsize(os.path.join(dd, k + ".json")) for k in files}  # for the offline-area size estimate
-    json.dump({"built": datetime.now(timezone.utc).isoformat(timespec="seconds"), "files": files, "sizes": sizes},
+    sizes = {k: os.path.getsize(os.path.join(dd, k + (".bin" if k in blocks else ".json"))) for k in files}  # for the offline-area size estimate
+    json.dump({"built": datetime.now(timezone.utc).isoformat(timespec="seconds"), "files": files, "sizes": sizes, "blocks": blocks},
               open(os.path.join(dd, "index.json"), "w"))
     # the service worker caches by this version
     sw = os.path.join(out, "sw.js")

@@ -39,7 +39,7 @@ const cacheFirst = async (req) => {
     throw e;
   }
 };
-const FIXED = /\/data\/(terrain\w*|glaciers|trips|avalanche_paths|documented_avalanches|t\d+_[a-z]+_\d+_\d+)\.json$/;
+const FIXED = /\/data\/(terrain\w*|glaciers|trips|avalanche_paths|documented_avalanches|t\d+_[a-z]+_\d+_\d+)\.(json|bin)$/;
 self.addEventListener('fetch', (e) => {
   const u = new URL(e.request.url);
   if (e.request.method !== 'GET' || u.origin !== self.location.origin) return;

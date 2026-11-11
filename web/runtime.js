@@ -41,7 +41,16 @@
     indexReady.then(() => {
       const v = (index.files || {})[id];
       if (!v) { rec.status = 'missing'; rec.message = 'No such dataset'; redrawAll(); return null; }
-      return fetch(`data/${id}.json?v=${v}`).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then((j) => {
+      const meta = (index.blocks || {})[id];
+      // detail terrain blocks come as raw gzip with their fields in index.json: rebuild the row the page expects
+      const get = meta
+        ? fetch(`data/${id}.bin?v=${v}`).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }).then((buf) => {
+            const u8 = new Uint8Array(buf); let s = '';
+            for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+            return [{ ...meta, elev_dm_b64: btoa(s) }];
+          })
+        : fetch(`data/${id}.json?v=${v}`).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
+      return get.then((j) => {
         const rows = Array.isArray(j) ? j : j.rows || j.data || j.results || [];
         rec.data = rows; rec.columns = rows.length ? Object.keys(rows[0]) : []; rec.status = 'ok';
         redrawAll();
