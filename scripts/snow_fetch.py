@@ -7,7 +7,7 @@ Usage: python3 snow_fetch.py OUTDIR [--prev-danger PREVIOUS_danger_history.json]
 (Innsbruck station history is rebuilt from hourly archives; with --prev-stations only the last few days are re-read.)
 Writes: stations_daily.json, danger_history.json, bulletins.json, problems.json, outlook.json
 """
-import csv, json, math, re, sys, html, statistics, urllib.request, urllib.parse
+import base64, csv, json, math, os, re, sys, html, statistics, urllib.error, urllib.request, urllib.parse
 from datetime import date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
@@ -231,7 +231,7 @@ def wind_summary(zone, now, stations_rows, given=None):
     for r in recent:  # new snow in 3 days at the station that gained most (not the zone's stations added together)
         if isinstance(r.get("depth_change_cm"), (int, float)):
             per_station[r["station"]] = per_station.get(r["station"], 0) + max(0, r["depth_change_cm"])
-    new3 = max(per_station.values(), default=0)
+    new3 = max(per_station.values(), default=0 if zr else None)  # None: no station reads snow here
     depth = max((r["snow_depth_cm"] for r in zr if r["date"] == last and isinstance(r.get("snow_depth_cm"), (int, float))), default=None)
     summary = {
         "zone": zone, "station": name, "elevation_m": elev, "period_hours": WIND_HOURS, "readings": len(obs),
@@ -1385,7 +1385,7 @@ MTN_BANDS[ROM] = (62.52, 7.74, "Europe/Oslo", [("btl", "Below treeline", 300), (
 MTN_BANDS[JOT] = (61.60, 8.40, "Europe/Oslo", [("btl", "Below treeline", 1000), ("tl", "Treeline", 1300), ("alp", "Alpine", 2000)])
 MTN_BANDS[HEM] = (60.86, 8.56, "Europe/Oslo", [("btl", "Below treeline", 700), ("tl", "Treeline", 1000), ("alp", "Alpine", 1500)])
 MTN_MODEL[ROM] = {"model": "icon_seamless", "levels": (1000, 975, 950, 925, 900, 850, 800, 750, 700), "ridge": 850, "label": _icon_eu_label}
-MTN_MODEL[JOT] = {"model": "icon_seamless", "levels": (925, 900, 850, 800, 750, 700, 650, 600), "ridge": 750, "label": _icon_eu_label}
+MTN_MODEL[JOT] = {"model": "icon_seamless", "levels": (925, 900, 850, 800, 700, 600), "ridge": 700, "label": _icon_eu_label}
 MTN_MODEL[HEM] = {"model": "icon_seamless", "levels": (975, 950, 925, 900, 850, 800, 750, 700), "ridge": 800, "label": _icon_eu_label}
 GRID[ROM] = (7.47, 62.39, 8.03, 62.65, 5, 5, "Europe/Oslo")
 GRID[JOT] = (8.17, 61.46, 8.88, 61.71, 6, 4, "Europe/Oslo")
@@ -1421,7 +1421,7 @@ def nor_bulletins(zone, today):
                          "level": lvl, "rating": (w.get("DangerLevelName") or "").split(" ", 1)[-1], "kind": "bulletin",
                          "issued": (w.get("PublishTime") or "")[:10]})
     w = next((x for x in ws if x["ValidFrom"][:10] == today.isoformat()), None)
-    base = {"zone": zone, "region": rname, "forecaster": "Varsom (NVE, Norwegian Avalanche Warning Service)", "confidence": "",
+    base = {"zone": zone, "region": rname, "forecaster": "Varsom (NVE)", "confidence": "",
             "language": "en", "url": NOR_URL}
     if not w or not int(w.get("DangerLevel") or 0):
         bull = dict(base, issued=(w or {}).get("PublishTime", "")[:10], valid_until="",
@@ -1431,10 +1431,9 @@ def nor_bulletins(zone, today):
         return bull, [], [], hist
     issued = (w.get("PublishTime") or "")[:10]
     adv = " ".join(clean(a.get("Text")) for a in (w.get("AvalancheAdvices") or []) if a.get("Text"))
-    bull = dict(base, issued=issued, valid_until=(w.get("ValidTo") or "")[:10], headline=clean(w.get("MainText")),
+    bull = dict(base, issued=issued, valid_until=(w.get("ValidTo") or "")[:10], headline=" ".join(x for x in (clean(w.get("MainText")), adv) if x),
                 snowpack=_nor_text(w.get("AvalancheDanger"), w.get("CurrentWeaklayers")),
-                detail=_nor_text(w.get("LatestAvalancheActivity"), w.get("SnowSurface")),
-                trend=adv)
+                detail=_nor_text(w.get("LatestAvalancheActivity"), w.get("SnowSurface")), trend="")
     probs = []
     for p in w.get("AvalancheProblems") or []:
         ex = p.get("ValidExpositions") or ""
@@ -1445,6 +1444,73 @@ def nor_bulletins(zone, today):
                       "issued": issued})
     danger = [r for r in hist if r["date"] == today.isoformat()]
     return bull, danger, probs, hist
+
+
+FROST = "https://frost.met.no/observations/v0.jsonld"
+NOR_STATIONS = {  # (Frost source id, name, elevation m, time resolution of its readings) — MET Norway and road-weather stations
+    ROM: [("SN61410", "Mannen", 1294, "PT1H"), ("SN61310", "Trollstigen", 700, "PT10M"),
+          ("SN60620", "Grønning", 312, "PT1H"), ("SN61420", "Marstein", 67, "PT1H")],
+    JOT: [("SN15270", "Juvasshøe", 1894, "PT1H"), ("SN55290", "Sognefjellhytta", 1413, "PT1H"),
+          ("SN13750", "Øvre Heimdalsvatn", 1088, "PT1H"), ("SN15430", "Bøverdal", 700, "PT1H")],
+    HEM: [("SN25115", "Hemsedal Skisenter", 1344, "PT1H"), ("SN25165", "Hemsedalsfjellet", 1130, "PT10M"),
+          ("SN25112", "Hollekolten", 807, "PT1H"), ("SN25100", "Hølto", 648, "PT1H")],
+}
+NOR_STATION_WIND = {ROM: ("SN61410",), JOT: ("SN15270", "SN55290"), HEM: ("SN25115", "SN25165")}  # first is the main card
+FROST_EL = "air_temperature,wind_speed,wind_from_direction,max(wind_speed_of_gust PT1H),surface_snow_thickness"
+
+
+def frost_stations(zone, now, prev_rows):
+    """MET Norway Frost observations. Needs FROST_CLIENT_ID; without it, returns yesterday's rows. A station with
+    rows from yesterday's file only fetches the last week; a new one fetches the season.
+    Returns (daily rows, {source id: hourly wind for the last WIND_HOURS} for the zone's wind stations)."""
+    cid = os.environ.get("FROST_CLIENT_ID", "")
+    prev = [r for r in prev_rows if r.get("zone") == zone]
+    if not cid:
+        return prev, {}
+    tz, rows, winds = TZ[zone], [], {}
+    auth = {"Authorization": "Basic " + base64.b64encode((cid + ":").encode()).decode()}
+    for sid, name, elev, res in NOR_STATIONS[zone]:
+        had = [r for r in prev if r["station"] == name]
+        start_day = (now - timedelta(days=6)).astimezone(tz).date() if had else SEASON_START - timedelta(days=1)
+        t0 = datetime.combine(start_day, datetime.min.time(), tz).astimezone(timezone.utc)
+        try:
+            q = urllib.parse.urlencode({"sources": sid, "elements": FROST_EL, "timeresolutions": f"{res},P1D",
+                                        "referencetime": f"{t0:%Y-%m-%dT%H:%M}/{now + timedelta(minutes=5):%Y-%m-%dT%H:%M}"})
+            try:
+                with urllib.request.urlopen(urllib.request.Request(f"{FROST}?{q}", headers=dict(UA, **auth)), timeout=90) as resp:
+                    data = json.load(resp).get("data", [])
+            except urllib.error.HTTPError as he:
+                if he.code != 404:  # 404: no readings in the period
+                    raise
+                data = []
+        except (OSError, ValueError) as e:
+            print("Frost station unavailable:", name, e)
+            rows += had
+            continue
+        obs = []
+        for item in data:
+            t = datetime.fromisoformat(item["referenceTime"].replace("Z", "+00:00"))
+            v = {}
+            for o in item.get("observations", []):
+                v.setdefault(o["elementId"], o.get("value"))  # first sensor of each element
+            ws, wd = v.get("wind_speed"), v.get("wind_from_direction")
+            g = v.get("max(wind_speed_of_gust PT1H)")
+            obs.append((t.astimezone(tz).date(), v.get("surface_snow_thickness"), v.get("air_temperature"),
+                        None if g is None else g * 3.6, None, None if ws is None or t.minute else ws * 3.6))
+            # hourly readings only (10-minute stations keep the reading on the hour), so the rose counts hours
+            if sid in NOR_STATION_WIND[zone] and t >= now - timedelta(hours=WIND_HOURS) and t.minute == 0 and ws is not None and wd is not None:
+                winds.setdefault(sid, []).append((ws * 3.6, wd, None if g is None else g * 3.6))
+        fresh = [x for x in daily_rows(zone, name, elev, obs) if x["date"] > start_day.isoformat()]
+        old = [x for x in had if x["date"] <= start_day.isoformat()]
+        merged = sorted(old + fresh, key=lambda x: x["date"])
+        pd_ = None
+        for x in merged:
+            dv = x.get("snow_depth_cm")
+            if isinstance(dv, (int, float)):
+                x["depth_change_cm"] = "" if pd_ is None else dv - pd_
+                pd_ = dv
+        rows += merged
+    return rows, winds
 
 
 def nor_wind(zone, now):
@@ -1523,6 +1589,11 @@ def main():
     stations += mf_rows + chx_rows
     and_rows, and_wind_obs = slf_stations(AND, AND_IMIS, AND_IMIS_WIND, now, prev_rows)
     stations += and_rows
+    nor_wind_obs = {}
+    for zname in (ROM, JOT, HEM):
+        nrows, nw = frost_stations(zname, now, prev_rows)
+        stations += nrows
+        nor_wind_obs.update(nw)
     write_csv(f"{out}/stations_daily.json", stations, list(stations[0].keys()))
 
     ws, wr = [], []
@@ -1573,12 +1644,24 @@ def main():
     except (OSError, ValueError, KeyError) as e:
         print("Andermatt wind unavailable:", e)
     for zname in (ROM, JOT, HEM):
+        meta = {c: (n, e) for c, n, e, _ in NOR_STATIONS[zname]}
         try:
-            a, b = wind_summary(zname, now, stations, nor_wind(zname, now))
+            c0 = NOR_STATION_WIND[zname][0]
+            main_w = (nor_wind_obs[c0], *meta[c0]) if len(nor_wind_obs.get(c0, [])) >= 36 else nor_wind(zname, now)
+            a, b = wind_summary(zname, now, stations, main_w)
             ws.append(a)
             wr += b
         except (OSError, ValueError, KeyError) as e:
             print("Norway wind unavailable for", zname, e)
+        for c in NOR_STATION_WIND[zname][1:]:
+            if len(nor_wind_obs.get(c, [])) >= 36:
+                key = f"{zname} · {meta[c][0]}"
+                a, b = wind_summary(key, now, stations, (nor_wind_obs[c], *meta[c]))
+                a["zone"] = key
+                for x in b:
+                    x["zone"] = key
+                ws.append(a)
+                wr += b
     for zname, sid, name, elev in EXTRA_WIND:
         try:
             a, b = wind_summary(zname, now, stations, wind_obs(zname, now, ("avcan", sid, name, elev)))
@@ -1637,7 +1720,7 @@ def main():
             print("Varsom unavailable for", zname, e)
             rname = NOR_REGION[zname][1]
             nor[zname] = (dict(prev_bull[zname]) if zname in prev_bull else {
-                "zone": zname, "region": rname, "forecaster": "Varsom (NVE, Norwegian Avalanche Warning Service)", "issued": "",
+                "zone": zname, "region": rname, "forecaster": "Varsom (NVE)", "issued": "",
                 "valid_until": "", "headline": "The Varsom bulletin couldn't be fetched this morning; check varsom.no.", "snowpack": "",
                 "detail": "", "trend": "", "confidence": "", "language": "en", "url": NOR_URL}, [], [], [])
     rf = regional_forecasts() + sum((regional_forecasts(z, b) for z, b in KOOT_BOUNDS.items()), []) + irf + crf + xrf + arf
