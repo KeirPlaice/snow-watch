@@ -231,7 +231,7 @@ def wind_summary(zone, now, stations_rows, given=None):
     for r in recent:  # new snow in 3 days at the station that gained most (not the zone's stations added together)
         if isinstance(r.get("depth_change_cm"), (int, float)):
             per_station[r["station"]] = per_station.get(r["station"], 0) + max(0, r["depth_change_cm"])
-    new3 = max(per_station.values(), default=0)
+    new3 = max(per_station.values(), default=0 if zr else None)  # None: no station reads snow here
     depth = max((r["snow_depth_cm"] for r in zr if r["date"] == last and isinstance(r.get("snow_depth_cm"), (int, float))), default=None)
     summary = {
         "zone": zone, "station": name, "elevation_m": elev, "period_hours": WIND_HOURS, "readings": len(obs),
@@ -1369,6 +1369,96 @@ def and_wind(now):
     return obs, name, elev
 
 
+# ---------- Norway: Romsdal, Jotunheimen, Hemsedal (Varsom, NVE) ----------
+ROM, JOT, HEM = "Romsdal", "Jotunheimen", "Hemsedal"
+for _z in (ROM, JOT, HEM):
+    TZ[_z] = ZoneInfo("Europe/Oslo")
+VARSOM = "https://api01.nve.no/hydrology/forecast/avalanche/v6.3.0/api/AvalancheWarningByRegion/Detail"
+NOR_REGION = {ROM: (3023, "Romsdal"), JOT: (3028, "Jotunheimen"), HEM: (3032, "Hallingdal")}
+NOR_URL = "https://varsom.no/en/avalanche-bulletins/"
+NOR_ASP = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+NOR_WIND = {ROM: (62.4950, 7.8200, 1500, "Venjetindane ridge (model)"),
+            JOT: (61.6360, 8.3130, 2300, "Galdhøpiggen massif (model)"),
+            HEM: (60.8810, 8.6900, 1700, "Skogshorn (model)")}
+_icon_eu_label = lambda i: "ICON-EU 7 km" if i < 120 else "ICON 13 km"  # ICON-D2 stops short of Norway
+MTN_BANDS[ROM] = (62.52, 7.74, "Europe/Oslo", [("btl", "Below treeline", 300), ("tl", "Treeline", 650), ("alp", "Alpine", 1300)])
+MTN_BANDS[JOT] = (61.60, 8.40, "Europe/Oslo", [("btl", "Below treeline", 1000), ("tl", "Treeline", 1300), ("alp", "Alpine", 2000)])
+MTN_BANDS[HEM] = (60.86, 8.56, "Europe/Oslo", [("btl", "Below treeline", 700), ("tl", "Treeline", 1000), ("alp", "Alpine", 1500)])
+MTN_MODEL[ROM] = {"model": "icon_seamless", "levels": (1000, 975, 950, 925, 900, 850, 800, 750, 700), "ridge": 850, "label": _icon_eu_label}
+MTN_MODEL[JOT] = {"model": "icon_seamless", "levels": (925, 900, 850, 800, 700, 600), "ridge": 700, "label": _icon_eu_label}
+MTN_MODEL[HEM] = {"model": "icon_seamless", "levels": (975, 950, 925, 900, 850, 800, 750, 700), "ridge": 800, "label": _icon_eu_label}
+GRID[ROM] = (7.47, 62.39, 8.03, 62.65, 5, 5, "Europe/Oslo")
+GRID[JOT] = (8.17, 61.46, 8.88, 61.71, 6, 4, "Europe/Oslo")
+GRID[HEM] = (8.32, 60.75, 8.83, 61.01, 5, 5, "Europe/Oslo")
+
+
+def _nor_heights(p):
+    h1, h2, fill = p.get("ExposedHeight1") or 0, p.get("ExposedHeight2") or 0, p.get("ExposedHeightFill") or 0
+    if fill == 1:
+        return f"above {h1:,} m" if h1 else "all elevations"
+    if fill == 2:
+        return f"below {h1:,} m"
+    if fill == 3:
+        return f"below {min(h1, h2):,} m and above {max(h1, h2):,} m"
+    if fill == 4:
+        return f"{min(h1, h2):,} to {max(h1, h2):,} m"
+    return "all elevations"
+
+
+def _nor_text(*parts):
+    return "\n\n".join(clean(x) for x in parts if x and clean(x))
+
+
+def nor_bulletins(zone, today):
+    """bulletin row, today's danger row, problem rows and the season's danger rows for one Norwegian zone (Varsom)."""
+    rid, rname = NOR_REGION[zone]
+    ws = get(f"{VARSOM}/{rid}/2/{SEASON_START.isoformat()}/{today.isoformat()}")
+    hist = []
+    for w in ws:
+        lvl = int(w.get("DangerLevel") or 0)
+        if lvl:
+            hist.append({"zone": zone, "date": w["ValidFrom"][:10], "band": "upper", "band_label": "All elevations",
+                         "level": lvl, "rating": (w.get("DangerLevelName") or "").split(" ", 1)[-1], "kind": "bulletin",
+                         "issued": (w.get("PublishTime") or "")[:10]})
+    w = next((x for x in ws if x["ValidFrom"][:10] == today.isoformat()), None)
+    base = {"zone": zone, "region": rname, "forecaster": "Varsom (NVE)", "confidence": "",
+            "language": "en", "url": NOR_URL}
+    if not w or not int(w.get("DangerLevel") or 0):
+        bull = dict(base, issued=(w or {}).get("PublishTime", "")[:10], valid_until="",
+                    headline=f"No rated Varsom bulletin for {rname} today. Varsom rates each region daily through the winter, "
+                             "typically from December to the end of May; before then it may publish only notes. Check varsom.no.",
+                    snowpack="", detail="", trend="")
+        return bull, [], [], hist
+    issued = (w.get("PublishTime") or "")[:10]
+    adv = " ".join(clean(a.get("Text")) for a in (w.get("AvalancheAdvices") or []) if a.get("Text"))
+    bull = dict(base, issued=issued, valid_until=(w.get("ValidTo") or "")[:10], headline=" ".join(x for x in (clean(w.get("MainText")), adv) if x),
+                snowpack=_nor_text(w.get("AvalancheDanger"), w.get("CurrentWeaklayers")),
+                detail=_nor_text(w.get("LatestAvalancheActivity"), w.get("SnowSurface")), trend="")
+    probs = []
+    for p in w.get("AvalancheProblems") or []:
+        ex = p.get("ValidExpositions") or ""
+        probs.append({"zone": zone, "problem": p.get("AvalancheProblemTypeName") or p.get("AvalancheExtName") or "",
+                      "likelihood": p.get("AvalProbabilityName") or "",
+                      "size": (p.get("DestructiveSizeExtName") or "").split(" ")[0],
+                      "elevations": _nor_heights(p), "aspects": ", ".join(a for a, f in zip(NOR_ASP, ex) if f == "1"),
+                      "issued": issued})
+    danger = [r for r in hist if r["date"] == today.isoformat()]
+    return bull, danger, probs, hist
+
+
+def nor_wind(zone, now):
+    """Modelled hourly wind on a ridge in the zone, last WIND_HOURS (Open-Meteo): no open station feed reaches us."""
+    lat, lon, elev, name = NOR_WIND[zone]
+    d = get("https://api.open-meteo.com/v1/forecast", {"latitude": lat, "longitude": lon, "elevation": elev, "past_days": 3,
+                                                       "forecast_days": 1, "timezone": "UTC",
+                                                       "hourly": "wind_speed_10m,wind_direction_10m,wind_gusts_10m"})
+    h = d["hourly"]
+    t0 = now - timedelta(hours=WIND_HOURS)
+    obs = [(sp, dr, g) for t, sp, dr, g in zip(h["time"], h["wind_speed_10m"], h["wind_direction_10m"], h["wind_gusts_10m"])
+           if t0 <= datetime.fromisoformat(t).replace(tzinfo=timezone.utc) <= now and sp is not None and dr is not None]
+    return obs, name, elev
+
+
 def write_csv(path, rows, fields):
     """Writes PATH as JSON rows (path ends .json); blanks become null, numbers stay numbers."""
     def val(v):
@@ -1481,6 +1571,13 @@ def main():
                 wr += b
     except (OSError, ValueError, KeyError) as e:
         print("Andermatt wind unavailable:", e)
+    for zname in (ROM, JOT, HEM):
+        try:
+            a, b = wind_summary(zname, now, stations, nor_wind(zname, now))
+            ws.append(a)
+            wr += b
+        except (OSError, ValueError, KeyError) as e:
+            print("Norway wind unavailable for", zname, e)
     for zname, sid, name, elev in EXTRA_WIND:
         try:
             a, b = wind_summary(zname, now, stations, wind_obs(zname, now, ("avcan", sid, name, elev)))
@@ -1531,6 +1628,17 @@ def main():
             "headline": "The SLF bulletin couldn't be fetched this morning; check slf.ch.", "snowpack": "",
             "detail": "", "trend": "", "confidence": "", "language": "en", "url": SLF_URL}
         adanger, aprob, arf = [], [], []
+    nor = {}
+    for zname in (ROM, JOT, HEM):
+        try:
+            nor[zname] = nor_bulletins(zname, now.astimezone(TZ[zname]).date())
+        except (OSError, ValueError, KeyError) as e:
+            print("Varsom unavailable for", zname, e)
+            rname = NOR_REGION[zname][1]
+            nor[zname] = (dict(prev_bull[zname]) if zname in prev_bull else {
+                "zone": zname, "region": rname, "forecaster": "Varsom (NVE)", "issued": "",
+                "valid_until": "", "headline": "The Varsom bulletin couldn't be fetched this morning; check varsom.no.", "snowpack": "",
+                "detail": "", "trend": "", "confidence": "", "language": "en", "url": NOR_URL}, [], [], [])
     rf = regional_forecasts() + sum((regional_forecasts(z, b) for z, b in KOOT_BOUNDS.items()), []) + irf + crf + xrf + arf
     write_csv(f"{out}/regional_forecasts.json", rf, list(rf[0].keys()))
 
@@ -1549,7 +1657,7 @@ def main():
     koot = {z: avcan_bulletin(z, *pt) for z, pt in KOOT_POINT.items()}  # the forecast covering each map's home point
     sb, sdanger, sprob = koot[ROSS]
     kdanger = [r for z in (WW, KP) for r in koot[z][1]]
-    for r in rdanger + sdanger + kdanger + idanger + cdanger + xdanger + adanger:
+    for r in rdanger + sdanger + kdanger + idanger + cdanger + xdanger + adanger + sum((v[3] for v in nor.values()), []):
         hist[(r["zone"], r["date"], r["band"])] = r
     vb = None
     for attempt in range(3):  # the ICGC server sometimes drops connections for a while; give it a few minutes
@@ -1583,10 +1691,10 @@ def main():
     fields = ["zone", "date", "band", "band_label", "level", "rating", "kind", "issued"]
     write_csv(f"{out}/danger_history.json", sorted(hist.values(), key=lambda r: (r["zone"], r["date"], r["band"])), fields)
 
-    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb, koot[WW][0], koot[KP][0], cb, xb, ab], list(rb.keys()))
-    probs = rprob + vprob + iprob + sprob + koot[WW][2] + koot[KP][2] + cprob + xprob + aprob
+    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb, koot[WW][0], koot[KP][0], cb, xb, ab] + [nor[z][0] for z in (ROM, JOT, HEM)], list(rb.keys()))
+    probs = rprob + vprob + iprob + sprob + koot[WW][2] + koot[KP][2] + cprob + xprob + aprob + sum((nor[z][2] for z in (ROM, JOT, HEM)), [])
     for zname, issued in ((ROGERS, rb["issued"]), (VALLTER, vb["issued"]), (IBK, ib["issued"]), (ROSS, sb["issued"]), (WW, koot[WW][0]["issued"]),
-                          (KP, koot[KP][0]["issued"]), (RMNP, cb["issued"]), (CHX, xb["issued"]), (AND, ab["issued"])):
+                          (KP, koot[KP][0]["issued"]), (RMNP, cb["issued"]), (CHX, xb["issued"]), (AND, ab["issued"])) + tuple((z, nor[z][0]["issued"]) for z in (ROM, JOT, HEM)):
         if not any(p["zone"] == zname for p in probs):  # one blank row keeps each zone (and the file) readable
             probs.append({"zone": zname, "problem": None, "issued": issued})
     write_csv(f"{out}/problems.json", probs,
@@ -1605,7 +1713,13 @@ def main():
          outlook(CHX, 45.8330, 6.9350, 2200, "Europe/Paris", "Pavillon (Courmayeur)") + \
          outlook(CHX, 46.0100, 7.0900, 2200, "Europe/Paris", "Val Ferret / Champex") + \
          outlook(AND, 46.6440, 8.6050, 2200, "Europe/Zurich", "Gütsch / Nätschen (Andermatt)") + \
-         outlook(AND, 46.5590, 8.5640, 2100, "Europe/Zurich", "Gotthard Pass")
+         outlook(AND, 46.5590, 8.5640, 2100, "Europe/Zurich", "Gotthard Pass") + \
+         outlook(ROM, 62.4930, 7.8000, 1200, "Europe/Oslo", "Romsdalshornet / Venjetindane") + \
+         outlook(ROM, 62.4730, 7.6400, 900, "Europe/Oslo", "Kongen / Innfjorden") + \
+         outlook(JOT, 61.6330, 8.3500, 1700, "Europe/Oslo", "Galdhøpiggen / Spiterstulen") + \
+         outlook(JOT, 61.4900, 8.7000, 1400, "Europe/Oslo", "Gjende / Besseggen") + \
+         outlook(HEM, 60.8390, 8.5350, 1300, "Europe/Oslo", "Totten (Hemsedal)") + \
+         outlook(HEM, 60.8810, 8.6900, 1500, "Europe/Oslo", "Skogshorn")
     write_csv(f"{out}/outlook.json", ol, list(ol[0].keys()))
     mf = []
     for zname in MTN_BANDS:

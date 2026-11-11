@@ -1831,42 +1831,297 @@ details.sw-how[open] > summary{display:none}
       </ul>
     </div>
   </section>
-  <section class="sw-zone" id="romsdal" data-zone="Romsdal" data-temp="" data-wind="" hidden>
-    <p class="sw-sub">Romsdalen and Isfjorden above Åndalsnes, with the Romsdal Alps · slope map; the Varsom bulletin isn't on this tab yet</p>
+  <section class="sw-zone" id="romsdal" data-zone="Romsdal" data-temp="" data-wind="Venjetindane ridge (model)" hidden>
+    <p class="sw-sub">Romsdalen and Isfjorden above Åndalsnes, with the Romsdal Alps · bulletin by Varsom (NVE)</p>
 
-    <div class="sw-card sw-wide">
-      <h2 class="sw-h">Avalanche bulletin</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">This tab has the slope map and route check for now. The Norwegian avalanche bulletin from Varsom, weather stations and forecasts by elevation are coming next. Until then, read today's bulletin at <a href="https://varsom.no/en/" target="_blank" rel="noopener">varsom.no</a> before you go; route checks here look at the terrain only.</p></details>
+    <div class="sw-grid sw-grid-top">
+      <div class="sw-card" id="romsdal-danger">
+        <h2 class="sw-h">Avalanche danger</h2>
+        <p class="sw-note">Today's Varsom rating for the Romsdal region, which covers most of this map. Varsom gives one rating per region; each avalanche problem below says at what heights and aspects it applies.</p>
+        <div class="sw-danger" data-draw="danger" data-source="danger_now"></div>
+        <dl class="sw-meta">
+          <dt>Issued</dt><dd data-draw="cell" data-source="bulletins" data-field="issued" data-where="zone=Romsdal">—</dd>
+          <dt>Valid until</dt><dd data-draw="cell" data-source="bulletins" data-field="valid_until" data-where="zone=Romsdal">—</dd>
+        </dl>
+      </div>
+      <div class="sw-card" id="romsdal-bulletin">
+        <h2 class="sw-h">What the forecasters say</h2>
+        <p class="sw-note">The current bulletin's headline and snowpack notes. Varsom's headline and advice are in English; its snowpack and activity notes are published in Norwegian and appear as published.</p>
+        <div class="sw-bulletin" data-draw="bulletin" data-source="bulletins"></div>
+        <h3 class="sw-h3">Avalanche problems</h3>
+        <div class="sw-problems" data-draw="problems" data-source="problems"></div>
+      </div>
     </div>
 
     <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;romsdal&quot;, &quot;contour&quot;: 100, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 30 by 30 km around Romsdalen: Åndalsnes and Isfjorden, Romsdalshornet and the Venjetindane, Trollveggen and the Trolltindane, Kongen and Innfjorden, and the peaks east to Kalskråtinden and Breitinden. Zoom in and it sharpens to 5 m lidar.&quot;, &quot;map_caveat&quot;: &quot;Slopes from Kartverket's national elevation model (NHM DTM: airborne lidar at 1 m, bare earth), averaged to 5 m, covering the whole map; forest doesn't show as false steep ground. Zoomed out, the map shows a 30 m summary of the 5 m steepness; the route check uses 5 m. Names from GeoNames; peaks are pinned to the 5 m model summit, so heights can differ a few metres from the map you carry. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_rom&quot;, &quot;blocks&quot;: [&quot;t5_rom&quot;, 7, 7]}"></div>
 
+    <div class="sw-avzone" data-zone="Romsdal" id="avalanches-romsdal">
+      <h2 class="sw-section">Recent avalanches</h2>
+      <p class="sw-note">Field reports aren't included for Norway yet. Observed avalanches, snow tests and danger signs are shared on <a href="https://www.regobs.no/" target="_blank" rel="noopener">regObs</a> and summarised in the Varsom bulletin's notes above. Check them before you go.</p>
+    </div>
+
+
+    <h2 class="sw-section">On the ground</h2>
+    <p class="sw-note">Weather-station readings (snow depth, temperature, wind) aren't connected for this area yet. The model forecasts below and the bulletin's snowpack notes stand in for now.</p>
+
+    <div class="sw-card sw-wide" id="romsdal-windcard">
+      <h2 class="sw-h">Wind, last 72 hours</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Modelled (Open-Meteo) on the Venjetindane ridge above Romsdalen at 1,500 m: Norway's mountain weather stations aren't connected here yet. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Romsdal">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Romsdal">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Romsdal">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Romsdal">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Romsdal">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="sw-card sw-wide" id="romsdal-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for Romsdalen below Romsdalshornet: the 7 km ICON-EU for about five days, then the 13 km global run. Seven kilometres smooths Norway's steep valleys and fjords, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over Romsdalen below Romsdalshornet, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Romsdalen below Romsdalshornet; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 1,300 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 650 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
+      </div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 1,400 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="300,650,1300" data-tz="Central European"></div>
+      <h3 class="sw-h3">Day by day</h3>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
+          <thead><tr>
+            <th>Day</th>
+            <th>Alpine 1,300 m</th>
+            <th>Treeline 650 m</th>
+            <th>Below treeline 300 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
+          </tr></thead>
+          <tbody data-draw="mtn-rows"></tbody>
+        </table>
+      </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
+    </div>
+
+    <div class="sw-card sw-wide" id="romsdal-history">
+      <h2 class="sw-h">Danger through the season</h2>
+      <p class="sw-note">Each square is one day's rating for that elevation band. This builds up day by day from the daily refresh.</p>
+      <div class="sw-chart sw-chart-strip dash-skeleton" data-draw="history" data-source="danger_history"></div>
+      <ul class="sw-legend">
+        <li><i class="sw-sw" style="background:var(--sw-d0)"></i>No rating yet</li>
+        <li><i class="sw-sw" style="background:var(--sw-d1)"></i>1 Low</li>
+        <li><i class="sw-sw" style="background:var(--sw-d2)"></i>2 Moderate</li>
+        <li><i class="sw-sw" style="background:var(--sw-d3)"></i>3 Considerable</li>
+        <li><i class="sw-sw" style="background:var(--sw-d4)"></i>4 High</li>
+        <li><i class="sw-sw" style="background:var(--sw-d5)"></i>5 Extreme / Very high</li>
+      </ul>
+    </div>
   </section>
+  <section class="sw-zone" id="jotunheimen" data-zone="Jotunheimen" data-temp="" data-wind="Galdhøpiggen massif (model)" hidden>
+    <p class="sw-sub">The high Jotunheimen: Galdhøpiggen, Glittertind, Visdalen, Leirvassbu and Gjende · bulletin by Varsom (NVE)</p>
 
-  <section class="sw-zone" id="jotunheimen" data-zone="Jotunheimen" data-temp="" data-wind="" hidden>
-    <p class="sw-sub">The high Jotunheimen: Galdhøpiggen, Glittertind, Visdalen, Leirvassbu and Gjende · slope map; the Varsom bulletin isn't on this tab yet</p>
-
-    <div class="sw-card sw-wide">
-      <h2 class="sw-h">Avalanche bulletin</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">This tab has the slope map and route check for now. The Norwegian avalanche bulletin from Varsom, weather stations and forecasts by elevation are coming next. Until then, read today's bulletin at <a href="https://varsom.no/en/" target="_blank" rel="noopener">varsom.no</a> before you go; route checks here look at the terrain only.</p></details>
+    <div class="sw-grid sw-grid-top">
+      <div class="sw-card" id="jotunheimen-danger">
+        <h2 class="sw-h">Avalanche danger</h2>
+        <p class="sw-note">Today's Varsom rating for the Jotunheimen region, which covers this map. Varsom gives one rating per region; each avalanche problem below says at what heights and aspects it applies.</p>
+        <div class="sw-danger" data-draw="danger" data-source="danger_now"></div>
+        <dl class="sw-meta">
+          <dt>Issued</dt><dd data-draw="cell" data-source="bulletins" data-field="issued" data-where="zone=Jotunheimen">—</dd>
+          <dt>Valid until</dt><dd data-draw="cell" data-source="bulletins" data-field="valid_until" data-where="zone=Jotunheimen">—</dd>
+        </dl>
+      </div>
+      <div class="sw-card" id="jotunheimen-bulletin">
+        <h2 class="sw-h">What the forecasters say</h2>
+        <p class="sw-note">The current bulletin's headline and snowpack notes. Varsom's headline and advice are in English; its snowpack and activity notes are published in Norwegian and appear as published.</p>
+        <div class="sw-bulletin" data-draw="bulletin" data-source="bulletins"></div>
+        <h3 class="sw-h3">Avalanche problems</h3>
+        <div class="sw-problems" data-draw="problems" data-source="problems"></div>
+      </div>
     </div>
 
     <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;jotunheimen&quot;, &quot;contour&quot;: 100, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 40 by 30 km over central Jotunheimen: Galdhøpiggen and Juvasshytta, Glittertind, Spiterstulen and Visdalen, Leirvassbu, and Memurubu, Gjende and Besseggen. Zoom in and it sharpens to 5 m lidar.&quot;, &quot;map_caveat&quot;: &quot;Slopes from Kartverket's national elevation model (NHM DTM: airborne lidar at 1 m, bare earth), averaged to 5 m, covering the whole map; forest doesn't show as false steep ground. Zoomed out, the map shows a 30 m summary of the 5 m steepness; the route check uses 5 m. Glaciers are named but not outlined, and on glaciers lidar shows the ice surface on the day it was flown. Crevasses and serac fall are not mapped. Names from GeoNames; peaks are pinned to the 5 m model summit, so heights can differ a few metres from the map you carry. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_jot&quot;, &quot;blocks&quot;: [&quot;t5_jot&quot;, 6, 8]}"></div>
 
+    <div class="sw-avzone" data-zone="Jotunheimen" id="avalanches-jotunheimen">
+      <h2 class="sw-section">Recent avalanches</h2>
+      <p class="sw-note">Field reports aren't included for Norway yet. Observed avalanches, snow tests and danger signs are shared on <a href="https://www.regobs.no/" target="_blank" rel="noopener">regObs</a> and summarised in the Varsom bulletin's notes above. Check them before you go.</p>
+    </div>
+
+
+    <h2 class="sw-section">On the ground</h2>
+    <p class="sw-note">Weather-station readings (snow depth, temperature, wind) aren't connected for this area yet. The model forecasts below and the bulletin's snowpack notes stand in for now.</p>
+
+    <div class="sw-card sw-wide" id="jotunheimen-windcard">
+      <h2 class="sw-h">Wind, last 72 hours</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Modelled (Open-Meteo) on the Galdhøpiggen massif at 2,300 m: Norway's mountain weather stations aren't connected here yet. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Jotunheimen">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Jotunheimen">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Jotunheimen">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Jotunheimen">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Jotunheimen">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="sw-card sw-wide" id="jotunheimen-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for Visdalen and Spiterstulen: the 7 km ICON-EU for about five days, then the 13 km global run. Seven kilometres smooths Norway's steep valleys and fjords, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over Visdalen and Spiterstulen, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Visdalen and Spiterstulen; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 2,000 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 1,300 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
+      </div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 3,000 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1000,1300,2000" data-tz="Central European"></div>
+      <h3 class="sw-h3">Day by day</h3>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
+          <thead><tr>
+            <th>Day</th>
+            <th>Alpine 2,000 m</th>
+            <th>Treeline 1,300 m</th>
+            <th>Below treeline 1,000 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
+          </tr></thead>
+          <tbody data-draw="mtn-rows"></tbody>
+        </table>
+      </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
+    </div>
+
+    <div class="sw-card sw-wide" id="jotunheimen-history">
+      <h2 class="sw-h">Danger through the season</h2>
+      <p class="sw-note">Each square is one day's rating for that elevation band. This builds up day by day from the daily refresh.</p>
+      <div class="sw-chart sw-chart-strip dash-skeleton" data-draw="history" data-source="danger_history"></div>
+      <ul class="sw-legend">
+        <li><i class="sw-sw" style="background:var(--sw-d0)"></i>No rating yet</li>
+        <li><i class="sw-sw" style="background:var(--sw-d1)"></i>1 Low</li>
+        <li><i class="sw-sw" style="background:var(--sw-d2)"></i>2 Moderate</li>
+        <li><i class="sw-sw" style="background:var(--sw-d3)"></i>3 Considerable</li>
+        <li><i class="sw-sw" style="background:var(--sw-d4)"></i>4 High</li>
+        <li><i class="sw-sw" style="background:var(--sw-d5)"></i>5 Extreme / Very high</li>
+      </ul>
+    </div>
   </section>
+  <section class="sw-zone" id="hemsedal" data-zone="Hemsedal" data-temp="" data-wind="Skogshorn (model)" hidden>
+    <p class="sw-sub">Hemsedal: the ski area, Skogshorn and the surrounding fells · bulletin by Varsom (NVE), Hallingdal region</p>
 
-  <section class="sw-zone" id="hemsedal" data-zone="Hemsedal" data-temp="" data-wind="" hidden>
-    <p class="sw-sub">Hemsedal: the ski area, Skogshorn and the surrounding fells · slope map; the Varsom bulletin isn't on this tab yet</p>
-
-    <div class="sw-card sw-wide">
-      <h2 class="sw-h">Avalanche bulletin</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">This tab has the slope map and route check for now. The Norwegian avalanche bulletin from Varsom, weather stations and forecasts by elevation are coming next. Until then, read today's bulletin at <a href="https://varsom.no/en/" target="_blank" rel="noopener">varsom.no</a> before you go; route checks here look at the terrain only.</p></details>
+    <div class="sw-grid sw-grid-top">
+      <div class="sw-card" id="hemsedal-danger">
+        <h2 class="sw-h">Avalanche danger</h2>
+        <p class="sw-note">Today's Varsom rating for the Hallingdal region, which covers most of this map. Varsom gives one rating per region; each avalanche problem below says at what heights and aspects it applies.</p>
+        <div class="sw-danger" data-draw="danger" data-source="danger_now"></div>
+        <dl class="sw-meta">
+          <dt>Issued</dt><dd data-draw="cell" data-source="bulletins" data-field="issued" data-where="zone=Hemsedal">—</dd>
+          <dt>Valid until</dt><dd data-draw="cell" data-source="bulletins" data-field="valid_until" data-where="zone=Hemsedal">—</dd>
+        </dl>
+      </div>
+      <div class="sw-card" id="hemsedal-bulletin">
+        <h2 class="sw-h">What the forecasters say</h2>
+        <p class="sw-note">The current bulletin's headline and snowpack notes. Varsom's headline and advice are in English; its snowpack and activity notes are published in Norwegian and appear as published.</p>
+        <div class="sw-bulletin" data-draw="bulletin" data-source="bulletins"></div>
+        <h3 class="sw-h3">Avalanche problems</h3>
+        <div class="sw-problems" data-draw="problems" data-source="problems"></div>
+      </div>
     </div>
 
     <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;hemsedal&quot;, &quot;contour&quot;: 100, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 30 by 30 km around Hemsedal: the ski area and Totten, Skogshorn, Lykkja and Grøndalen, and the fells north towards Hemsedalsfjellet. Zoom in and it sharpens to 5 m lidar.&quot;, &quot;map_caveat&quot;: &quot;Slopes from Kartverket's national elevation model (NHM DTM: airborne lidar at 1 m, bare earth), averaged to 5 m, covering the whole map; forest doesn't show as false steep ground. Zoomed out, the map shows a 30 m summary of the 5 m steepness; the route check uses 5 m. Names from GeoNames; peaks are pinned to the 5 m model summit, so heights can differ a few metres from the map you carry. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_hem&quot;, &quot;blocks&quot;: [&quot;t5_hem&quot;, 7, 6]}"></div>
 
-  </section>
+    <div class="sw-avzone" data-zone="Hemsedal" id="avalanches-hemsedal">
+      <h2 class="sw-section">Recent avalanches</h2>
+      <p class="sw-note">Field reports aren't included for Norway yet. Observed avalanches, snow tests and danger signs are shared on <a href="https://www.regobs.no/" target="_blank" rel="noopener">regObs</a> and summarised in the Varsom bulletin's notes above. Check them before you go.</p>
+    </div>
 
+
+    <h2 class="sw-section">On the ground</h2>
+    <p class="sw-note">Weather-station readings (snow depth, temperature, wind) aren't connected for this area yet. The model forecasts below and the bulletin's snowpack notes stand in for now.</p>
+
+    <div class="sw-card sw-wide" id="hemsedal-windcard">
+      <h2 class="sw-h">Wind, last 72 hours</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Modelled (Open-Meteo) on Skogshorn at 1,700 m: Norway's mountain weather stations aren't connected here yet. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Hemsedal">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Hemsedal">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Hemsedal">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Hemsedal">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Hemsedal">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="sw-card sw-wide" id="hemsedal-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for Hemsedal village and the valley: the 7 km ICON-EU for about five days, then the 13 km global run. Seven kilometres smooths Norway's steep valleys and fjords, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over Hemsedal village and the valley, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Hemsedal village and the valley; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 1,500 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 1,000 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
+      </div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 1,900 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="700,1000,1500" data-tz="Central European"></div>
+      <h3 class="sw-h3">Day by day</h3>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
+          <thead><tr>
+            <th>Day</th>
+            <th>Alpine 1,500 m</th>
+            <th>Treeline 1,000 m</th>
+            <th>Below treeline 700 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
+          </tr></thead>
+          <tbody data-draw="mtn-rows"></tbody>
+        </table>
+      </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
+    </div>
+
+    <div class="sw-card sw-wide" id="hemsedal-history">
+      <h2 class="sw-h">Danger through the season</h2>
+      <p class="sw-note">Each square is one day's rating for that elevation band. This builds up day by day from the daily refresh.</p>
+      <div class="sw-chart sw-chart-strip dash-skeleton" data-draw="history" data-source="danger_history"></div>
+      <ul class="sw-legend">
+        <li><i class="sw-sw" style="background:var(--sw-d0)"></i>No rating yet</li>
+        <li><i class="sw-sw" style="background:var(--sw-d1)"></i>1 Low</li>
+        <li><i class="sw-sw" style="background:var(--sw-d2)"></i>2 Moderate</li>
+        <li><i class="sw-sw" style="background:var(--sw-d3)"></i>3 Considerable</li>
+        <li><i class="sw-sw" style="background:var(--sw-d4)"></i>4 High</li>
+        <li><i class="sw-sw" style="background:var(--sw-d5)"></i>5 Extreme / Very high</li>
+      </ul>
+    </div>
+  </section>
 
 
 </div>
