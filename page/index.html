@@ -298,8 +298,8 @@ details.sw-how[open] > summary{display:none}
     <h1>Traça</h1>
     <p>A route-checking tool with terrain gradients, plus today’s avalanche bulletins, snow conditions, and the week’s weather, refreshed every morning.</p>
   </header>
-  <nav class="sw-ranges" aria-label="Mountain range"><button type="button" class="sw-range" data-range="bc" aria-pressed="true">British Columbia</button><button type="button" class="sw-range" data-range="rockies" aria-pressed="false">Rockies</button><button type="button" class="sw-range" data-range="alps" aria-pressed="false">Alps</button><button type="button" class="sw-range" data-range="pyrenees" aria-pressed="false">Pyrenees</button></nav>
-  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" data-range="bc" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="whitewater" data-range="bc" aria-selected="false">Whitewater</button><button class="sw-tab" role="tab" data-tab="kpass" data-range="bc" aria-selected="false">Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="rossland" data-range="bc" aria-selected="false">Rossland Range</button><button class="sw-tab" role="tab" data-tab="rmnp" data-range="rockies" aria-selected="false" hidden>Rocky Mountain NP</button><button class="sw-tab" role="tab" data-tab="chamonix" data-range="alps" aria-selected="false" hidden>Chamonix</button><button class="sw-tab" role="tab" data-tab="andermatt" data-range="alps" aria-selected="false" hidden>Andermatt</button><button class="sw-tab" role="tab" data-tab="innsbruck" data-range="alps" aria-selected="false" hidden>Innsbruck</button><button class="sw-tab" role="tab" data-tab="vallter" data-range="pyrenees" aria-selected="false" hidden>Vallter / Ulldeter</button></nav>
+  <nav class="sw-ranges" aria-label="Mountain range"><button type="button" class="sw-range" data-range="bc" aria-pressed="true">British Columbia</button><button type="button" class="sw-range" data-range="rockies" aria-pressed="false">Rockies</button><button type="button" class="sw-range" data-range="alps" aria-pressed="false">Alps</button><button type="button" class="sw-range" data-range="pyrenees" aria-pressed="false">Pyrenees</button><button type="button" class="sw-range" data-range="norway" aria-pressed="false">Norway</button></nav>
+  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" data-range="bc" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="whitewater" data-range="bc" aria-selected="false">Whitewater</button><button class="sw-tab" role="tab" data-tab="kpass" data-range="bc" aria-selected="false">Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="rossland" data-range="bc" aria-selected="false">Rossland Range</button><button class="sw-tab" role="tab" data-tab="rmnp" data-range="rockies" aria-selected="false" hidden>Rocky Mountain NP</button><button class="sw-tab" role="tab" data-tab="chamonix" data-range="alps" aria-selected="false" hidden>Chamonix</button><button class="sw-tab" role="tab" data-tab="andermatt" data-range="alps" aria-selected="false" hidden>Andermatt</button><button class="sw-tab" role="tab" data-tab="innsbruck" data-range="alps" aria-selected="false" hidden>Innsbruck</button><button class="sw-tab" role="tab" data-tab="vallter" data-range="pyrenees" aria-selected="false" hidden>Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="romsdal" data-range="norway" aria-selected="false" hidden>Romsdal</button><button class="sw-tab" role="tab" data-tab="jotunheimen" data-range="norway" aria-selected="false" hidden>Jotunheimen</button><button class="sw-tab" role="tab" data-tab="hemsedal" data-range="norway" aria-selected="false" hidden>Hemsedal</button></nav>
 
   <section class="sw-zone" id="rogers" data-zone="Rogers Pass" data-temp="Fidelity" data-wind="MacDonald West Shoulder">
     <p class="sw-sub">Glacier National Park, Selkirk Mountains, BC · forecast by Parks Canada via Avalanche Canada</p>
@@ -1831,12 +1831,53 @@ details.sw-how[open] > summary{display:none}
       </ul>
     </div>
   </section>
+  <section class="sw-zone" id="romsdal" data-zone="Romsdal" data-temp="" data-wind="" hidden>
+    <p class="sw-sub">Romsdalen and Isfjorden above Åndalsnes, with the Romsdal Alps · slope map; the Varsom bulletin isn't on this tab yet</p>
+
+    <div class="sw-card sw-wide">
+      <h2 class="sw-h">Avalanche bulletin</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">This tab has the slope map and route check for now. The Norwegian avalanche bulletin from Varsom, weather stations and forecasts by elevation are coming next. Until then, read today's bulletin at <a href="https://varsom.no/en/" target="_blank" rel="noopener">varsom.no</a> before you go; route checks here look at the terrain only.</p></details>
+    </div>
+
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;romsdal&quot;, &quot;contour&quot;: 100, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 30 by 30 km around Romsdalen: Åndalsnes and Isfjorden, Romsdalshornet and the Venjetindane, Trollveggen and the Trolltindane, Kongen and Innfjorden, and the peaks east to Kalskråtinden and Breitinden. Zoom in and it sharpens to 5 m lidar.&quot;, &quot;map_caveat&quot;: &quot;Slopes from Kartverket's national elevation model (NHM DTM: airborne lidar at 1 m, bare earth), averaged to 5 m, covering the whole map; forest doesn't show as false steep ground. Zoomed out, the map shows a 30 m summary of the 5 m steepness; the route check uses 5 m. Names from GeoNames; peaks are pinned to the 5 m model summit, so heights can differ a few metres from the map you carry. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_rom&quot;, &quot;blocks&quot;: [&quot;t5_rom&quot;, 7, 7]}"></div>
+
+  </section>
+
+  <section class="sw-zone" id="jotunheimen" data-zone="Jotunheimen" data-temp="" data-wind="" hidden>
+    <p class="sw-sub">The high Jotunheimen: Galdhøpiggen, Glittertind, Visdalen, Leirvassbu and Gjende · slope map; the Varsom bulletin isn't on this tab yet</p>
+
+    <div class="sw-card sw-wide">
+      <h2 class="sw-h">Avalanche bulletin</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">This tab has the slope map and route check for now. The Norwegian avalanche bulletin from Varsom, weather stations and forecasts by elevation are coming next. Until then, read today's bulletin at <a href="https://varsom.no/en/" target="_blank" rel="noopener">varsom.no</a> before you go; route checks here look at the terrain only.</p></details>
+    </div>
+
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;jotunheimen&quot;, &quot;contour&quot;: 100, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 40 by 30 km over central Jotunheimen: Galdhøpiggen and Juvasshytta, Glittertind, Spiterstulen and Visdalen, Leirvassbu, and Memurubu, Gjende and Besseggen. Zoom in and it sharpens to 5 m lidar.&quot;, &quot;map_caveat&quot;: &quot;Slopes from Kartverket's national elevation model (NHM DTM: airborne lidar at 1 m, bare earth), averaged to 5 m, covering the whole map; forest doesn't show as false steep ground. Zoomed out, the map shows a 30 m summary of the 5 m steepness; the route check uses 5 m. Glaciers are named but not outlined, and on glaciers lidar shows the ice surface on the day it was flown. Crevasses and serac fall are not mapped. Names from GeoNames; peaks are pinned to the 5 m model summit, so heights can differ a few metres from the map you carry. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_jot&quot;, &quot;blocks&quot;: [&quot;t5_jot&quot;, 6, 8]}"></div>
+
+  </section>
+
+  <section class="sw-zone" id="hemsedal" data-zone="Hemsedal" data-temp="" data-wind="" hidden>
+    <p class="sw-sub">Hemsedal: the ski area, Skogshorn and the surrounding fells · slope map; the Varsom bulletin isn't on this tab yet</p>
+
+    <div class="sw-card sw-wide">
+      <h2 class="sw-h">Avalanche bulletin</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">This tab has the slope map and route check for now. The Norwegian avalanche bulletin from Varsom, weather stations and forecasts by elevation are coming next. Until then, read today's bulletin at <a href="https://varsom.no/en/" target="_blank" rel="noopener">varsom.no</a> before you go; route checks here look at the terrain only.</p></details>
+    </div>
+
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;hemsedal&quot;, &quot;contour&quot;: 100, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 30 by 30 km around Hemsedal: the ski area and Totten, Skogshorn, Lykkja and Grøndalen, and the fells north towards Hemsedalsfjellet. Zoom in and it sharpens to 5 m lidar.&quot;, &quot;map_caveat&quot;: &quot;Slopes from Kartverket's national elevation model (NHM DTM: airborne lidar at 1 m, bare earth), averaged to 5 m, covering the whole map; forest doesn't show as false steep ground. Zoomed out, the map shows a 30 m summary of the 5 m steepness; the route check uses 5 m. Names from GeoNames; peaks are pinned to the 5 m model summit, so heights can differ a few metres from the map you carry. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_hem&quot;, &quot;blocks&quot;: [&quot;t5_hem&quot;, 7, 6]}"></div>
+
+  </section>
+
 
 
 </div>
 <script src="app.js"></script>
 
 <script>
+// the Norway maps (139 detail files) are on the website only for now: the dashboard leaves out that range
+if (!window.swStandalone) {
+  for (const id of ['romsdal', 'jotunheimen', 'hemsedal']) { document.getElementById(id)?.remove(); document.querySelector(`.sw-tab[data-tab="${id}"]`)?.remove(); }
+  document.querySelector('.sw-range[data-range="norway"]')?.remove();
+}
 const swStore = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } };
 const showTab = (id) => {
   const tab = document.querySelector(`.sw-tab[data-tab="${id}"]`);
