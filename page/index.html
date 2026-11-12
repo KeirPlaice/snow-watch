@@ -56,6 +56,9 @@
 .sw-chart svg{display:block;overflow:visible}
 .sw-chart text{font-family:var(--font-anthropic-sans);font-size:11px;fill:var(--color-fg-muted)}
 .sw-chart .sw-endlab{font-size:12px}
+.sw-sat-layer{position:absolute;inset:0}
+.sw-sat-attr{position:absolute;right:4px;bottom:4px;font-size:10px;line-height:1.2;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,.75);color:#333;pointer-events:none;z-index:1}
+.sw-sat-op-l input{width:7rem;vertical-align:middle}
 .sw-tip{position:absolute;pointer-events:none;background:var(--cds-surface-popover);border:1px solid var(--cds-border);border-radius:var(--cds-radius);box-shadow:var(--cds-shadow-popover);padding:var(--cds-pad-xs) var(--cds-pad-sm);font-size:var(--cds-font-size-caption);white-space:nowrap;z-index:2;font-variant-numeric:tabular-nums}
 .sw-tip .sw-tdate{color:var(--cds-text-secondary);margin-bottom:2px}
 .sw-tip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
@@ -2420,6 +2423,7 @@ details.sw-how[open] > summary{display:none}
 if (!window.swStandalone) {
   for (const id of ['romsdal', 'jotunheimen', 'hemsedal', 'aiguestortes']) { document.getElementById(id)?.remove(); document.querySelector(`.sw-tab[data-tab="${id}"]`)?.remove(); }
   document.querySelector('.sw-range[data-range="norway"]')?.remove();
+  for (const x of document.querySelectorAll('.sw-sat-tog, .sw-sat-op-l')) x.remove(); // the dashboard page can't load outside images
 }
 const swStore = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } };
 const showTab = (id) => {
