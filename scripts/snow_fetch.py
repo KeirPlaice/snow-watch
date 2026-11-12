@@ -436,12 +436,15 @@ def avcan_bulletin(zone=ROGERS, lat=51.30, lon=-117.52):
     return bull, danger, problems
 
 
+def icgc_zones(day, lang=1):
+    return get("https://bpa.icgc.cat/api/apiext/butlletiglobal", {"id": 512, "values": f"{day.isoformat()};{lang}"})
+
+
 def icgc_day(day, lang=1):
-    zones = get("https://bpa.icgc.cat/api/apiext/butlletiglobal", {"id": 512, "values": f"{day.isoformat()};{lang}"})
-    return next(z for z in zones if z["id_zona"] == "7")  # Ter-Freser
+    return next(z for z in icgc_zones(day, lang) if z["id_zona"] == "7")  # Ter-Freser
 
 
-def icgc_danger_rows(z):
+def icgc_danger_rows(z, zone=None):
     lvl1 = int(z.get("grau_perill_primari") or 0)
     lvl2 = z.get("grau_perill_secundari")
     lvl2 = int(lvl2) if lvl2 not in (None, "") else lvl1
@@ -451,7 +454,7 @@ def icgc_danger_rows(z):
     rows = []
     for band, lvl, label in (("upper", lvl1, f"Above {thr} m" if thr else "Upper"),
                              ("lower", lvl2, f"Below {thr} m" if thr else "Lower")):
-        rows.append({"zone": VALLTER, "date": day, "band": band, "band_label": label, "level": lvl,
+        rows.append({"zone": zone or VALLTER, "date": day, "band": band, "band_label": label, "level": lvl,
                      "rating": ICGC_LABEL.get(lvl, "No bulletin"), "kind": "bulletin", "issued": day})
     return rows
 
@@ -1544,6 +1547,55 @@ def nor_wind(zone, now):
     return obs, name, elev
 
 
+# ---------- Aigüestortes and the Vall de Boí (ICGC, three bulletin zones) ----------
+AIG = "Aigüestortes"
+TZ[AIG] = ZoneInfo("Europe/Madrid")
+AIG_REGIONS = json.loads(r"""{"1":{"name":"Aran - Franja Nord Pallaresa","share":0.191,"rings":[[[0.766,42.609],[0.745,42.615],[0.741,42.612],[0.734,42.612],[0.7,42.627],[0.7,42.72],[1.152,42.72],[1.167,42.711],[1.2,42.72],[1.2,42.677],[1.153,42.683],[1.144,42.681],[1.136,42.684],[1.13,42.682],[1.109,42.685],[1.085,42.681],[1.052,42.702],[1.04,42.701],[1.033,42.692],[1.02,42.684],[1.007,42.666],[1.005,42.638],[0.994,42.626],[0.99,42.612],[0.966,42.604],[0.959,42.604],[0.952,42.594],[0.941,42.59],[0.922,42.592],[0.91,42.607],[0.903,42.608],[0.893,42.616],[0.897,42.625],[0.878,42.632],[0.839,42.609],[0.826,42.605],[0.813,42.617],[0.804,42.618],[0.766,42.609]]]},"2":{"name":"Ribagorçana - Vall Fosca","share":0.461,"rings":[[[0.767,42.609],[0.804,42.618],[0.813,42.617],[0.826,42.605],[0.839,42.609],[0.878,42.632],[0.897,42.625],[0.893,42.616],[0.903,42.608],[0.91,42.607],[0.922,42.592],[0.941,42.59],[0.953,42.595],[0.965,42.592],[0.98,42.573],[0.979,42.555],[0.99,42.551],[1.0,42.538],[1.016,42.537],[1.026,42.523],[1.024,42.515],[1.03,42.507],[1.025,42.5],[1.018,42.472],[1.021,42.458],[1.02,42.44],[1.029,42.425],[1.022,42.401],[0.871,42.4],[0.857,42.424],[0.851,42.419],[0.835,42.426],[0.808,42.427],[0.793,42.435],[0.78,42.447],[0.759,42.455],[0.744,42.475],[0.716,42.479],[0.715,42.488],[0.73,42.498],[0.733,42.505],[0.739,42.506],[0.73,42.513],[0.721,42.514],[0.724,42.521],[0.722,42.525],[0.726,42.535],[0.735,42.54],[0.75,42.535],[0.74,42.545],[0.749,42.553],[0.75,42.561],[0.758,42.574],[0.758,42.584],[0.767,42.609]]]},"3":{"name":"Pallaresa","share":0.344,"rings":[[[1.022,42.401],[1.029,42.425],[1.02,42.44],[1.021,42.458],[1.018,42.472],[1.025,42.5],[1.03,42.507],[1.024,42.515],[1.027,42.52],[1.025,42.526],[1.016,42.537],[1.0,42.538],[0.99,42.551],[0.979,42.555],[0.98,42.573],[0.965,42.592],[0.953,42.595],[0.955,42.6],[0.959,42.604],[0.966,42.604],[0.99,42.612],[0.994,42.626],[1.005,42.638],[1.007,42.666],[1.02,42.684],[1.033,42.692],[1.04,42.701],[1.052,42.702],[1.085,42.681],[1.109,42.685],[1.13,42.682],[1.136,42.684],[1.144,42.681],[1.153,42.683],[1.2,42.677],[1.2,42.4],[1.022,42.401]]]}}""")
+AIG_XEMA = [("Z2", "Boí", 2537), ("Z7", "Espot", 2519), ("Z1", "Bonaigua", 2262), ("VS", "Lac Redon", 2245)]
+AIG_WIND = [("xema", "Z7", "Espot", 2519), ("xema", "VS", "Lac Redon", 2245)]  # main card, then a second card
+GRID[AIG] = (0.78, 42.45, 1.11, 42.67, 6, 4, "Europe/Madrid")
+MTN_BANDS[AIG] = (42.56, 0.95, "Europe/Madrid", [("btl", "Below treeline", 1700), ("tl", "Treeline", 2300), ("alp", "Alpine", 2900)])
+MTN_MODEL[AIG] = {"model": "icon_seamless", "levels": (900, 850, 800, 700, 600, 500), "ridge": 700, "label": _icon_eu_label}  # ICON-D2 stops north of the Pyrenees
+
+
+def aig_bulletins(today):
+    """bulletin row, danger rows, problem rows and regional rows for the Aigüestortes map: the ICGC zone with the
+    highest rating today leads (Ribagorçana - Vall Fosca, the Vall de Boí, on a tie); all three go to the regional map."""
+    zs = {z["id_zona"]: z for z in icgc_zones(today)}
+    en = {z["id_zona"]: z for z in icgc_zones(today, 3)}
+    lvl = lambda z: max(int(z.get("grau_perill_primari") or 0), int(z.get("grau_perill_secundari") or 0))
+    regional = []
+    for rid, info in sorted(AIG_REGIONS.items(), key=lambda kv: -kv[1]["share"]):
+        z = zs.get(rid) or {}
+        on = lvl(z) > 0
+        rows = icgc_danger_rows(z, AIG) if on else []
+        names = {p["id_problema"]: p["tipus_situacio"] for p in (en.get(rid) or {}).get("problems") or []}
+        probs = [{"problem": names.get(p["id_problema"], p["tipus_situacio"]), "aspects": "", "elevations": ""}
+                 for p in sorted(z.get("problems") or [], key=lambda p: int(p.get("priority") or 9))] if on else []
+        regional.append({
+            "zone": AIG, "area_id": rid, "name": info["name"], "forecaster": "ICGC",
+            "issued": z.get("databutlleti", "") if on else "", "valid_until": z.get("datavalidesabutlleti", "") if on else "",
+            "max_level": lvl(z), "today": ", ".join(f"{x['band_label'].lower()} {x['rating'].lower()}" for x in rows),
+            "ratings": json.dumps([{k: x[k] for k in ("date", "band", "band_label", "level", "rating")} for x in rows]),
+            "problems": json.dumps(probs, ensure_ascii=False), "highlights": clean(z.get("perill_text"))[:600] if on else "",
+            "url": "https://bpa.icgc.cat/", "rings": json.dumps(info["rings"], separators=(",", ":")),
+        })
+    home_id = max(("2", "3", "1"), key=lambda k: lvl(zs.get(k) or {}))  # max keeps the first on a tie
+    z, zen = zs.get(home_id) or {}, en.get(home_id) or {}
+    on = lvl(z) > 0
+    bull = {"zone": AIG, "region": AIG_REGIONS[home_id]["name"], "forecaster": "ICGC",
+            "issued": z.get("databutlleti", ""), "valid_until": z.get("datavalidesabutlleti", ""),
+            "headline": clean(z.get("perill_text")) if on else clean(z.get("nota_text")),
+            "snowpack": clean(z.get("text_estat_mantell")) if on else "", "detail": clean(z.get("text_distribucio")) if on else "",
+            "trend": clean(z.get("text_tendencia")) if on else "", "confidence": "", "language": "ca", "url": "https://bpa.icgc.cat/"}
+    names = {p["id_problema"]: p["tipus_situacio"] for p in zen.get("problems") or []}
+    probs = [{"zone": AIG, "problem": names.get(p["id_problema"], p["tipus_situacio"]), "likelihood": "", "size": p.get("mida") or "",
+              "elevations": "", "aspects": "", "issued": z.get("databutlleti", "")}
+             for p in sorted(z.get("problems") or [], key=lambda p: int(p.get("priority") or 9))] if on else []
+    danger = icgc_danger_rows(z, AIG) if on else []
+    return bull, danger, probs, regional
+
+
 def write_csv(path, rows, fields):
     """Writes PATH as JSON rows (path ends .json); blanks become null, numbers stay numbers."""
     def val(v):
@@ -1590,6 +1642,12 @@ def main():
             stations += avcan_station(sid, name, elev, now, zname)
     for code, name, elev in XEMA_STATIONS:
         stations += xema_station(code, name, elev)
+    for code, name, elev in AIG_XEMA:
+        try:
+            stations += [dict(r, zone=AIG) for r in xema_station(code, name, elev)]
+        except (OSError, ValueError) as e:
+            print("Meteocat station unavailable:", name, e)
+            stations += [r for r in prev_rows if r.get("zone") == AIG and r.get("station") == name]
     ibk_rows, ibk_wind = ibk_stations(now, prev_rows)
     stations += ibk_rows
     try:
@@ -1661,6 +1719,17 @@ def main():
                 wr += b
     except (OSError, ValueError, KeyError) as e:
         print("Andermatt wind unavailable:", e)
+    for i, st in enumerate(AIG_WIND):
+        try:
+            a, b = wind_summary(AIG if i == 0 else f"{AIG} · {st[2]}", now, stations, wind_obs(AIG, now, st))
+            if i:
+                a["zone"] = f"{AIG} · {st[2]}"
+                for x in b:
+                    x["zone"] = a["zone"]
+            ws.append(a)
+            wr += b
+        except (OSError, ValueError, KeyError) as e:
+            print("Aigüestortes wind unavailable:", st[2], e)
     for zname in (ROM, JOT, HEM):
         meta = {c: (n, e) for c, n, e, _ in NOR_STATIONS[zname]}
         try:
@@ -1730,6 +1799,15 @@ def main():
             "headline": "The SLF bulletin couldn't be fetched this morning; check slf.ch.", "snowpack": "",
             "detail": "", "trend": "", "confidence": "", "language": "en", "url": SLF_URL}
         adanger, aprob, arf = [], [], []
+    try:
+        gb, gdanger, gprob, grf = aig_bulletins(today_cat)
+    except (OSError, ValueError, KeyError) as e:
+        print("ICGC bulletin unavailable for Aigüestortes:", e)
+        gb = dict(prev_bull[AIG]) if AIG in prev_bull else {
+            "zone": AIG, "region": "Ribagorçana - Vall Fosca", "forecaster": "ICGC", "issued": "", "valid_until": "",
+            "headline": "The ICGC bulletin couldn't be fetched this morning; check bpa.icgc.cat.", "snowpack": "", "detail": "",
+            "trend": "", "confidence": "", "language": "en", "url": "https://bpa.icgc.cat/"}
+        gdanger, gprob, grf = [], [], []
     nor = {}
     for zname in (ROM, JOT, HEM):
         try:
@@ -1741,7 +1819,7 @@ def main():
                 "zone": zname, "region": rname, "forecaster": "Varsom (NVE)", "issued": "",
                 "valid_until": "", "headline": "The Varsom bulletin couldn't be fetched this morning; check varsom.no.", "snowpack": "",
                 "detail": "", "trend": "", "confidence": "", "language": "en", "url": NOR_URL}, [], [], [])
-    rf = regional_forecasts() + sum((regional_forecasts(z, b) for z, b in KOOT_BOUNDS.items()), []) + irf + crf + xrf + arf
+    rf = regional_forecasts() + sum((regional_forecasts(z, b) for z, b in KOOT_BOUNDS.items()), []) + irf + crf + xrf + arf + grf
     write_csv(f"{out}/regional_forecasts.json", rf, list(rf[0].keys()))
 
     today_bc = now.astimezone(TZ[ROGERS]).date()
@@ -1759,7 +1837,7 @@ def main():
     koot = {z: avcan_bulletin(z, *pt) for z, pt in KOOT_POINT.items()}  # the forecast covering each map's home point
     sb, sdanger, sprob = koot[ROSS]
     kdanger = [r for z in (WW, KP) for r in koot[z][1]]
-    for r in rdanger + sdanger + kdanger + idanger + cdanger + xdanger + adanger + sum((v[3] for v in nor.values()), []):
+    for r in rdanger + sdanger + kdanger + idanger + cdanger + xdanger + adanger + gdanger + sum((v[3] for v in nor.values()), []):
         hist[(r["zone"], r["date"], r["band"])] = r
     vb = None
     for attempt in range(3):  # the ICGC server sometimes drops connections for a while; give it a few minutes
@@ -1793,10 +1871,10 @@ def main():
     fields = ["zone", "date", "band", "band_label", "level", "rating", "kind", "issued"]
     write_csv(f"{out}/danger_history.json", sorted(hist.values(), key=lambda r: (r["zone"], r["date"], r["band"])), fields)
 
-    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb, koot[WW][0], koot[KP][0], cb, xb, ab] + [nor[z][0] for z in (ROM, JOT, HEM)], list(rb.keys()))
-    probs = rprob + vprob + iprob + sprob + koot[WW][2] + koot[KP][2] + cprob + xprob + aprob + sum((nor[z][2] for z in (ROM, JOT, HEM)), [])
+    write_csv(f"{out}/bulletins.json", [rb, vb, ib, sb, koot[WW][0], koot[KP][0], cb, xb, ab, gb] + [nor[z][0] for z in (ROM, JOT, HEM)], list(rb.keys()))
+    probs = rprob + vprob + iprob + sprob + koot[WW][2] + koot[KP][2] + cprob + xprob + aprob + gprob + sum((nor[z][2] for z in (ROM, JOT, HEM)), [])
     for zname, issued in ((ROGERS, rb["issued"]), (VALLTER, vb["issued"]), (IBK, ib["issued"]), (ROSS, sb["issued"]), (WW, koot[WW][0]["issued"]),
-                          (KP, koot[KP][0]["issued"]), (RMNP, cb["issued"]), (CHX, xb["issued"]), (AND, ab["issued"])) + tuple((z, nor[z][0]["issued"]) for z in (ROM, JOT, HEM)):
+                          (KP, koot[KP][0]["issued"]), (RMNP, cb["issued"]), (CHX, xb["issued"]), (AND, ab["issued"]), (AIG, gb["issued"])) + tuple((z, nor[z][0]["issued"]) for z in (ROM, JOT, HEM)):
         if not any(p["zone"] == zname for p in probs):  # one blank row keeps each zone (and the file) readable
             probs.append({"zone": zname, "problem": None, "issued": issued})
     write_csv(f"{out}/problems.json", probs,
@@ -1816,6 +1894,8 @@ def main():
          outlook(CHX, 46.0100, 7.0900, 2200, "Europe/Paris", "Val Ferret / Champex") + \
          outlook(AND, 46.6440, 8.6050, 2200, "Europe/Zurich", "Gütsch / Nätschen (Andermatt)") + \
          outlook(AND, 46.5590, 8.5640, 2100, "Europe/Zurich", "Gotthard Pass") + \
+         outlook(AIG, 42.4700, 0.8700, 2300, "Europe/Madrid", "Boí Taüll / Vall de Boí") + \
+         outlook(AIG, 42.5800, 0.9800, 2300, "Europe/Madrid", "Sant Maurici / Amitges") + \
          outlook(ROM, 62.4930, 7.8000, 1200, "Europe/Oslo", "Romsdalshornet / Venjetindane") + \
          outlook(ROM, 62.4730, 7.6400, 900, "Europe/Oslo", "Kongen / Innfjorden") + \
          outlook(JOT, 61.6330, 8.3500, 1700, "Europe/Oslo", "Galdhøpiggen / Spiterstulen") + \

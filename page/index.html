@@ -299,7 +299,7 @@ details.sw-how[open] > summary{display:none}
     <p>A route-checking tool with terrain gradients, plus today’s avalanche bulletins, snow conditions, and the week’s weather, refreshed every morning.</p>
   </header>
   <nav class="sw-ranges" aria-label="Mountain range"><button type="button" class="sw-range" data-range="bc" aria-pressed="true">British Columbia</button><button type="button" class="sw-range" data-range="rockies" aria-pressed="false">Rockies</button><button type="button" class="sw-range" data-range="alps" aria-pressed="false">Alps</button><button type="button" class="sw-range" data-range="pyrenees" aria-pressed="false">Pyrenees</button><button type="button" class="sw-range" data-range="norway" aria-pressed="false">Norway</button></nav>
-  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" data-range="bc" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="whitewater" data-range="bc" aria-selected="false">Whitewater</button><button class="sw-tab" role="tab" data-tab="kpass" data-range="bc" aria-selected="false">Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="rossland" data-range="bc" aria-selected="false">Rossland Range</button><button class="sw-tab" role="tab" data-tab="rmnp" data-range="rockies" aria-selected="false" hidden>Rocky Mountain NP</button><button class="sw-tab" role="tab" data-tab="chamonix" data-range="alps" aria-selected="false" hidden>Chamonix</button><button class="sw-tab" role="tab" data-tab="andermatt" data-range="alps" aria-selected="false" hidden>Andermatt</button><button class="sw-tab" role="tab" data-tab="innsbruck" data-range="alps" aria-selected="false" hidden>Innsbruck</button><button class="sw-tab" role="tab" data-tab="vallter" data-range="pyrenees" aria-selected="false" hidden>Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="romsdal" data-range="norway" aria-selected="false" hidden>Romsdal</button><button class="sw-tab" role="tab" data-tab="jotunheimen" data-range="norway" aria-selected="false" hidden>Jotunheimen</button><button class="sw-tab" role="tab" data-tab="hemsedal" data-range="norway" aria-selected="false" hidden>Hemsedal</button></nav>
+  <nav class="sw-tabs" role="tablist" aria-label="Zone"><button class="sw-tab" role="tab" data-tab="rogers" data-range="bc" aria-selected="true">Rogers Pass</button><button class="sw-tab" role="tab" data-tab="whitewater" data-range="bc" aria-selected="false">Whitewater</button><button class="sw-tab" role="tab" data-tab="kpass" data-range="bc" aria-selected="false">Kootenay Pass</button><button class="sw-tab" role="tab" data-tab="rossland" data-range="bc" aria-selected="false">Rossland Range</button><button class="sw-tab" role="tab" data-tab="rmnp" data-range="rockies" aria-selected="false" hidden>Rocky Mountain NP</button><button class="sw-tab" role="tab" data-tab="chamonix" data-range="alps" aria-selected="false" hidden>Chamonix</button><button class="sw-tab" role="tab" data-tab="andermatt" data-range="alps" aria-selected="false" hidden>Andermatt</button><button class="sw-tab" role="tab" data-tab="innsbruck" data-range="alps" aria-selected="false" hidden>Innsbruck</button><button class="sw-tab" role="tab" data-tab="vallter" data-range="pyrenees" aria-selected="false" hidden>Vallter / Ulldeter</button><button class="sw-tab" role="tab" data-tab="aiguestortes" data-range="pyrenees" aria-selected="false" hidden>Aigüestortes / Vall de Boí</button><button class="sw-tab" role="tab" data-tab="romsdal" data-range="norway" aria-selected="false" hidden>Romsdal</button><button class="sw-tab" role="tab" data-tab="jotunheimen" data-range="norway" aria-selected="false" hidden>Jotunheimen</button><button class="sw-tab" role="tab" data-tab="hemsedal" data-range="norway" aria-selected="false" hidden>Hemsedal</button></nav>
 
   <section class="sw-zone" id="rogers" data-zone="Rogers Pass" data-temp="Fidelity" data-wind="MacDonald West Shoulder">
     <p class="sw-sub">Glacier National Park, Selkirk Mountains, BC · forecast by Parks Canada via Avalanche Canada</p>
@@ -1831,6 +1831,158 @@ details.sw-how[open] > summary{display:none}
       </ul>
     </div>
   </section>
+  <section class="sw-zone" id="aiguestortes" data-zone="Aigüestortes" data-temp="Boí" data-wind="Espot" hidden>
+    <p class="sw-sub">The Vall de Boí and the Aigüestortes i Estany de Sant Maurici National Park, Central Pyrenees · bulletin by the ICGC (Institut Cartogràfic i Geològic de Catalunya)</p>
+
+    <div class="sw-grid sw-grid-top">
+      <div class="sw-card" id="aiguestortes-danger">
+        <h2 class="sw-h">Avalanche danger</h2>
+        <details class="sw-how"><summary>How this works</summary><p class="sw-note">Danger above and below the bulletin's elevation threshold. Three ICGC zones meet on this map (Ribagorçana - Vall Fosca, the Vall de Boí; Pallaresa, Espot and Sant Maurici; Aran - Franja Nord Pallaresa, the north edge); this card shows the highest-rated, and the others are below.</p></details>
+        <div class="sw-danger" data-draw="danger" data-source="danger_now"></div>
+        <dl class="sw-meta">
+          <dt>Issued</dt><dd data-draw="cell" data-source="bulletins" data-field="issued" data-where="zone=Aigüestortes">—</dd>
+          <dt>Valid until</dt><dd data-draw="cell" data-source="bulletins" data-field="valid_until" data-where="zone=Aigüestortes">—</dd>
+        </dl>
+        <h3 class="sw-h3">Forecasts across the map</h3>
+        <p class="sw-note">The ICGC splits the map into three zones that can carry different ratings. The route check uses whichever zone covers most of your route.</p>
+        <ul class="sw-regional" data-draw="regional" data-source="regional_forecasts"></ul>
+      </div>
+      <div class="sw-card" id="aiguestortes-bulletin">
+        <h2 class="sw-h">What the forecasters say</h2>
+        <p class="sw-note">The current bulletin's headline and snowpack notes. The ICGC publishes the full bulletin text in Catalan.</p>
+        <div class="sw-bulletin" data-draw="bulletin" data-source="bulletins"></div>
+        <h3 class="sw-h3">Avalanche problems</h3>
+        <div class="sw-problems" data-draw="problems" data-source="problems"></div>
+      </div>
+    </div>
+
+    <div class="sw-mapslot" hidden data-p="{&quot;zid&quot;: &quot;aiguestortes&quot;, &quot;contour&quot;: 50, &quot;park_legend&quot;: &quot;&quot;, &quot;map_note&quot;: &quot;About 30 by 26 km over the Vall de Boí and the national park: Boí Taüll, Taüll and Caldes de Boí, the Aigüestortes plain and the Sant Nicolau valley, Estany de Sant Maurici, Els Encantats and Espot, the Amitges and Colomers lakes, and the Bonaigua pass to the north-east. Zoom in and it sharpens to 5 m detail.&quot;, &quot;map_caveat&quot;: &quot;Slopes at 5 m from the ICGC's lidar-based bare-earth terrain model, so forest doesn't show as false steep ground. Zoomed out, the map shows a 30 m summary of the 5 m steepness; the route check uses 5 m. The national park boundary isn't drawn, and the ICGC's mapped avalanche paths aren't shown on this map yet. Names from the ICGC; peaks are pinned to the 5 m model summit. A planning aid, not a substitute for measuring slopes on the ground.&quot;, &quot;paths_toggle&quot;: &quot;&lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-glac\&quot; checked&gt; Glaciers&lt;/label&gt;\n        &lt;label class=\&quot;sw-paths-tog\&quot;&gt;&lt;input type=\&quot;checkbox\&quot; class=\&quot;sw-obs\&quot; checked&gt; Recent avalanche reports&lt;/label&gt;&quot;, &quot;paths_src&quot;: &quot; avalanche_reports glaciers&quot;, &quot;terrain_src&quot;: &quot;terrain_aig&quot;, &quot;blocks&quot;: [&quot;t5_aig&quot;, 6, 6]}"></div>
+
+    <div class="sw-avzone" data-zone="Aigüestortes" id="avalanches-aiguestortes">
+      <h2 class="sw-section">Recent avalanches</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Catalonia has no public feed of field reports. The ICGC reports recent avalanche activity in its daily bulletin (above) once the season starts, and the Conselh Generau d'Aran publishes its own bulletin for the Val d'Aran at <a href="https://lauegi.conselharan.org/" target="_blank" rel="noopener">lauegi.conselharan.org</a>.</p></details>
+    </div>
+
+
+    <h2 class="sw-section">On the ground, latest day</h2>
+    <p class="sw-note">Daily summary from the automatic stations, valley to ridge. Today's figures are partial until the day ends.</p>
+    <div class="sw-tiles">
+      <div class="sw-tile" data-st="Boí" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Boí</div></div>
+      <div class="sw-tile" data-st="Espot" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Espot</div></div>
+      <div class="sw-tile" data-st="Bonaigua" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Bonaigua</div></div>
+      <div class="sw-tile" data-st="Lac Redon" data-last="Max gust|gust_max_kmh|km/h"><div class="sw-tile-name">Lac Redon</div></div>
+    </div>
+
+    <div class="sw-card sw-wide" id="aiguestortes-windcard">
+      <h2 class="sw-h">Wind, last 72 hours · Espot</h2>
+      <p class="sw-note">At the Meteocat station above Espot, 2,519 m, on the east side of the park. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Aigüestortes">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Aigüestortes">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Aigüestortes">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Aigüestortes">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Aigüestortes">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Espot">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Espot">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Espot">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="sw-card sw-wide" id="aiguestortes-windcard-2" data-zone="Aigüestortes · Lac Redon">
+      <h2 class="sw-h">Wind, last 72 hours · Lac Redon</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">At the Meteocat station at Lac Redon, 2,245 m, above the Val d'Aran at the north-west corner of the map. The rose shows hours of wind from each direction; the darker part is wind strong enough to move snow (15 km/h and up).</p></details>
+      <div class="sw-windgrid">
+        <div class="sw-rose" data-draw="wind-rose" data-source="wind_rose"></div>
+        <div>
+          <p class="sw-wind-sum" data-draw="wind-sum" data-source="wind_summary">—</p>
+          <dl class="sw-tile-dl sw-wind-dl">
+            <dt>Snow-moving wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="transport_hours" data-where="zone=Aigüestortes · Lac Redon">—</span> h</dd>
+            <dt>Strong (30 km/h and up)</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="strong_hours" data-where="zone=Aigüestortes · Lac Redon">—</span> h</dd>
+            <dt>Strongest gust</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="max_gust_kmh" data-where="zone=Aigüestortes · Lac Redon">—</span> km/h</dd>
+            <dt>Prevailing loading wind</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="from_dir" data-where="zone=Aigüestortes · Lac Redon">—</span></dd>
+            <dt>Slopes it loads</dt><dd><span data-draw="cell" data-source="wind_summary" data-field="loaded_aspects" data-where="zone=Aigüestortes · Lac Redon">—</span></dd>
+            <dt>Temperature, low / high</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="temp_min_c" data-where="station=Lac Redon">—</span> / <span data-draw="cell" data-source="latest_obs" data-field="temp_max_c" data-where="station=Lac Redon">—</span> °C</dd>
+            <dt>On</dt><dd><span data-draw="cell" data-source="latest_obs" data-field="date" data-where="station=Lac Redon">—</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="aiguestortes-depth">
+      <h2 class="sw-h">Snow depth this season</h2>
+      <p class="sw-note">Daily median snow height at each station since 1 October, in cm. Wind-scoured ridge sensors can read low.</p>
+      <div class="sw-chart dash-skeleton" data-draw="depth" data-source="stations_daily"></div>
+    </div>
+
+    <div class="sw-grid">
+      <div class="sw-card" id="aiguestortes-temp" data-temp="Boí">
+        <h2 class="sw-h">Temperature, daily low to high · Boí</h2>
+        <p class="sw-note">Meteocat station at 2,537 m above Boí Taüll, on the south-west side of the park. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="aiguestortes-temp-2" data-temp="Espot">
+        <h2 class="sw-h">Temperature, daily low to high · Espot</h2>
+        <p class="sw-note">Meteocat station at 2,519 m above Espot, on the east side of the park. The dashed line is 0 °C.</p>
+        <div class="sw-chart dash-skeleton" data-draw="temp" data-source="stations_daily"></div>
+      </div>
+      <div class="sw-card" id="aiguestortes-wind" data-wind="Espot" data-wfield="gust_max_kmh">
+        <h2 class="sw-h">Strongest wind gust each day</h2>
+        <p class="sw-note">Gusts measured at 10 m at the Meteocat station above Espot, 2,519 m. In km/h.</p>
+        <div class="sw-chart dash-skeleton" data-draw="wind" data-source="stations_daily"></div>
+      </div>
+    </div>
+
+
+    <div class="sw-card sw-wide" id="aiguestortes-mtn">
+      <h2 class="sw-h">Next 7 days by elevation</h2>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for the centre of the park: the 7 km ICON-EU for about five days, then the 13 km global run (the 2 km ICON-D2 doesn't reach this far). Seven kilometres smooths steep valleys, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over the centre of the park, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the centre of the park; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
+      <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
+        <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 2,900 m</div></div>
+        <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 2,300 m</div></div>
+        <div><div class="sw-kpi"><span data-k="fl">—</span><span class="sw-unit"> m</span></div><div class="sw-tile-lab">highest freezing level</div></div>
+        <div><div class="sw-kpi"><span data-k="wind">—</span><span class="sw-unit"> km/h</span></div><div class="sw-tile-lab">strongest ridge wind</div></div>
+      </div>
+      <h3 class="sw-h3">Next 72 hours</h3>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">The line is the freezing level; dashed lines mark the three elevation bands. Bars are precipitation per hour, blue where it falls as snow at treeline and orange where it falls as rain. Along the top: the model's ridge-top wind at about 3,000 m, every 6 hours, with arrows showing where it blows to.</p></details>
+      <div class="sw-chart sw-chart-mtn dash-skeleton" data-draw="mtn-hours" data-source="mountain_forecast" data-bands="1700,2300,2900" data-tz="Central European"></div>
+      <h3 class="sw-h3">Day by day</h3>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-mtn-table" data-source="mountain_forecast" data-row-key="time">
+          <thead><tr>
+            <th>Day</th>
+            <th>Alpine 2,900 m</th>
+            <th>Treeline 2,300 m</th>
+            <th>Below treeline 1,700 m</th>
+            <th class="sw-num sw-hide-narrow">Freezing level (m)</th>
+            <th>Ridge wind (km/h)</th>
+            <th>Would load</th>
+          </tr></thead>
+          <tbody data-draw="mtn-rows"></tbody>
+        </table>
+      </div>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">“Would load” is the slopes downwind of the ridge-top wind, on days with at least 3 hours of it at 20 km/h or more; it only matters where there's loose snow to move, and local terrain bends the wind. Model output, not a forecaster's forecast: read it alongside the bulletin.</p></details>
+    </div>
+
+    <div class="sw-card sw-wide" id="aiguestortes-history">
+      <h2 class="sw-h">Danger through the season</h2>
+      <p class="sw-note">Each square is one day's rating for that elevation band. This builds up day by day from the daily refresh.</p>
+      <div class="sw-chart sw-chart-strip dash-skeleton" data-draw="history" data-source="danger_history"></div>
+      <ul class="sw-legend">
+        <li><i class="sw-sw" style="background:var(--sw-d0)"></i>No rating yet</li>
+        <li><i class="sw-sw" style="background:var(--sw-d1)"></i>1 Low</li>
+        <li><i class="sw-sw" style="background:var(--sw-d2)"></i>2 Moderate</li>
+        <li><i class="sw-sw" style="background:var(--sw-d3)"></i>3 Considerable</li>
+        <li><i class="sw-sw" style="background:var(--sw-d4)"></i>4 High</li>
+        <li><i class="sw-sw" style="background:var(--sw-d5)"></i>5 Extreme / Very high</li>
+      </ul>
+    </div>
+  </section>
   <section class="sw-zone" id="romsdal" data-zone="Romsdal" data-temp="Mannen" data-wind="Mannen" hidden>
     <p class="sw-sub">Romsdalen and Isfjorden above Åndalsnes, with the Romsdal Alps · bulletin by Varsom (NVE)</p>
 
@@ -1918,7 +2070,7 @@ details.sw-how[open] > summary{display:none}
 
     <div class="sw-card sw-wide" id="romsdal-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for Romsdalen below Romsdalshornet: the 7 km ICON-EU for about five days, then the 13 km global run. Seven kilometres smooths Norway's steep valleys and fjords, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over Romsdalen below Romsdalshornet, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Romsdalen below Romsdalshornet; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for Romsdalen below Romsdalshornet: the 7 km ICON-EU for about five days, then the 13 km global run (the 2 km ICON-D2 doesn't reach this far). Seven kilometres smooths steep valleys, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over Romsdalen below Romsdalshornet, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Romsdalen below Romsdalshornet; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
       <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
         <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 1,300 m</div></div>
         <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 650 m</div></div>
@@ -2067,7 +2219,7 @@ details.sw-how[open] > summary{display:none}
 
     <div class="sw-card sw-wide" id="jotunheimen-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for Visdalen and Spiterstulen: the 7 km ICON-EU for about five days, then the 13 km global run. Seven kilometres smooths Norway's steep valleys and fjords, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over Visdalen and Spiterstulen, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Visdalen and Spiterstulen; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for Visdalen and Spiterstulen: the 7 km ICON-EU for about five days, then the 13 km global run (the 2 km ICON-D2 doesn't reach this far). Seven kilometres smooths steep valleys, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over Visdalen and Spiterstulen, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Visdalen and Spiterstulen; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
       <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
         <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 2,000 m</div></div>
         <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 1,300 m</div></div>
@@ -2216,7 +2368,7 @@ details.sw-how[open] > summary{display:none}
 
     <div class="sw-card sw-wide" id="hemsedal-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
-      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for Hemsedal village and the valley: the 7 km ICON-EU for about five days, then the 13 km global run. Seven kilometres smooths Norway's steep valleys and fjords, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over Hemsedal village and the valley, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Hemsedal village and the valley; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
+      <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for Hemsedal village and the valley: the 7 km ICON-EU for about five days, then the 13 km global run (the 2 km ICON-D2 doesn't reach this far). Seven kilometres smooths steep valleys, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over Hemsedal village and the valley, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Hemsedal village and the valley; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
       <div class="sw-kpis" data-draw="mtn-kpis" data-source="mountain_forecast">
         <div><div class="sw-kpi"><span data-k="alp">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, alpine 1,500 m</div></div>
         <div><div class="sw-kpi"><span data-k="tl">—</span><span class="sw-unit"> cm</span></div><div class="sw-tile-lab">snow, treeline 1,000 m</div></div>
@@ -2264,9 +2416,9 @@ details.sw-how[open] > summary{display:none}
 <script src="app.js"></script>
 
 <script>
-// the Norway maps (139 detail files) are on the website only for now: the dashboard leaves out that range
+// the Norway and Aigüestortes maps (about 175 detail files) are on the website only for now: the dashboard leaves them out
 if (!window.swStandalone) {
-  for (const id of ['romsdal', 'jotunheimen', 'hemsedal']) { document.getElementById(id)?.remove(); document.querySelector(`.sw-tab[data-tab="${id}"]`)?.remove(); }
+  for (const id of ['romsdal', 'jotunheimen', 'hemsedal', 'aiguestortes']) { document.getElementById(id)?.remove(); document.querySelector(`.sw-tab[data-tab="${id}"]`)?.remove(); }
   document.querySelector('.sw-range[data-range="norway"]')?.remove();
 }
 const swStore = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } };
