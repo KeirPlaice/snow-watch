@@ -1162,6 +1162,16 @@ def chx_bulletins(today):
             "rings": json.dumps(info["rings"], separators=(",", ":")),
         })
     b = by_region.get(CHX_HOME)
+    old_day = None
+    if not b:  # between bulletins (early season, or a pause): show the most recent one from the last ten days, marked as old
+        for back in range(1, 11):
+            d0 = (today - timedelta(days=back)).isoformat()
+            st, raw = get_raw(f"{EAWS}/eaws_bulletins/{d0}/{d0}-FR.json")
+            hit = next((x for x in (json.loads(raw).get("bulletins") or [] if st == 200 and raw else [])
+                        if any(r["regionID"] == CHX_HOME for r in x.get("regions") or [])), None)
+            if hit:
+                b, old_day = hit, d0
+                break
     if not b:
         names = sorted({chx_service(r)[0] for r in by_region})
         bull = {"zone": CHX, "region": "Mont-Blanc", "forecaster": "Météo-France", "issued": "", "valid_until": "",
@@ -1181,6 +1191,12 @@ def chx_bulletins(today):
             "headline": head, "snowpack": fr_text(snow.get("comment")), "detail": detail,
             "trend": clean(((b.get("tendency") or [{}])[0]).get("highlights")), "confidence": "", "language": "fr",
             "url": CHX_SERVICE["FR"][1]}
+    if old_day:
+        nice = lambda iso: f"{date.fromisoformat(iso).day} {date.fromisoformat(iso):%B}"
+        until = bull["valid_until"]
+        bull["headline"] = (f"No new bulletin today. This is Météo-France's most recent one, issued {nice(issued)}"
+                            + (f" and valid until {nice(until)}" if until else "") + "; conditions may have changed since. " + bull["headline"])
+        day = old_day
     danger = [{"zone": CHX, "date": day, "band": k, "band_label": lab, "level": lvl, "rating": rt, "kind": "bulletin", "issued": issued}
               for k, lab, lvl, rt in eu_bands(b)]
     probs = [{"zone": CHX, "problem": p["problem"], "likelihood": p["likelihood"], "size": p["size"],
