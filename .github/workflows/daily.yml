@@ -8,7 +8,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write   # pushes the day's data files to the data branch
   pages: write
   id-token: write
 
@@ -52,6 +52,16 @@ jobs:
           [ -f prev/bulletins.json ] && args="$args --prev-bulletins prev/bulletins.json"
           mkdir -p daily
           python3 scripts/snow_fetch.py daily $args || { echo "retrying in a minute"; sleep 60; python3 scripts/snow_fetch.py daily $args; }
+
+      # the same files on the data branch, for the Claude dashboard's daily refresh to copy
+      - name: Save today's data to the data branch
+        run: |
+          mkdir -p /tmp/data && cp daily/*.json /tmp/data/ && cd /tmp/data
+          date -u +%Y-%m-%dT%H:%MZ > fetched_utc.txt
+          git init -q -b data
+          git add -A
+          git -c user.name="snow-watch" -c user.email="KeirPlaice@users.noreply.github.com" commit -q -m "Data $(cat fetched_utc.txt)"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data
 
       - name: Build the site
         run: python3 scripts/build_site.py --daily daily --out _site
