@@ -13,8 +13,8 @@ from datetime import datetime, timezone
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BLOCK = re.compile(r"^t\d+_[a-z]+_\d+_\d+$")  # detail terrain blocks
 DAILY = ["stations_daily", "danger_history", "bulletins", "problems", "outlook", "wind_summary",
-         "wind_rose", "avalanche_reports", "regional_forecasts", "snow_grid", "mountain_forecast"]
-OPTIONAL = ["snow_grid", "mountain_forecast"]
+         "wind_rose", "avalanche_reports", "regional_forecasts", "snow_grid", "mountain_forecast", "past_week"]
+OPTIONAL = ["snow_grid", "mountain_forecast", "past_week"]
 
 HEAD = """<!doctype html>
 <html lang="en">

@@ -19,3 +19,7 @@ for f in ("stations_daily", "wind_summary"):
     for r in _j.load(open(f"out/{f}.json")):
         if str(r.get("zone", "")).split(" · ")[0] in ("Romsdal", "Jotunheimen", "Hemsedal") and (f == "wind_summary" or r["date"] >= "2026-11-09"):
             print("ROW", f, _j.dumps(r, ensure_ascii=False))
+import json as _j2
+for r in _j2.load(open("out/past_week.json")):
+    if r["kind"] == "summary":
+        print("PW", _j2.dumps(r, ensure_ascii=False)[:700])

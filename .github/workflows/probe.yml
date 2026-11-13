@@ -7,4 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: pip install pillow numpy && python3 scripts/probe_img.py
+      - run: pip install shapely && python3 scripts/probe.py
+        env:
+          FROST_CLIENT_ID: ${{ secrets.FROST_CLIENT_ID }}
