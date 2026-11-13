@@ -1596,6 +1596,116 @@ def aig_bulletins(today):
     return bull, danger, probs, regional
 
 
+# ---------- the last 7 days: what built the snowpack (Open-Meteo history at one point per zone, plus the stations) ----------
+PAST_POINTS = [  # zone, lat, lon, elevation m, name: the first forecast point of each zone
+    (ROGERS, 51.30, -117.52, 1900, "Rogers Pass"), (VALLTER, 42.42, 2.25, 2400, "Vallter"), (IBK, 47.15, 11.25, 2300, "Sellrain–Stubai"),
+    (ROSS, 49.2044, -117.8966, 1575, "Strawberry Pass"), (WW, 49.4433, -117.1450, 1700, "Whitewater"), (KP, 49.0581, -117.0400, 1780, "Kootenay Pass"),
+    (RMNP, 40.3118, -105.6448, 2900, "Bear Lake"), (CHX, 45.9030, 6.8880, 2300, "Plan de l'Aiguille"), (AND, 46.6440, 8.6050, 2200, "Gütsch"),
+    (AIG, 42.4700, 0.8700, 2300, "Boí Taüll"), (ROM, 62.4930, 7.8000, 1200, "Romsdalshornet"), (JOT, 61.6330, 8.3500, 1700, "Spiterstulen"),
+    (HEM, 60.8390, 8.5350, 1300, "Totten"),
+]
+
+
+def _lee(deg):
+    i = int((((deg + 180) % 360 + 22.5) % 360) // 45)
+    return ",".join([OCT[(i - 1) % 8], OCT[i], OCT[(i + 1) % 8]])
+
+
+def _days(ds):
+    return ", ".join(date.fromisoformat(d).strftime("%a %-d") for d in ds)
+
+
+def past_week(stations, now):
+    """Per zone: daily rows for the last 7 days and a summary row with the week's events, in plain words."""
+    days_rows, summary = [], []
+    for zone, lat, lon, elev, name in PAST_POINTS:
+        tzname = str(TZ[zone])
+        try:
+            d = get("https://api.open-meteo.com/v1/forecast", {
+                "latitude": lat, "longitude": lon, "elevation": elev, "timezone": tzname, "past_days": 7, "forecast_days": 1,
+                "daily": "snowfall_sum,rain_sum,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant",
+                "hourly": "freezing_level_height,cloud_cover,temperature_2m"})
+        except (OSError, ValueError) as e:
+            print("past week unavailable for", zone, e)
+            continue
+        today = now.astimezone(TZ[zone]).date().isoformat()
+        h = d["hourly"]
+        fl, night_t, night_c = {}, {}, {}
+        for t, f, c, tt in zip(h["time"], h["freezing_level_height"], h["cloud_cover"], h["temperature_2m"]):
+            day, hr = t[:10], int(t[11:13])
+            if f is not None:
+                fl[day] = max(fl.get(day, -1e9), f)
+            if hr <= 6:  # the night before that day
+                if tt is not None:
+                    night_t.setdefault(day, []).append(tt)
+                if c is not None:
+                    night_c.setdefault(day, []).append(c)
+        dl = d["daily"]
+        rows = []
+        for i, day in enumerate(dl["time"]):
+            if day >= today:  # whole days only
+                continue
+            r = {"zone": zone, "point": name, "elevation_m": elev, "date": day,
+                 "snowfall_cm": round(dl["snowfall_sum"][i] or 0, 1), "rain_mm": round(dl["rain_sum"][i] or 0, 1),
+                 "temp_max_c": dl["temperature_2m_max"][i], "temp_min_c": dl["temperature_2m_min"][i],
+                 "night_min_c": round(min(night_t[day]), 1) if day in night_t else None,
+                 "night_cloud_pct": round(sum(night_c[day]) / len(night_c[day])) if night_c.get(day) else None,
+                 "wind_max_kmh": dl["wind_speed_10m_max"][i], "gust_max_kmh": dl["wind_gusts_10m_max"][i],
+                 "wind_from_deg": dl["wind_direction_10m_dominant"][i],
+                 "wind_from": OCT[int(((dl["wind_direction_10m_dominant"][i] + 22.5) % 360) // 45)] if dl["wind_direction_10m_dominant"][i] is not None else "",
+                 "freezing_level_max_m": round(fl[day]) if day in fl else None}
+            rows.append(r)
+        rows = rows[-7:]
+        days_rows += rows
+        if not rows:
+            continue
+        ev = []
+        snow = sum(r["snowfall_cm"] for r in rows)
+        big = [r["date"] for r in rows if r["snowfall_cm"] >= 10]
+        storm = max((sum(x["snowfall_cm"] for x in rows[k:k + 3]) for k in range(len(rows))), default=0)
+        if storm >= 30:
+            ev.append({"kind": "snow", "text": f"Storm snow: about {round(storm)} cm in three days or less (days with 10 cm or more: {_days(big)}). New snow needs time to bond; storm and wind slabs are likely."})
+        elif snow >= 10:
+            ev.append({"kind": "snow", "text": f"About {round(snow)} cm of new snow over the week" + (f", most of it on {_days(big)}" if big else "") + "."})
+        rain = [r for r in rows if r["rain_mm"] >= 2 and (r["freezing_level_max_m"] or 0) > elev]
+        if rain:
+            top = max(r["freezing_level_max_m"] or 0 for r in rain)
+            ev.append({"kind": "rain", "text": f"Rain at {elev:,} m on {_days([r['date'] for r in rain])} (freezing level up to about {top:,} m): any snow below that got wet, and will have a crust where it has refrozen; wet avalanches are possible while it stays wet."})
+        windy = [r for r in rows if (r["wind_max_kmh"] or 0) >= 40 or (r["gust_max_kmh"] or 0) >= 70]
+        if windy:
+            deg = [r["wind_from_deg"] for r in windy if r["wind_from_deg"] is not None]
+            if deg:
+                mean = math.degrees(math.atan2(sum(math.sin(math.radians(x)) for x in deg), sum(math.cos(math.radians(x)) for x in deg))) % 360
+                frm = OCT[int(((mean + 22.5) % 360) // 45)]
+                ev.append({"kind": "wind", "text": f"Strong wind, mostly from the {frm}, on {_days([r['date'] for r in windy])} (gusts to {round(max(r['gust_max_kmh'] or 0 for r in windy))} km/h): where there was loose snow, look for wind slabs on {_lee(mean).replace(',', ', ')} slopes below ridges and in gullies."})
+        warm = [r for r in rows if (r["night_min_c"] is not None and r["night_min_c"] > 0) and (r["freezing_level_max_m"] or 0) > elev]
+        if warm:
+            ev.append({"kind": "warm", "text": f"No overnight freeze at {elev:,} m on {_days([r['date'] for r in warm])}: any snow there stayed warm and wet, which weakens it."})
+        mf = [r for r in rows if (r["temp_max_c"] or -99) >= 2 and r["night_min_c"] is not None and r["night_min_c"] <= -2]
+        if len(mf) >= 2:
+            ev.append({"kind": "meltfreeze", "text": f"Melt-freeze on {len(mf)} days at {elev:,} m (thawing by day, freezing at night): crusts on sunny slopes, softening as they warm each day."})
+        cold = [r for r in rows if r["night_min_c"] is not None and r["night_min_c"] <= -10 and (r["night_cloud_pct"] if r["night_cloud_pct"] is not None else 100) <= 30 and r["snowfall_cm"] < 2]
+        if len(cold) >= 2:
+            ev.append({"kind": "cold", "text": f"Cold, clear nights ({_days([r['date'] for r in cold])}): surface hoar and weak, sugary snow can form near the surface and become a weak layer once buried."})
+        if not ev:
+            ev.append({"kind": "quiet", "text": f"A quiet week at {elev:,} m: little new snow, no rain and no strong wind in the model."})
+        # what the stations measured: snow depth a week ago and now at the highest station that reads it
+        since = (date.fromisoformat(today) - timedelta(days=7)).isoformat()
+        depth = {}
+        for r in stations:
+            if r.get("zone") == zone and r.get("date", "") >= since and isinstance(r.get("snow_depth_cm"), (int, float)):
+                depth.setdefault((r.get("elevation_m") or 0, r["station"]), []).append((r["date"], r["snow_depth_cm"]))
+        st_name, st_from, st_to = "", None, None
+        for (el_, nm), v in sorted(depth.items(), reverse=True):
+            v.sort()
+            if len(v) >= 4:
+                st_name, st_from, st_to = nm, v[0][1], v[-1][1]
+                break
+        summary.append({"zone": zone, "point": name, "elevation_m": elev, "snow_7d_cm": round(snow), "rain_7d_mm": round(sum(r["rain_mm"] for r in rows), 1),
+                        "station": st_name, "station_from_cm": st_from, "station_to_cm": st_to, "events": json.dumps(ev, ensure_ascii=False)})
+    return days_rows, summary
+
+
 def write_csv(path, rows, fields):
     """Writes PATH as JSON rows (path ends .json); blanks become null, numbers stay numbers."""
     def val(v):
@@ -1914,6 +2024,15 @@ def main():
         for r in mf:
             fields += [k for k in r if k not in fields]
         write_csv(f"{out}/mountain_forecast.json", mf, fields)
+    try:
+        pw_days, pw_sum = past_week(stations, now)
+        if pw_days:
+            write_csv(f"{out}/past_week.json", [dict(r, kind="day") for r in pw_days] + [dict(r, kind="summary") for r in pw_sum],
+                      ["zone", "kind", "point", "elevation_m", "date", "snowfall_cm", "rain_mm", "temp_max_c", "temp_min_c", "night_min_c",
+                       "night_cloud_pct", "wind_max_kmh", "gust_max_kmh", "wind_from_deg", "wind_from", "freezing_level_max_m",
+                       "snow_7d_cm", "rain_7d_mm", "station", "station_from_cm", "station_to_cm", "events"])
+    except (OSError, ValueError, KeyError) as e:
+        print("past week unavailable:", e)
     sg = snow_grid()
     if sg:
         write_csv(f"{out}/snow_grid.json", sg, list(sg[0].keys()))

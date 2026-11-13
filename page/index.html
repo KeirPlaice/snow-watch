@@ -94,6 +94,11 @@
   body.sw-tb-open .sw-tb-page{margin:0;padding:0;max-width:none;border-radius:0}
   .tb-t tr,.tb-map,.tb-facts{break-inside:avoid}
 }
+.sw-past-ev{list-style:none;margin:0 0 var(--cds-gap-sm);padding:0;display:flex;flex-direction:column;gap:6px;font-size:var(--cds-font-size-body);line-height:1.45}
+.sw-past-ev li{display:flex;gap:8px;align-items:flex-start}
+.sw-past-i{flex:0 0 1.4em;text-align:center;font-weight:700;color:var(--color-fg-muted)}
+.sw-past-snow .sw-past-i{color:#2E6FD8}.sw-past-rain .sw-past-i{color:#0E8A84}.sw-past-wind .sw-past-i{color:#C4122F}.sw-past-warm .sw-past-i,.sw-past-meltfreeze .sw-past-i{color:#D97706}.sw-past-cold .sw-past-i{color:#6B4FBB}
+.sw-past-hi{font-weight:700}
 .sw-sat-layer{position:absolute;inset:0}
 .sw-sat-attr{position:absolute;right:4px;bottom:4px;font-size:10px;line-height:1.2;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,.75);color:#333;pointer-events:none;z-index:1}
 .sw-sat-op-l input{width:7rem;vertical-align:middle}
@@ -532,6 +537,19 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
+    <div class="sw-card sw-wide" id="rogers-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
+
     <div class="sw-card sw-wide" id="rogers-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">Canada's GEM weather model (Environment and Climate Change Canada) for the pass: the 2.5 km HRDPS for about the first two days, then the coarser 10 km and 15 km runs, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the pass, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the pass; the alpine often gets more, and wind redistributes it. Times in Pacific time.</p></details>
@@ -705,6 +723,19 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
+    <div class="sw-card sw-wide" id="rossland-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
+
     <div class="sw-card sw-wide" id="rossland-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">Canada's GEM weather model (Environment and Climate Change Canada) for the Rossland Range: the 2.5 km HRDPS for about the first two days, then the coarser 10 km and 15 km runs, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the Rossland Range, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the Rossland Range; the alpine often gets more, and wind redistributes it. Times in Pacific time.</p></details>
@@ -872,6 +903,19 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
+
+    <div class="sw-card sw-wide" id="whitewater-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
 
     <div class="sw-card sw-wide" id="whitewater-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
@@ -1083,6 +1127,19 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
+    <div class="sw-card sw-wide" id="kpass-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
+
     <div class="sw-card sw-wide" id="kpass-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">Canada's GEM weather model (Environment and Climate Change Canada) for Stagleap above Kootenay Pass: the 2.5 km HRDPS for about the first two days, then the coarser 10 km and 15 km runs, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over Stagleap above Kootenay Pass, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Stagleap above Kootenay Pass; the alpine often gets more, and wind redistributes it. Times in Pacific time.</p></details>
@@ -1206,6 +1263,19 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
+
+    <div class="sw-card sw-wide" id="vallter-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
 
     <div class="sw-card sw-wide" id="vallter-outlook" data-point="Vallter">
       <h2 class="sw-h">Next 7 days · Vallter</h2>
@@ -1394,6 +1464,19 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
+    <div class="sw-card sw-wide" id="innsbruck-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
+
     <div class="sw-card sw-wide" id="innsbruck-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for the Axamer Lizum and Kalkkögel: the 2 km ICON-D2 for about the first two days, then the 7 km ICON-EU and the 13 km global run, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the Axamer Lizum and Kalkkögel, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the Axamer Lizum and Kalkkögel; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
@@ -1521,6 +1604,19 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
+
+    <div class="sw-card sw-wide" id="rmnp-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
 
     <div class="sw-card sw-wide" id="rmnp-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
@@ -1675,6 +1771,19 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
+    <div class="sw-card sw-wide" id="chamonix-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
+
     <div class="sw-card sw-wide" id="chamonix-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for the Chamonix valley under the Aiguille du Midi: the 2 km ICON-D2 for about the first two days, then the 7 km ICON-EU and the 13 km global run, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the Chamonix valley under the Aiguille du Midi, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the Chamonix valley under the Aiguille du Midi; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
@@ -1828,6 +1937,19 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
+    <div class="sw-card sw-wide" id="andermatt-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
+
     <div class="sw-card sw-wide" id="andermatt-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for the Urseren valley between Andermatt and Hospental: the 2 km ICON-D2 for about the first two days, then the 7 km ICON-EU and the 13 km global run, so detail drops after day 2. Temperatures and the freezing level come from the model's air temperatures at heights over the Urseren valley between Andermatt and Hospental, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the Urseren valley between Andermatt and Hospental; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
@@ -1980,6 +2102,19 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
+    <div class="sw-card sw-wide" id="aiguestortes-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
+
     <div class="sw-card sw-wide" id="aiguestortes-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for the centre of the park: the 7 km ICON-EU for about five days, then the 13 km global run (the 2 km ICON-D2 doesn't reach this far). Seven kilometres smooths steep valleys, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over the centre of the park, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for the centre of the park; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
@@ -2108,6 +2243,19 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
+
+    <div class="sw-card sw-wide" id="romsdal-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
 
     <div class="sw-card sw-wide" id="romsdal-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
@@ -2258,6 +2406,19 @@ details.sw-how[open] > summary{display:none}
     </div>
 
 
+    <div class="sw-card sw-wide" id="jotunheimen-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
+
     <div class="sw-card sw-wide" id="jotunheimen-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
       <details class="sw-how"><summary>How this works</summary><p class="sw-note">Germany's ICON weather model (DWD) for Visdalen and Spiterstulen: the 7 km ICON-EU for about five days, then the 13 km global run (the 2 km ICON-D2 doesn't reach this far). Seven kilometres smooths steep valleys, so treat heights and totals as a rough guide. Temperatures and the freezing level come from the model's air temperatures at heights over Visdalen and Spiterstulen, so they show inversions. Rain or snow is split by the temperature at each band (all snow at 0 °C or colder, all rain from +2 °C), at about 1 cm of snow per mm of water. Precipitation is the model's for Visdalen and Spiterstulen; the alpine often gets more, and wind redistributes it. Times in Central European time.</p></details>
@@ -2406,6 +2567,19 @@ details.sw-how[open] > summary{display:none}
       </div>
     </div>
 
+
+    <div class="sw-card sw-wide" id="hemsedal-past">
+      <h2 class="sw-h">The last 7 days</h2>
+      <p class="sw-note" data-draw="past-intro" data-source="past_week">What has built the snowpack this week: new snow, rain, wind and temperature, from the weather model's record at one point in the area, plus what the stations measured.</p>
+      <ul class="sw-past-ev" data-draw="past-events" data-source="past_week"></ul>
+      <div class="sw-tablebox">
+        <table class="sw-table sw-past-table">
+          <thead><tr><th>Day</th><th class="sw-num">Snow (cm)</th><th class="sw-num">Rain (mm)</th><th class="sw-num">Low / high (°C)</th><th class="sw-num sw-hide-narrow">Freezing level (m)</th><th class="sw-num">Wind / gusts (km/h)</th></tr></thead>
+          <tbody data-draw="past-rows" data-source="past_week"></tbody>
+        </table>
+      </div>
+      <p class="sw-note">Model history (Open-Meteo), so it smooths local extremes: the alpine often got more snow and stronger wind than shown. “Low” is the overnight low before that day. Read alongside the bulletin's snowpack notes.</p>
+    </div>
 
     <div class="sw-card sw-wide" id="hemsedal-mtn">
       <h2 class="sw-h">Next 7 days by elevation</h2>
