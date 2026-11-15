@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm i playwright@1.49.1 && npx playwright install --with-deps chromium && node scripts/live_check.js
+      - run: npm i playwright@1.49.1 && npx playwright install --with-deps chromium webkit && node scripts/live_check.js
       - uses: actions/upload-artifact@v4
         with:
           name: shots
