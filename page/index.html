@@ -250,7 +250,12 @@
 .sw-pt-match{font-weight:600}
 .sw-zoombar{display:inline-flex;flex-wrap:wrap;gap:var(--cds-gap-xs);margin-left:auto}
 .sw-drawbar{position:absolute;top:8px;left:8px;z-index:4;max-width:calc(100% - 16px);box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;background:var(--cds-surface-popover,var(--color-bg));border:1px solid var(--cds-border,var(--color-border-line));border-radius:var(--cds-radius);box-shadow:var(--cds-shadow-popover);padding:6px 8px;font-size:var(--cds-font-size-caption);cursor:auto}
-.sw-drawbar-btns{display:inline-flex;gap:6px}
+.sw-drawbar-btns{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center}
+.sw-drawbar-txt{flex-basis:100%;font-variant-numeric:tabular-nums}
+.sw-drawmode{display:inline-flex;border:1px solid var(--color-border-line);border-radius:999px;overflow:hidden}
+.sw-drawmode .sw-co-btn{border:0;border-radius:0;margin:0}
+.sw-drawmode .sw-co-btn[aria-pressed=true]{background:var(--color-fg);color:var(--color-bg)}
+.sw-drawbar [data-a=undo],.sw-drawbar [data-a=redo],.sw-drawbar [data-a=help]{min-width:30px;padding-left:6px;padding-right:6px}
 .sw-drawbar-help{flex-basis:100%;color:var(--color-fg-muted)}
 .sw-drawbar-help[hidden]{display:none}
 .sw-drawbar .sw-co-btn{font-size:var(--cds-font-size-caption);padding:3px 10px}
