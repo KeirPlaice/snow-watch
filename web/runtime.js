@@ -108,6 +108,9 @@
     if (el && index && index.built) {
       const d = new Date(index.built);
       el.textContent = `Data updated ${d.toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}${navigator.onLine ? '' : ' · offline, showing saved data'}`;
+      const old = Date.now() - d.getTime() > 30 * 3600e3; // the morning refresh missed a day
+      el.classList.toggle('sw-stale', old);
+      if (old) el.textContent += ' · more than a day old';
     }
   });
 })();
